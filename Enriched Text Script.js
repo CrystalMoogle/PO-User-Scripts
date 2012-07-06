@@ -3,6 +3,7 @@
 //feel free to use it, edit it, improve it, do whatever.
 //lot of stuff "borrowed" from main scripts :3
 //only commands are "~etext on" and "~etext off" which will turn enriched text on/off
+//notes about this: anything that changes fonts in themes most likely won't work aloneside this. I'll try to add custom options to change it in the future.
 var auth_symbol = {
     "0": "",
     "1": "+",
