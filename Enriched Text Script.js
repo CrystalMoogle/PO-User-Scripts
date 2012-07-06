@@ -119,7 +119,7 @@ poScript = ({
                 client.printChannelMessage("+ClientBot: You turned Enriched text off!", channel, false)
                 return;
             }
-            client.printChannelMessage("ClientBot: Please use on/off", channel, false)
+            client.printChannelMessage("+ClientBot: Please use on/off", channel, false)
         }
         if (msg.substr(0, 6) == "~eval ") {
             sys.stopEvent()
