@@ -2,7 +2,7 @@
 //report bugs to Crystal Moogle
 //feel free to use it, edit it, improve it, do whatever.
 //lot of stuff "borrowed" from main scripts :3
-//only commands are "~etext on" and "~etext off" which will turn enriched text on/off
+//only commands are "~etext on" and "~etext off" which will turn enriched text on/off and "~greentext on", "~greentext
 var auth_symbol = {
     "0": "",
     "1": "+",
@@ -58,14 +58,14 @@ poScript = ({
                     msgnew = "<a href = '" + link + "'>" + link + "</a>"
                     playmessage = playmessage.replace(msg[x], msgnew)
                 }
-                if ((start == "*" && end == "*"&&msgl > 1) || (start == "/" && end == "/"&&msgl > 1) || (start == "_" && end == "_"&&msgl > 1)) {
+                if ((start == "*" && end == "*"&&msgl > 1) || ((start == "/" || start == "\\") && (end == "/"|| end == "\\")&&msgl > 1) || (start == "_" && end == "_"&&msgl > 1)) {
                     var modifier = ""
                     var endmodifier = ""
                     if (start == "*") {
                         modifier = "<b>"
                         endmodifier = "</b>"
                     }
-                    if (start == "/") {
+                    if (start == "/" || start =="\\") {
                         modifier = "<i>"
                         endmodifier = "</i>"
                     }
