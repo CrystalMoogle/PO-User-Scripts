@@ -96,7 +96,7 @@ poScript = ({
                 playmessage = "<i> " + playmessage + "</i><ping/>"
                 playmessage = playmessage.replace(client.ownName(), "<span style='" + hilight + "'>" + client.ownName() + "</span>")
             }
-		if(playmessage.substr(0,4)  =="&gt;"&& tgreentext === false){
+		if(playmessage.substr(0,4)  =="&gt;"&& tgreentext === true){
 			playmessage = "<font color = '#789922'>"+playmessage+"</font>"
 		}else{
 		playmessage = "<font color = '"+fontcolour+"'>"+playmessage
