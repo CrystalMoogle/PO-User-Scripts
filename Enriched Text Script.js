@@ -91,7 +91,7 @@ poScript = ({
                 playmessage = "<i> " + playmessage + "</i><ping/>"
                 playmessage = playmessage.replace(client.ownName(), "<span style='" + hilight + "'>" + client.ownName() + "</span>")
             }
-			playmessage = "<font color = '"+fontcolour+"'>"+playmessage
+            playmessage = "<font color = '"+fontcolour+"'>"+playmessage
             if (client.auth(id) > 0 && client.auth(id) < 4) {
                 client.printChannelMessage("<font face ='"+fontstyle+"'><font size = "+fontsize+"><font color='" + colour + "'><timestamp/><b> " + auth_symbol[client.auth(id)] + "<i>" + playname + ": </font></i></b>" + playmessage, chan, true)
                 sys.stopEvent()
