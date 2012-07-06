@@ -11,14 +11,15 @@ var auth_symbol = {
     "4": ""
     //change these to what you have set yourself
 }
+var stalkwords = [] // add stalkwords for you to be pinged format is ["word1","word2"], obviously you can add more than 2
 var hilight = "BACKGROUND-COLOR: #ffff00" //change this if you want a different hilight colour when pinged (leave background there unless you want a different style)
 var fontcolour = "#000000" //change this for different font colours
 var fontstyle = "" //this changes the font type of your text, leave it blank for default
 var fontsize = 3 //this changes the font size of your text, 3 is default
 var greentext = '#789922' //changes the text when someone quotes with ">" at the start
 //these things below shouldn't be touched unless you know what you're doing~
-var etext = (sys.getVal('etext') !== false &&sys.getVal('etext')!==true)  ? sys.getVal('etext') : false
-var tgreentext = (sys.getVal('tgreentext') !== false &&sys.getVal('tgreentext')!==true) ? sys.getVal('tgreentext')  : false
+var etext = (sys.getVal('etext') !== false && sys.getVal('etext') !== true) ? sys.getVal('etext') : false
+var tgreentext = (sys.getVal('tgreentext') !== false && sys.getVal('tgreentext') !== true) ? sys.getVal('tgreentext') : false
 
 poScript = ({
     html_escape: function (text) {
@@ -58,14 +59,14 @@ poScript = ({
                     msgnew = "<a href = '" + link + "'>" + link + "</a>"
                     playmessage = playmessage.replace(msg[x], msgnew)
                 }
-                if ((start == "*" && end == "*"&&msgl > 1) || ((start == "/" || start == "\\") && (end == "/"|| end == "\\")&&msgl > 1) || (start == "_" && end == "_"&&msgl > 1)) {
+                if ((start == "*" && end == "*" && msgl > 1) || ((start == "/" || start == "\\") && (end == "/" || end == "\\") && msgl > 1) || (start == "_" && end == "_" && msgl > 1)) {
                     var modifier = ""
                     var endmodifier = ""
                     if (start == "*") {
                         modifier = "<b>"
                         endmodifier = "</b>"
                     }
-                    if (start == "/" || start =="\\") {
+                    if (start == "/" || start == "\\") {
                         modifier = "<i>"
                         endmodifier = "</i>"
                     }
@@ -86,13 +87,19 @@ poScript = ({
                 playmessage = "<i> " + playmessage + "</i><ping/>"
                 playmessage = playmessage.replace(client.ownName(), "<span style='" + hilight + "'>" + client.ownName() + "</span>")
             }
-		if(playmessage.substr(0,4)  =="&gt;"&& tgreentext === true){
-			playmessage = "<font color = '"+greentext+"'>"+playmessage+"</font>"
-		}else{
-		playmessage = "<font color = '"+fontcolour+"'>"+playmessage
-		}
+            for (x in stalkwords) {
+                if (playmessage.indexOf(stalkwords[x]) != -1) {
+                    playmessage = "<i> " + playmessage + "</i><ping/>"
+                    playmessage = playmessage.replace(stalkwords[x], "<span style='" + hilight + "'>" + stalkwords[x] + "</span>")
+                }
+            }
+            if (playmessage.substr(0, 4) == "&gt;" && tgreentext === true) {
+                playmessage = "<font color = '" + greentext + "'>" + playmessage + "</font>"
+            } else {
+                playmessage = "<font color = '" + fontcolour + "'>" + playmessage
+            }
             if (client.auth(id) > 0 && client.auth(id) < 4) {
-                client.printChannelMessage("<font face ='"+fontstyle+"'><font size = "+fontsize+"><font color='" + colour + "'><timestamp/><b> " + auth_symbol[client.auth(id)] + "<i>" + playname + ": </font></i></b>" + playmessage, chan, true)
+                client.printChannelMessage("<font face ='" + fontstyle + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/><b> " + auth_symbol[client.auth(id)] + "<i>" + playname + ": </font></i></b>" + playmessage, chan, true)
                 sys.stopEvent()
                 return;
             }
@@ -117,8 +124,8 @@ poScript = ({
             }
             client.printChannelMessage("+ClientBot: Please use on/off", channel, false)
         }
-		if(msg.substr(0, 11) == "~greentext "){
-		 sys.stopEvent()
+        if (msg.substr(0, 11) == "~greentext ") {
+            sys.stopEvent()
             if (msg.substr(11) == "on") {
                 tgreentext = true
                 sys.saveVal('tgreentext', true)
@@ -132,7 +139,7 @@ poScript = ({
                 return;
             }
             client.printChannelMessage("+ClientBot: Please use on/off", channel, false)
-		}
+        }
         if (msg.substr(0, 6) == "~eval ") {
             sys.stopEvent()
             var cd = msg.substr(6)
