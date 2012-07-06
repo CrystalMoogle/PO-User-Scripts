@@ -3,7 +3,6 @@
 //feel free to use it, edit it, improve it, do whatever.
 //lot of stuff "borrowed" from main scripts :3
 //only commands are "~etext on" and "~etext off" which will turn enriched text on/off
-//notes about this: anything that changes fonts in themes most likely won't work aloneside this. I'll try to add custom options to change it in the future.
 var auth_symbol = {
     "0": "",
     "1": "+",
@@ -91,7 +90,11 @@ poScript = ({
                 playmessage = "<i> " + playmessage + "</i><ping/>"
                 playmessage = playmessage.replace(client.ownName(), "<span style='" + hilight + "'>" + client.ownName() + "</span>")
             }
-            playmessage = "<font color = '"+fontcolour+"'>"+playmessage
+		if(playmessage.substr(0,4)  =="&gt;"){
+			playmessage = "<font color = '#789922'>"+playmessage+"</font>"
+		}else{
+		playmessage = "<font color = '"+fontcolour+"'>"+playmessage
+		}
             if (client.auth(id) > 0 && client.auth(id) < 4) {
                 client.printChannelMessage("<font face ='"+fontstyle+"'><font size = "+fontsize+"><font color='" + colour + "'><timestamp/><b> " + auth_symbol[client.auth(id)] + "<i>" + playname + ": </font></i></b>" + playmessage, chan, true)
                 sys.stopEvent()
