@@ -15,6 +15,7 @@ var hilight = "BACKGROUND-COLOR: #ffff00" //change this if you want a different 
 var fontcolour = "#000000" //change this for different font colours
 var fontstyle = "" //this changes the font type of your text, leave it blank for default
 var fontsize = 3 //this changes the font size of your text, 3 is default
+//these things below shouldn't be touched unless you know what you're doing~
 var etext = (sys.getVal('etext') !== false &&sys.getVal('etext')!==true)  ? sys.getVal('etext') : false
 var tgreentext = (sys.getVal('tgreentext') !== false &&sys.getVal('tgreentext')!==true) ? sys.getVal('tgreentext')  : false
 
