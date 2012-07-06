@@ -15,6 +15,7 @@ var hilight = "BACKGROUND-COLOR: #ffff00" //change this if you want a different 
 var fontcolour = "#000000" //change this for different font colours
 var fontstyle = "" //this changes the font type of your text, leave it blank for default
 var fontsize = 3 //this changes the font size of your text, 3 is default
+var greentext = '#789922' //changes the text when someone quotes with ">" at the start
 //these things below shouldn't be touched unless you know what you're doing~
 var etext = (sys.getVal('etext') !== false &&sys.getVal('etext')!==true)  ? sys.getVal('etext') : false
 var tgreentext = (sys.getVal('tgreentext') !== false &&sys.getVal('tgreentext')!==true) ? sys.getVal('tgreentext')  : false
@@ -86,7 +87,7 @@ poScript = ({
                 playmessage = playmessage.replace(client.ownName(), "<span style='" + hilight + "'>" + client.ownName() + "</span>")
             }
 		if(playmessage.substr(0,4)  =="&gt;"&& tgreentext === true){
-			playmessage = "<font color = '#789922'>"+playmessage+"</font>"
+			playmessage = "<font color = '"+greentext+"'>"+playmessage+"</font>"
 		}else{
 		playmessage = "<font color = '"+fontcolour+"'>"+playmessage
 		}
