@@ -83,12 +83,13 @@ poScript = ({
                 var clist = ['#5811b1', '#399bcd', '#0474bb', '#f8760d', '#a00c9e', '#0d762b', '#5f4c00', '#9a4f6d', '#d0990f', '#1b1390', '#028678', '#0324b1'];
                 colour = clist[src % clist.length];
             }
-            if (playmessage.indexOf(client.ownName()) != -1) {
+            if (playmessage.toLowerCase().indexOf(client.ownName().toLowerCase()) != -1 && playname !== client.ownName()) {
                 playmessage = "<i> " + playmessage + "</i><ping/>"
-                playmessage = playmessage.replace(client.ownName(), "<span style='" + hilight + "'>" + client.ownName() + "</span>")
+				var name =new RegExp(client.ownName(), "i")
+                playmessage = playmessage.replace(name, "<span style='" + hilight + "'>" + name+ "</span>")
             }
             for (x in stalkwords) {
-                if (playmessage.indexOf(stalkwords[x]) != -1) {
+                if (playmessage.indexOf(stalkwords[x]) != -1&& playname !== client.ownName()) {
                     playmessage = "<i> " + playmessage + "</i><ping/>"
                     playmessage = playmessage.replace(stalkwords[x], "<span style='" + hilight + "'>" + stalkwords[x] + "</span>")
                 }
