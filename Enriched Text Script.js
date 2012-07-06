@@ -12,7 +12,9 @@ var auth_symbol = {
     //change these to what you have set yourself
 }
 var hilight = "BACKGROUND-COLOR: #ffff00" //change this if you want a different hilight colour when pinged (leave background there unless you want a different style)
-
+var fontcolour = "#000000" //change this for different font colours
+var fontstyle = "" //this changes the font type of your text, leave it blank for default
+var fontsize = 3 //this changes the font size of your text, 3 is default
 poScript = ({
     clientStartUp: function () {
         this.init()
@@ -88,8 +90,9 @@ poScript = ({
                 playmessage = "<i> " + playmessage + "</i><ping/>"
                 playmessage = playmessage.replace(client.ownName(), "<span style='" + hilight + "'>" + client.ownName() + "</span>")
             }
+			playmessage = "<font color = '"+fontcolour+"'>"+playmessage
             if (client.auth(id) > 0 && client.auth(id) < 4) {
-                client.printChannelMessage("<font color='" + colour + "'><timestamp/><b> " + auth_symbol[client.auth(id)] + "<i>" + playname + ": </font></i></b>" + playmessage, chan, true)
+                client.printChannelMessage("<font face ='"+fontstyle+"'><font size = "+fontsize+"><font color='" + colour + "'><timestamp/><b> " + auth_symbol[client.auth(id)] + "<i>" + playname + ": </font></i></b>" + playmessage, chan, true)
                 sys.stopEvent()
                 return;
             }
