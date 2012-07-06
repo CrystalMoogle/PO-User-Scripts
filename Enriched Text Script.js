@@ -18,8 +18,8 @@ var fontstyle = "" //this changes the font type of your text, leave it blank for
 var fontsize = 3 //this changes the font size of your text, 3 is default
 var greentext = '#789922' //changes the text when someone quotes with ">" at the start
 //these things below shouldn't be touched unless you know what you're doing~
-var etext = (sys.getVal('etext') !== false && sys.getVal('etext') !== true) ? sys.getVal('etext') : false
-var tgreentext = (sys.getVal('tgreentext') !== false && sys.getVal('tgreentext') !== true) ? sys.getVal('tgreentext') : false
+var etext = (sys.getVal('etext') !== false && sys.getVal('etext') !== true) ? sys.getVal('etext') : "false"
+var tgreentext = (sys.getVal('tgreentext') !== false && sys.getVal('tgreentext') !== true) ? sys.getVal('tgreentext') : "false"
 
 poScript = ({
     html_escape: function (text) {
@@ -43,7 +43,7 @@ poScript = ({
             var playname = message.substring(0, pos)
             var playmessage = this.html_escape(message.substr(pos + 2))
             var msg = playmessage.split(' ')
-            if (typeof (etext) === "undefined" || etext === false) {
+            if (typeof (etext) === "undefined" || etext === "false") {
                 return;
             }
             for (x in msg) {
@@ -94,7 +94,7 @@ poScript = ({
                     playmessage = playmessage.replace(stalkwords[x], "<span style='" + hilight + "'>" + stalkwords[x] + "</span>")
                 }
             }
-            if (playmessage.substr(0, 4) == "&gt;" && tgreentext === true) {
+            if (playmessage.substr(0, 4) == "&gt;" && tgreentext === "true") {
                 playmessage = "<font color = '" + greentext + "'>" + playmessage + "</font>"
             } else {
                 playmessage = "<font color = '" + fontcolour + "'>" + playmessage
@@ -112,13 +112,13 @@ poScript = ({
         if (msg.substr(0, 7) == "~etext ") {
             sys.stopEvent()
             if (msg.substr(7) == "on") {
-                etext = true
+                etext = "true"
                 sys.saveVal('etext', true)
                 client.printChannelMessage("+ClientBot: You turned Enriched text on!", channel, false)
                 return;
             }
             if (msg.substr(7) == "off") {
-                etext = false
+                etext = "false"
                 sys.saveVal('etext', false)
                 client.printChannelMessage("+ClientBot: You turned Enriched text off!", channel, false)
                 return;
@@ -128,13 +128,13 @@ poScript = ({
         if (msg.substr(0, 11) == "~greentext ") {
             sys.stopEvent()
             if (msg.substr(11) == "on") {
-                tgreentext = true
+                tgreentext = "true"
                 sys.saveVal('tgreentext', true)
                 client.printChannelMessage("+ClientBot: You turned greentext on!", channel, false)
                 return;
             }
             if (msg.substr(11) == "off") {
-                tgreentext = false
+                tgreentext = "false"
                 sys.saveVal('tgreentext', false)
                 client.printChannelMessage("+ClientBot: You turned greentext off!", channel, false)
                 return;
