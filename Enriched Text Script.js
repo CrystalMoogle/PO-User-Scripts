@@ -15,8 +15,6 @@ var hilight = "BACKGROUND-COLOR: #ffff00" //change this if you want a different 
 var fontcolour = "#000000" //change this for different font colours
 var fontstyle = "" //this changes the font type of your text, leave it blank for default
 var fontsize = 3 //this changes the font size of your text, 3 is default
-var tgreentext = false
-var etext = false
 poScript = ({
     clientStartUp: function () {
         this.init()
@@ -68,7 +66,7 @@ poScript = ({
                     msgnew = "<a href = '" + link + "'>" + link + "</a>"
                     playmessage = playmessage.replace(msg[x], msgnew)
                 }
-                if ((start == "*" && end == "*") || (start == "/" && end == "/") || (start == "_" && end == "_")) {
+                if ((start == "*" && end == "*"&&msgl > 1) || (start == "/" && end == "/"&&msgl > 1) || (start == "_" && end == "_"&&msgl > 1)) {
                     var modifier = ""
                     var endmodifier = ""
                     if (start == "*") {
