@@ -142,6 +142,7 @@ poScript = ({
                 return;
             }
             client.printChannelMessage("+ClientBot: Please use on/off", channel, false)
+		}
         if (msg.substr(0, 6) == "~eval ") {
             sys.stopEvent()
             var cd = msg.substr(6)
