@@ -15,6 +15,8 @@ var hilight = "BACKGROUND-COLOR: #ffff00" //change this if you want a different 
 var fontcolour = "#000000" //change this for different font colours
 var fontstyle = "" //this changes the font type of your text, leave it blank for default
 var fontsize = 3 //this changes the font size of your text, 3 is default
+var tgreentext = false
+var etext = false
 poScript = ({
     clientStartUp: function () {
         this.init()
@@ -22,7 +24,11 @@ poScript = ({
     init: function () {
         etext = sys.getVal("etext")
         if (typeof (etext) === "undefined") {
-            etext === true
+            etext = true
+        }
+		tgreentext = sys.getVal('tgreentext')
+		 if (typeof (tgreentext) === "undefined") {
+            tgreentext = false
         }
     },
     html_escape: function (text) {
@@ -90,7 +96,7 @@ poScript = ({
                 playmessage = "<i> " + playmessage + "</i><ping/>"
                 playmessage = playmessage.replace(client.ownName(), "<span style='" + hilight + "'>" + client.ownName() + "</span>")
             }
-		if(playmessage.substr(0,4)  =="&gt;"){
+		if(playmessage.substr(0,4)  =="&gt;"&& tgreentext === false){
 			playmessage = "<font color = '#789922'>"+playmessage+"</font>"
 		}else{
 		playmessage = "<font color = '"+fontcolour+"'>"+playmessage
@@ -121,6 +127,21 @@ poScript = ({
             }
             client.printChannelMessage("+ClientBot: Please use on/off", channel, false)
         }
+		if(msg.substr(0, 11) == "~greentext "){
+		 sys.stopEvent()
+            if (msg.substr(11) == "on") {
+                tgreentext = true
+                sys.saveVal('tgreentext', true)
+                client.printChannelMessage("+ClientBot: You turned greentext on!", channel, false)
+                return;
+            }
+            if (msg.substr(11) == "off") {
+                tgreentext = false
+                sys.saveVal('tgreentext', false)
+                client.printChannelMessage("+ClientBot: You turned greentext off!", channel, false)
+                return;
+            }
+            client.printChannelMessage("+ClientBot: Please use on/off", channel, false)
         if (msg.substr(0, 6) == "~eval ") {
             sys.stopEvent()
             var cd = msg.substr(6)
