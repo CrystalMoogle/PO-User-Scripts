@@ -15,20 +15,10 @@ var hilight = "BACKGROUND-COLOR: #ffff00" //change this if you want a different 
 var fontcolour = "#000000" //change this for different font colours
 var fontstyle = "" //this changes the font type of your text, leave it blank for default
 var fontsize = 3 //this changes the font size of your text, 3 is default
+var etext = sys.getVal('etext') !== undefined ? sys.getVal('etext') : false
+var tgreentext = sys.getVal('tgreentext') !== undefined ? sys.getVal('tgreentext') : false
+
 poScript = ({
-    clientStartUp: function () {
-        this.init()
-    },
-    init: function () {
-        etext = sys.getVal("etext")
-        if (typeof (etext) === "undefined") {
-            etext = true
-        }
-		tgreentext = sys.getVal('tgreentext')
-		 if (typeof (tgreentext) === "undefined") {
-            tgreentext = false
-        }
-    },
     html_escape: function (text) {
         var m = String(text);
         if (m.length > 0) {
