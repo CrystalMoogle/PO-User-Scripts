@@ -18,10 +18,25 @@ var fontstyle = "" //this changes the font type of your text, leave it blank for
 var fontsize = 3 //this changes the font size of your text, 3 is default
 var greentext = '#789922' //changes the text when someone quotes with ">" at the start
 //these things below shouldn't be touched unless you know what you're doing~
-var etext = (sys.getVal('etext') !== false && sys.getVal('etext') !== true) ? sys.getVal('etext') : "false"
-var tgreentext = (sys.getVal('tgreentext') !== false && sys.getVal('tgreentext') !== true) ? sys.getVal('tgreentext') : "false"
 
+function init() {
+        if (sys.getVal('etext') === "true") {
+            etext = "true"
+        } else {
+            etext = "false"
+        }
+        if (sys.getVal('tgreentext') === "true") {
+            tgreentext = "true"
+        } else {
+            tgreentext = "false"
+        }
+    }
+
+init()
 poScript = ({
+    clientStartUp: function (text) {
+        init()
+    },
     html_escape: function (text) {
         var m = String(text);
         if (m.length > 0) {
