@@ -12,7 +12,7 @@ var auth_symbol = {
     "4": ""
     //change these to what you have set yourself
 }
-var stalkwords = [] // add stalkwords for you to be pinged format is ["word1","word2"], obviously you can add more than 2
+var stalkwords = ["Crystal"] // add stalkwords for you to be pinged format is ["word1","word2"], obviously you can add more than 2
 var hilight = "BACKGROUND-COLOR: #ffff00" //change this if you want a different hilight colour when pinged (leave background there unless you want a different style)
 var fontcolour = "#000000" //change this for different font colours
 var fontstyle = "" //this changes the font type of your text, leave it blank for default
@@ -59,9 +59,6 @@ poScript = ({
             var playname = message.substring(0, pos)
             var playmessage = this.html_escape(message.substr(pos + 2))
             var msg = playmessage.split(' ')
-            if (typeof (etext) === "undefined" || etext === "false") {
-                return;
-            }
             for (x in msg) {
                 var msgnew = ""
                 var msgl = msg[x].length
@@ -75,7 +72,7 @@ poScript = ({
                     msgnew = "<a href = '" + link + "'>" + link + "</a>"
                     playmessage = playmessage.replace(msg[x], msgnew)
                 }
-                if ((start == "*" && end == "*" && msgl > 1) || ((start == "/" || start == "\\") && (end == "/" || end == "\\") && msgl > 1) || (start == "_" && end == "_" && msgl > 1)) {
+                if (((start == "*" && end == "*" && msgl > 1) || ((start == "/" || start == "\\") && (end == "/" || end == "\\") && msgl > 1) || (start == "_" && end == "_" && msgl > 1))&& etext === "true") {
                     var modifier = ""
                     var endmodifier = ""
                     if (start == "*") {
@@ -105,9 +102,10 @@ poScript = ({
                 playmessage = playmessage.replace(name, "<span style='" + hilight + "'>" + client.ownName() + "</span>")
             }
             for (x in stalkwords) {
-                if (playmessage.indexOf(stalkwords[x]) != -1 && playname !== client.ownName()) {
+                if (playmessage.toLowerCase().indexOf(stalkwords[x].toLowerCase()) != -1 && playname !== client.ownName()) {
                     playmessage = "<i> " + playmessage + "</i><ping/>"
-                    playmessage = playmessage.replace(stalkwords[x], "<span style='" + hilight + "'>" + stalkwords[x] + "</span>")
+					var stalk = new RegExp(stalkwords[x], "i")
+                    playmessage = playmessage.replace(stalk, "<span style='" + hilight + "'>" + stalkwords[x] + "</span>")
                 }
             }
             if (playmessage.substr(0, 4) == "&gt;" && tgreentext === "true") {
