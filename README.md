@@ -12,6 +12,7 @@ Installing
 4. Repeat step 1
 5. Click "Script Window"
 6. Copy the script you want into this window (make sure to use the raw files by click "raw"!)
+7. Then just click ok!
 
 Notes
 -------------
