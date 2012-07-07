@@ -1,6 +1,7 @@
 PO-User-Scripts
 ===============
-Repository that I'll (hopefully) fill with more UserScripts for Pokémon Online's client side scripting. 
+Repository that I'll (hopefully) fill with more UserScripts for Pokémon Online's client side scripting.
+
 Feel free to take whatever's here and make pull requests/make suggestions etc
 
 Installing
@@ -15,4 +16,5 @@ Installing
 Notes
 -------------
 It's possible to combine multiple scripts together, but unless you know what you're doing, ask for help before attempting.
+
 Any issues/bugs report to Crystal Moogle or post them in the Scripting Sub-Forum on the PO forums
