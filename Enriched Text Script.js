@@ -35,7 +35,7 @@ function init() {
 
 init()
 poScript = ({
-    clientStartUp: function (text) {
+    clientStartUp: function () {
         init()
     },
     html_escape: function (text) {
