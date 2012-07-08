@@ -12,7 +12,6 @@ var auth_symbol = {
     "4": ""
     //change these to what you have set yourself
 }
-var stalkwords = [] // add stalkwords for you to be pinged format is ["word1","word2"], obviously you can add more than 2
 var hilight = "BACKGROUND-COLOR: #ffff00" //change this if you want a different hilight colour when pinged (leave background there unless you want a different style)
 var fontcolour = "#000000" //change this for different font colours
 var fontstyle = "" //this changes the font type of your text, leave it blank for default
@@ -105,15 +104,6 @@ poScript = ({
                 newplaymessage = playmessage.replace(name, "<span style='" + hilight + "'>" + client.ownName() + "</span>")
                 if (newplaymessage !== playmessage) {
                     playmessage = newplaymessage.replace(newplaymessage, "<i> " + newplaymessage + "</i><ping/>")
-                }
-            }
-            for (x in stalkwords) {
-                if (playmessage.toLowerCase().indexOf(stalkwords[x].toLowerCase()) != -1 && playname !== client.ownName()) {
-                    var stalk = new RegExp("\\b" + stalkwords[x] + "\\b", "i")
-                    newplaymessage = playmessage.replace(stalk, "<span style='" + hilight + "'>" + stalkwords[x] + "</span>")
-                    if (newplaymessage !== playmessage) {
-                        playmessage = newplaymessage.replace(newplaymessage, "<i> " + newplaymessage + "</i><ping/>")
-                    }
                 }
             }
             if (playmessage.substr(0, 4) == "&gt;" && tgreentext === "true") {
