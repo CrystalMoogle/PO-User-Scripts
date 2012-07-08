@@ -1,8 +1,5 @@
 //basic script to allow enriched text on PO Version 2.0 since it was removed in the latest update. Still not perfect, but it's getting there I guess
-//report bugs to Crystal Moogle
-//feel free to use it, edit it, improve it, do whatever.
-//lot of stuff "borrowed" from main scripts :3
-//only commands are "~etext on" and "~etext off" which will turn enriched text on/off and "~greentext on", "~greentext off", which will turn greentext on/off
+//commands are "~etext on" and "~etext off" which will turn enriched text on/off and "~greentext on", "~greentext off", which will turn greentext on/off
 //currently channel links don't work :x
 var auth_symbol = {
     "0": "",
