@@ -16,6 +16,8 @@ Installing
 
 Notes
 -------------
-It's possible to combine multiple scripts together, but unless you know what you're doing, ask for help before attempting.
+It's possible to combine multiple scripts together, but unless you know what you're doing, ask for help before attempting. 
+
+Merged Scripts.js already has all the current scripts merged together
 
 Any issues/bugs report to Crystal Moogle or post them in the Scripting Sub-Forum on the PO forums
