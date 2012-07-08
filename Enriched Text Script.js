@@ -2,7 +2,7 @@
 //report bugs to Crystal Moogle
 //feel free to use it, edit it, improve it, do whatever.
 //lot of stuff "borrowed" from main scripts :3
-//only commands are "~etext on" and "~etext off" which will turn enriched text on/off and "~greentext on", "~greentext off", which will turn greentext on/off
+//only commands are "~etext on" and "~etext off" which will turn enriched text on/off and "~greentext on", "~greentext
 //currently channel links don't work :x
 var auth_symbol = {
     "0": "",
@@ -12,7 +12,7 @@ var auth_symbol = {
     "4": ""
     //change these to what you have set yourself
 }
-var stalkwords = [] // add stalkwords for you to be pinged format is ["word1","word2"], obviously you can add more than 2
+var stalkwords = ['test'] // add stalkwords for you to be pinged format is ["word1","word2"], obviously you can add more than 2
 var hilight = "BACKGROUND-COLOR: #ffff00" //change this if you want a different hilight colour when pinged (leave background there unless you want a different style)
 var fontcolour = "#000000" //change this for different font colours
 var fontstyle = "" //this changes the font type of your text, leave it blank for default
@@ -101,15 +101,20 @@ poScript = ({
                 colour = clist[src % clist.length];
             }
             if (playmessage.toLowerCase().indexOf(client.ownName().toLowerCase()) != -1 && playname !== client.ownName()) {
-                playmessage = "<i> " + playmessage + "</i><ping/>"
-                var name = new RegExp(client.ownName(), "i")
-                playmessage = playmessage.replace(name, "<span style='" + hilight + "'>" + client.ownName() + "</span>")
+                var name = new RegExp("\\b" + client.ownName() + "\\b", "i")
+                newplaymessage = playmessage.replace(name, "<span style='" + hilight + "'>" + client.ownName() + "</span>")
+                if (newplaymessage !== playmessage) {
+                    playmessage = newplaymessage.replace(newplaymessage, "<i> " + newplaymessage + "</i><ping/>")
+                }
             }
             for (x in stalkwords) {
+
                 if (playmessage.toLowerCase().indexOf(stalkwords[x].toLowerCase()) != -1 && playname !== client.ownName()) {
-                    playmessage = "<i> " + playmessage + "</i><ping/>"
-                    var stalk = new RegExp(stalkwords[x], "i")
-                    playmessage = playmessage.replace(stalk, "<span style='" + hilight + "'>" + stalkwords[x] + "</span>")
+                    var stalk = new RegExp("\\b" + stalkwords[x] + "\\b", "i")
+                    newplaymessage = playmessage.replace(stalk, "<span style='" + hilight + "'>" + stalkwords[x] + "</span>")
+                    if (newplaymessage !== playmessage) {
+                        playmessage = newplaymessage.replace(newplaymessage, "<i> " + newplaymessage + "</i><ping/>")
+                    }
                 }
             }
             if (playmessage.substr(0, 4) == "&gt;" && tgreentext === "true") {
