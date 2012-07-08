@@ -1,9 +1,5 @@
-//this script has all the current scripts merged together into one neat package
-//report bugs to Crystal Moogle
-//feel free to use it, edit it, improve it, do whatever.
-//lot of stuff "borrowed" from main scripts :3
-//commands are ~idle on/off, ~etext on/off and ~greentext on/off
-//currently channel links don't work :x
+//script that allows you to add stalk words (words that will ping you when spoken)
+//simply add words to the variable listed below
 var auth_symbol = {
     "0": "",
     "1": "+",
@@ -12,50 +8,12 @@ var auth_symbol = {
     "4": ""
     //change these to what you have set yourself
 }
-var stalkwords = [] // add stalkwords for you to be pinged format is ["word1","word2"], obviously you can add more than 2
+var stalkwords = ['test'] // add stalkwords for you to be pinged format is ["word1","word2"], obviously you can add more than 2
 var hilight = "BACKGROUND-COLOR: #ffff00" //change this if you want a different hilight colour when pinged (leave background there unless you want a different style)
 var fontcolour = "#000000" //change this for different font colours
 var fontstyle = "" //this changes the font type of your text, leave it blank for default
 var fontsize = 3 //this changes the font size of your text, 3 is default
-var greentext = '#789922' //changes the text when someone quotes with ">" at the start
-//these things below shouldn't be touched unless you know what you're doing~
-
-function init() {
-        if (sys.getVal('etext') === "true") {
-            etext = "true"
-        } else {
-            etext = "false"
-        }
-        if (sys.getVal('tgreentext') === "true") {
-            tgreentext = "true"
-        } else {
-            tgreentext = "false"
-        }
-    }
-
-init()
 poScript = ({
-    clientStartUp: function () {
-        init()
-        this.stepEvent()
-    },
-    awayFunction: function () {
-        if (sys.getVal("idle") === "true") {
-            client.goAway(true)
-        } else {
-            client.goAway(false)
-        }
-    },
-    stepEvent: function () {
-        var id = client.ownId()
-        if (id === -1) {
-            sys.quickCall(function () {
-                script.stepEvent()
-            }, 1)
-        } else {
-            this.awayFunction();
-        }
-    },
     html_escape: function (text) {
         var m = String(text);
         if (m.length > 0) {
@@ -83,33 +41,9 @@ poScript = ({
             var msg = playmessage.split(' ')
             for (x in msg) {
                 var msgnew = ""
-                var msgl = msg[x].length
-                var start = msg[x][0]
-                var end = msg[x][parseInt(msgl - 1)]
-                if (start == ".") {
-                    start = msg[x][1]
-                }
                 if (msg[x].substr(0, 7) == "http://" || msg[x].substr(0, 8) == "https://") {
                     var link = msg[x]
                     msgnew = "<a href = '" + link + "'>" + link + "</a>"
-                    playmessage = playmessage.replace(msg[x], msgnew)
-                }
-                if (((start == "*" && end == "*" && msgl > 1) || ((start == "/" || start == "\\") && (end == "/" || end == "\\") && msgl > 1) || (start == "_" && end == "_" && msgl > 1)) && etext === "true") {
-                    var modifier = ""
-                    var endmodifier = ""
-                    if (start == "*") {
-                        modifier = "<b>"
-                        endmodifier = "</b>"
-                    }
-                    if (start == "/" || start == "\\") {
-                        modifier = "<i>"
-                        endmodifier = "</i>"
-                    }
-                    if (start == "_") {
-                        modifier = "<u>"
-                        endmodifier = "</u>"
-                    }
-                    msgnew = msg[x].replace(start, modifier).replace(end, endmodifier)
                     playmessage = playmessage.replace(msg[x], msgnew)
                 }
             }
@@ -134,11 +68,6 @@ poScript = ({
                     }
                 }
             }
-            if (playmessage.substr(0, 4) == "&gt;" && tgreentext === "true") {
-                playmessage = "<font color = '" + greentext + "'>" + playmessage + "</font>"
-            } else {
-                playmessage = "<font color = '" + fontcolour + "'>" + playmessage
-            }
             if (client.auth(id) > 0 && client.auth(id) < 4) {
                 client.printChannelMessage("<font face ='" + fontstyle + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/><b> " + auth_symbol[client.auth(id)] + "<i>" + playname + ": </font></i></b>" + playmessage, chan, true)
                 sys.stopEvent()
@@ -148,60 +77,4 @@ poScript = ({
             sys.stopEvent()
         }
     },
-    beforeSendMessage: function (msg, channel) {
-        if (msg.substr(0, 7) == "~etext ") {
-            sys.stopEvent()
-            if (msg.substr(7) == "on") {
-                etext = "true"
-                sys.saveVal('etext', true)
-                client.printChannelMessage("+ClientBot: You turned Enriched text on!", channel, false)
-                return;
-            }
-            if (msg.substr(7) == "off") {
-                etext = "false"
-                sys.saveVal('etext', false)
-                client.printChannelMessage("+ClientBot: You turned Enriched text off!", channel, false)
-                return;
-            }
-            client.printChannelMessage("+ClientBot: Please use on/off", channel, false)
-        }
-        if (msg.substr(0, 11) == "~greentext ") {
-            sys.stopEvent()
-            if (msg.substr(11) == "on") {
-                tgreentext = "true"
-                sys.saveVal('tgreentext', true)
-                client.printChannelMessage("+ClientBot: You turned greentext on!", channel, false)
-                return;
-            }
-            if (msg.substr(11) == "off") {
-                tgreentext = "false"
-                sys.saveVal('tgreentext', false)
-                client.printChannelMessage("+ClientBot: You turned greentext off!", channel, false)
-                return;
-            }
-            client.printChannelMessage("+ClientBot: Please use on/off", channel, false)
-        }
-        if (msg.substr(0, 6) == "~idle ") {
-            sys.stopEvent()
-            if (msg.substr(6) == "on") {
-                client.goAway(true)
-                sys.saveVal('idle', true)
-                client.printChannelMessage("+ClientBot: You turned auto-idling on!", channel, false)
-                return;
-            }
-            if (msg.substr(6) == "off") {
-                client.goAway(false)
-                sys.saveVal('idle', false)
-                client.printChannelMessage("+ClientBot: You turned auto-idling off!", channel, false)
-                return;
-            }
-            client.printChannelMessage("+ClientBot: Please use on/off", channel, false)
-        }
-        if (msg.substr(0, 6) == "~eval ") {
-            sys.stopEvent()
-            var cd = msg.substr(6)
-            eval(cd)
-        }
-    },
-
 })
