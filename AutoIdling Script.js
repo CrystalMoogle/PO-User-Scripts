@@ -1,16 +1,28 @@
 //really simple script to make you idle on log on. Requested by [LD]Jirachier :x
 //commands are ~idle on/off to turn auto-idling on/off respectively
 ({
+
+
     clientStartUp: function () {
         sys.delayedCall(function () {
-            script.awayFunction();
-        }, 1) //apparently it crashes if you call it the instant of starting up...
+            script.stepEvent()
+        }, 1)
     },
     awayFunction: function () {
         if (sys.getVal("idle") === "true") {
             client.goAway(true)
         } else {
             client.goAway(false)
+        }
+    },
+    stepEvent: function () {
+        var id = client.ownId()
+        if (typeof (id) === -1) {
+            sys.delayedCall(function () {
+                script.stepEvent()
+            }, 1)
+        } else {
+            this.awayFunction();
         }
     },
     beforeSendMessage: function (msg, channel) {
