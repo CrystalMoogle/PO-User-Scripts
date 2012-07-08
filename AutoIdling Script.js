@@ -1,12 +1,8 @@
 //really simple script to make you idle on log on. Requested by [LD]Jirachier :x
 //commands are ~idle on/off to turn auto-idling on/off respectively
 ({
-
-
     clientStartUp: function () {
-        sys.delayedCall(function () {
-            script.stepEvent()
-        }, 1)
+        this.stepEvent()
     },
     awayFunction: function () {
         if (sys.getVal("idle") === "true") {
@@ -17,7 +13,7 @@
     },
     stepEvent: function () {
         var id = client.ownId()
-        if (typeof (id) === -1) {
+        if (id === -1) {
             sys.delayedCall(function () {
                 script.stepEvent()
             }, 1)
