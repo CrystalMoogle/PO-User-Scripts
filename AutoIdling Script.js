@@ -14,7 +14,7 @@
     stepEvent: function () {
         var id = client.ownId()
         if (id === -1) {
-            sys.delayedCall(function () {
+            sys.quickCall(function () {
                 script.stepEvent()
             }, 1)
         } else {
