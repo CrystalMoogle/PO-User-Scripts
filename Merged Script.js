@@ -3,7 +3,6 @@
 //feel free to use it, edit it, improve it, do whatever.
 //lot of stuff "borrowed" from main scripts :3
 //commands are ~idle on/off, ~etext on/off and ~greentext on/off
-//currently channel links don't work :x
 var auth_symbol = {
     "0": "",
     "1": "+",
