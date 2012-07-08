@@ -37,9 +37,16 @@ init()
 poScript = ({
     clientStartUp: function () {
         init()
-		this.stepEvent()
+        this.stepEvent()
     },
-	stepEvent: function () {
+    awayFunction: function () {
+        if (sys.getVal("idle") === "true") {
+            client.goAway(true)
+        } else {
+            client.goAway(false)
+        }
+    },
+    stepEvent: function () {
         var id = client.ownId()
         if (id === -1) {
             sys.quickCall(function () {
@@ -174,7 +181,7 @@ poScript = ({
             }
             client.printChannelMessage("+ClientBot: Please use on/off", channel, false)
         }
-		if (msg.substr(0, 6) == "~idle ") {
+        if (msg.substr(0, 6) == "~idle ") {
             sys.stopEvent()
             if (msg.substr(6) == "on") {
                 client.goAway(true)
