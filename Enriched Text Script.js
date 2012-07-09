@@ -84,7 +84,7 @@ poScript = ({
                     msgnew = "<a href = '" + link + "'>" + link + "</a>"
                     playmessage = playmessage.replace(msg[x], msgnew)
                 }
-                if (((start == "*" && end == "*" && msgl > 1) || ((start == "/" || start == "\\") && (end == "/" || end == "\\") && msgl > 1) || (start == "_" && end == "_" && msgl > 1)) && etext === "true") {
+                if (((start == "*" && end == "*" && msgl > 2) || ((start == "/" || start == "\\") && (end == "/" || end == "\\") && msgl > 2) || (start == "_" && end == "_" && msgl > 2)) && etext === "true") {
                     var modifier = ""
                     var endmodifier = ""
                     if (start == "*") {
