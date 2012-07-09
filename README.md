@@ -21,3 +21,5 @@ It's possible to combine multiple scripts together, but unless you know what you
 "Merged Script.js" already has all the current scripts merged together
 
 Any issues/bugs report to Crystal Moogle or post them in the Scripting Sub-Forum on the PO forums
+
+Currently requires PO version 2.0.05 (Which as of writing is the latest)
