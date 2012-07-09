@@ -65,11 +65,7 @@ poScript = ({
             }
             var id = client.id(message.substring(0, pos))
             var playname = message.substring(0, pos)
-            if (client.auth(id) < 4 && client.auth(id) >= 0) {
-                var playmessage = this.html_escape(message.substr(pos + 2))
-            } else {
-                var playmessage = message.substr(pos + 2)
-            }
+            var playmessage = this.html_escape(message.substr(pos + 2))
             var msg = playmessage.split(' ')
             for (x in msg) {
                 var msgnew = ""
