@@ -1,6 +1,6 @@
 //basic script to allow enriched text on PO Version 2.0 since it was removed in the latest update. Still not perfect, but it's getting there I guess
 //commands are "~etext on" and "~etext off" which will turn enriched text on/off and "~greentext on", "~greentext off", which will turn greentext on/off
-//currently needs 2.0.05 to fix channel links
+//currently channel links don't work :x
 var auth_symbol = {
     "0": "",
     "1": "+",
@@ -45,18 +45,6 @@ poScript = ({
             return "";
         }
     },
-	channelLinks :  function (string) {
-		var channels =  client.channelNames()
-		var newstring = string
-		for(x in channels){
-			if(string.toLowerCase().indexOf("#"+channels[x].toLowerCase())!=-1){
-				var channel = new RegExp("#"+channels[x], "i")
-				newstring = string.replace(channel, '<a href="po:join/'+channels[x]+'">#' + channels[x] + "</a>")
-			}
-		}
-		return newstring
-	}
-	,
     beforeChannelMessage: function (message, chan, html) {
         var pos = message.indexOf(': ');
         if (pos != -1) {
@@ -124,7 +112,6 @@ poScript = ({
             } else {
                 playmessage = "<font color = '" + fontcolour + "'>" + playmessage
             }
-			playmessage = this.channelLinks(playmessage)
             if (client.auth(id) > 0 && client.auth(id) < 4) {
                 client.printChannelMessage("<font face ='" + fontstyle + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/><b> " + auth_symbol[client.auth(id)] + "<i>" + playname + ": </font></i></b>" + playmessage, chan, true)
                 sys.stopEvent()

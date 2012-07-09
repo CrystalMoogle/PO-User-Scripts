@@ -3,6 +3,7 @@
 //feel free to use it, edit it, improve it, do whatever.
 //lot of stuff "borrowed" from main scripts :3
 //commands are ~idle on/off, ~etext on/off and ~greentext on/off
+//currently needs 2.0.05 to fix channel links
 var auth_symbol = {
     "0": "",
     "1": "+",
@@ -45,6 +46,18 @@ poScript = ({
             client.goAway(false)
         }
     },
+	channelLinks :  function (string) {
+		var channels =  client.channelNames()
+		var newstring = string
+		for(x in channels){
+			if(string.toLowerCase().indexOf("#"+channels[x].toLowerCase())!=-1){
+				var channel = new RegExp("#"+channels[x], "i")
+				newstring = string.replace(channel, '<a href="po:join/'+channels[x]+'">#' + channels[x] + "</a>")
+			}
+		}
+		return newstring
+	}
+	,
     stepEvent: function () {
         var id = client.ownId()
         if (id === -1) {
@@ -142,6 +155,7 @@ poScript = ({
             } else {
                 playmessage = "<font color = '" + fontcolour + "'>" + playmessage
             }
+			playmessage =  this.channelLinks(playmessage)
             if (client.auth(id) > 0 && client.auth(id) < 4) {
                 client.printChannelMessage("<font face ='" + fontstyle + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/><b> " + auth_symbol[client.auth(id)] + "<i>" + playname + ": </font></i></b>" + playmessage, chan, true)
                 sys.stopEvent()

@@ -1,6 +1,5 @@
 //script that allows you to add stalk words (words that will ping you when spoken)
 //simply add words to the variable listed below
-//currently needs 2.0.05
 var auth_symbol = {
     "0": "",
     "1": "+",
@@ -26,18 +25,6 @@ poScript = ({
             return "";
         }
     },
-	channelLinks :  function (string) {
-		var channels =  client.channelNames()
-		var newstring = string
-		for(x in channels){
-			if(string.toLowerCase().indexOf("#"+channels[x].toLowerCase())!=-1){
-				var channel = new RegExp("#"+channels[x], "i")
-				newstring = string.replace(channel, '<a href="po:join/'+channels[x]+'">#' + channels[x] + "</a>")
-			}
-		}
-		return newstring
-	}
-	,
     beforeChannelMessage: function (message, chan, html) {
         var pos = message.indexOf(': ');
         if (pos != -1) {
@@ -81,7 +68,6 @@ poScript = ({
                     }
                 }
             }
-			playmessage =  this.channelLinks(playmessage)
             if (client.auth(id) > 0 && client.auth(id) < 4) {
                 client.printChannelMessage("<font face ='" + fontstyle + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/><b> " + auth_symbol[client.auth(id)] + "<i>" + playname + ": </font></i></b>" + playmessage, chan, true)
                 sys.stopEvent()
