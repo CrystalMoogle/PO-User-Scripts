@@ -108,7 +108,11 @@ poScript = ({
                         modifier = "<u>"
                         endmodifier = "</u>"
                     }
-                    msgnew = msg[x].replace(start, modifier).replace(end, endmodifier)
+                    var i = msg[x].lastIndexOf(end)
+                    if (i >= 0 && i + end.length >= msg[x].length) {
+                        newmsg = msg[x].substring(0, i) + endmodifier
+                    }
+                    msgnew = newmsg.replace(start, modifier)
                     playmessage = playmessage.replace(msg[x], msgnew)
                 }
             }
