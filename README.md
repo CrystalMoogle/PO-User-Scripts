@@ -22,4 +22,4 @@ It's possible to combine multiple scripts together, but unless you know what you
 
 Any issues/bugs report to Crystal Moogle or post them in the Scripting Sub-Forum on the PO forums
 
-Currently requires PO version 2.0.05 (Which as of writing is the latest)
+Currently requires PO version 2.0.05 (Which as of writing is the latest). Versions that work on older clients are available in the "Legacy Folder".
