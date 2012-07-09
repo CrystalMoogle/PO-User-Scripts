@@ -12,6 +12,7 @@
         }
     },
     stepEvent: function () {
+        //this is because you don't have an id the moment the client starts, so instead use a continous check until it finds a valid ID(I may have missed an event here that makes this easier...)
         var id = client.ownId()
         if (id === -1) {
             sys.quickCall(function () {
