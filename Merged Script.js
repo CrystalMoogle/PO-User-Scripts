@@ -115,7 +115,7 @@ poScript = ({
                 }
                 if (msg[x].substr(0, 7) == "http://" || msg[x].substr(0, 8) == "https://") {
                     var link = msg[x]
-					link = link.replace(/&amp;/g, "&")
+                    link = link.replace(/&amp;/g, "&")
                     msgnew = "<a href = '" + link + "'>" + link + "</a>"
                     playmessage = playmessage.replace(msg[x], msgnew)
                 }
