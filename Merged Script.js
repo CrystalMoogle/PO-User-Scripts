@@ -20,7 +20,6 @@ var auth_style = {
     "4": "<b>"
     //change this to the style you have set, only start tags are needed
 }
-var punctuation = [".", ",", "\"", "'", "&", ";", ":"] //list of common punctuation, increase or decrease as you see fit
 var stalkwords = [] // add stalkwords for you to be pinged format is ["word1","word2"], obviously you can add more than 2
 var hilight = "BACKGROUND-COLOR: #ffff00" //change this if you want a different hilight colour when pinged (leave background there unless you want a different style)
 var fontcolour = "#000000" //change this for different font colours
