@@ -19,7 +19,6 @@ var fontstyle = "" //this changes the font type of your text, leave it blank for
 var fontsize = 3 //this changes the font size of your text, 3 is default
 var greentext = '#789922' //changes the text when someone quotes with ">" at the start
 //these things below shouldn't be touched unless you know what you're doing~
-
 function init() {
         if (sys.getVal('etext') === "true") {
             etext = "true"
@@ -32,7 +31,6 @@ function init() {
             tgreentext = "false"
         }
     }
-
 init()
 poScript = ({
     clientStartUp: function () {
@@ -46,18 +44,17 @@ poScript = ({
             client.goAway(false)
         }
     },
-	channelLinks :  function (string) {
-		var channels =  client.channelNames()
-		var newstring = string
-		for(x in channels){
-			if(string.toLowerCase().indexOf("#"+channels[x].toLowerCase())!=-1){
-				var channel = new RegExp("#"+channels[x], "i")
-				newstring = string.replace(channel, '<a href="po:join/'+channels[x]+'">#' + channels[x] + "</a>")
-			}
-		}
-		return newstring
-	}
-	,
+    channelLinks: function (string) {
+        var channels = client.channelNames()
+        var newstring = string
+        for (x in channels) {
+            if (string.toLowerCase().indexOf("#" + channels[x].toLowerCase()) != -1) {
+                var channel = new RegExp("#" + channels[x], "i")
+                newstring = string.replace(channel, '<a href="po:join/' + channels[x] + '">#' + channels[x] + "</a>")
+            }
+        }
+        return newstring
+    },
     stepEvent: function () {
         var id = client.ownId()
         if (id === -1) {
@@ -151,7 +148,7 @@ poScript = ({
             } else {
                 playmessage = "<font color = '" + fontcolour + "'>" + playmessage
             }
-			playmessage =  this.channelLinks(playmessage)
+            playmessage = this.channelLinks(playmessage)
             if (client.auth(id) > 0 && client.auth(id) < 4) {
                 client.printChannelMessage("<font face ='" + fontstyle + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/><b> " + auth_symbol[client.auth(id)] + "<i>" + playname + ": </font></i></b>" + playmessage, chan, true)
                 sys.stopEvent()
@@ -216,5 +213,4 @@ poScript = ({
             eval(cd)
         }
     },
-
 })
