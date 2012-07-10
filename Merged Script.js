@@ -2,7 +2,7 @@
 //report bugs to Crystal Moogle
 //feel free to use it, edit it, improve it, do whatever.
 //lot of stuff "borrowed" from main scripts :3
-//commands are ~idle on/off, ~etext on/off and ~greentext on/off
+//commands found by using ~commandlist
 //currently needs 2.0.05 to fix channel links
 var auth_symbol = {
     "0": "",
@@ -20,6 +20,7 @@ var auth_style = {
     "4": "<b>"
     //change this to the style you have set, only start tags are needed
 }
+var commandsymbol = "~" //change this if you want to use another symbol. Make sure it is 1 character still and if you use "!" or "/" that it doesn't conflict with existing scripts
 var stalkwords = [] // add stalkwords for you to be pinged format is ["word1","word2"], obviously you can add more than 2
 var hilight = "BACKGROUND-COLOR: #ffff00" //change this if you want a different hilight colour when pinged (leave background there unless you want a different style)
 var fontcolour = "#000000" //change this for different font colours
@@ -87,6 +88,13 @@ poScript = ({
         } else {
             return "";
         }
+    },
+    sendMessage: function (message, channel) {
+        if (channel === undefined) {
+            channel = client.currentChannel()
+        }
+        client.printChannelMessage(message, channel, false)
+        return;
     },
     beforeChannelMessage: function (message, chan, html) {
         var pos = message.indexOf(': ');
@@ -181,59 +189,92 @@ poScript = ({
             sys.stopEvent()
         }
     },
-    beforeSendMessage: function (msg, channel) {
-        if (msg.substr(0, 7) == "~etext ") {
-            sys.stopEvent()
-            if (msg.substr(7) == "on") {
-                etext = "true"
-                sys.saveVal('etext', true)
-                client.printChannelMessage("+ClientBot: You turned Enriched text on!", channel, false)
-                return;
+    beforeSendMessage: function (message, channel) {
+        if (message[0] == commandsymbol) {
+            var pos = message.indexOf(' ');
+            if (pos != -1) {
+                command = message.substring(1, pos).toLowerCase();
+                commandData = message.substr(pos + 1);
+            } else {
+                command = message.substr(1).toLowerCase();
             }
-            if (msg.substr(7) == "off") {
-                etext = "false"
-                sys.saveVal('etext', false)
-                client.printChannelMessage("+ClientBot: You turned Enriched text off!", channel, false)
-                return;
+            if (command == "commandlist") {
+                sys.stopEvent()
+                this.sendMessage("Commands:")
+                this.sendMessage(commandsymbol + "etext on/off: Allows you to turn Enriched text on/off")
+                this.sendMessage(commandsymbol + "greentext on/off: Allows you to turn greentext on/off")
+                this.sendMessage(commandsymbol + "idle on/off: Allows you to turn auto-idle on/off")
+                this.sendMessage(commandsymbol + "goto channel: Allows you to switch to that channel (joins if you're not in that channel)")
             }
-            client.printChannelMessage("+ClientBot: Please use on/off", channel, false)
-        }
-        if (msg.substr(0, 11) == "~greentext ") {
-            sys.stopEvent()
-            if (msg.substr(11) == "on") {
-                tgreentext = "true"
-                sys.saveVal('tgreentext', true)
-                client.printChannelMessage("+ClientBot: You turned greentext on!", channel, false)
-                return;
+            if (command == "etext") {
+                sys.stopEvent()
+                if (commandData == "on") {
+                    etext = "true"
+                    sys.saveVal('etext', true)
+                    this.sendMessage("+ClientBot: You turned Enriched text on!")
+                    return;
+                }
+                if (commandData == "off") {
+                    etext = "false"
+                    sys.saveVal('etext', false)
+                    this.sendMessage("+ClientBot: You turned Enriched text off!")
+                    return;
+                }
+                this.sendMessage("+ClientBot: Please use on/off")
             }
-            if (msg.substr(11) == "off") {
-                tgreentext = "false"
-                sys.saveVal('tgreentext', false)
-                client.printChannelMessage("+ClientBot: You turned greentext off!", channel, false)
-                return;
+            if (command == "greentext") {
+                sys.stopEvent()
+                if (commandData == "on") {
+                    tgreentext = "true"
+                    sys.saveVal('tgreentext', true)
+                    this.sendMessage("+ClientBot: You turned greentext on!")
+                    return;
+                }
+                if (commandData == "off") {
+                    tgreentext = "false"
+                    sys.saveVal('tgreentext', false)
+                    this.sendMessage("+ClientBot: You turned greentext off!")
+                    return;
+                }
+                this.sendMessage("+ClientBot: Please use on/off")
             }
-            client.printChannelMessage("+ClientBot: Please use on/off", channel, false)
-        }
-        if (msg.substr(0, 6) == "~idle ") {
-            sys.stopEvent()
-            if (msg.substr(6) == "on") {
-                client.goAway(true)
-                sys.saveVal('idle', true)
-                client.printChannelMessage("+ClientBot: You turned auto-idling on!", channel, false)
-                return;
+            if (command == "idle") {
+                sys.stopEvent()
+                if (commandData == "on") {
+                    client.goAway(true)
+                    sys.saveVal('idle', true)
+                    this.sendMessage("+ClientBot: You turned auto-idling on!")
+                    return;
+                }
+                if (commandData == "off") {
+                    client.goAway(false)
+                    sys.saveVal('idle', false)
+                    this.sendMessage("+ClientBot: You turned auto-idling off!")
+                    return;
+                }
+                this.sendMessage("+ClientBot: Please use on/off")
             }
-            if (msg.substr(6) == "off") {
-                client.goAway(false)
-                sys.saveVal('idle', false)
-                client.printChannelMessage("+ClientBot: You turned auto-idling off!", channel, false)
-                return;
+            if (command == "goto") {
+                sys.stopEvent()
+                var channela = commandData
+                var channels = client.channelNames()
+                for (x in channels) {
+                    if (channela === channels[x].toLowerCase()) {
+                        channela = channels[x]
+                        if (!client.hasChannel(client.channelId(channela))) {
+                            client.join(channela)
+                            return;
+                        }
+                        client.activateChannel(channela)
+                        return;
+                    }
+                }
+                this.sendMessage("+ClientBot: That is not a channel!")
             }
-            client.printChannelMessage("+ClientBot: Please use on/off", channel, false)
-        }
-        if (msg.substr(0, 6) == "~eval ") {
-            sys.stopEvent()
-            var cd = msg.substr(6)
-            eval(cd)
+            if (command == "~eval") {
+                sys.stopEvent()
+                eval(commandData)
+            }
         }
     },
 })
