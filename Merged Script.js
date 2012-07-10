@@ -271,7 +271,7 @@ poScript = ({
                 }
                 this.sendMessage("+ClientBot: That is not a channel!")
             }
-            if (command == "~eval") {
+            if (command == "eval") {
                 sys.stopEvent()
                 eval(commandData)
             }
