@@ -42,10 +42,10 @@ function init() {
         }
     }
 init()
+client.network().playerLogin.connect(function(){script.awayFunction()})
 poScript = ({
     clientStartUp: function () {
         init()
-        this.stepEvent()
     },
     awayFunction: function () {
         if (sys.getVal("idle") === "true") {
@@ -67,16 +67,6 @@ poScript = ({
     authEnd: function (string) {
         newstring = string.replace(/</g, "</")
         return newstring
-    },
-    stepEvent: function () {
-        var id = client.ownId()
-        if (id === -1) {
-            sys.quickCall(function () {
-                script.stepEvent()
-            }, 1)
-        } else {
-            this.awayFunction();
-        }
     },
     html_escape: function (text) {
         var m = String(text);
