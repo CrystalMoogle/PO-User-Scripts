@@ -10,14 +10,24 @@ var auth_symbol = {
     "2": "+",
     "3": "+",
     "4": ""
-    //change these to what you have set yourself
+    //change these to what you have set yourself and more if needed using the format "x": "symbol",
 }
+var auth_style = {
+    "0": "<b>",
+    "1": "<i><b>",
+    "2": "<i><b>",
+    "3": "<i><b>",
+    "4": "<b>"
+    //change this to the style you have set, only start tags are needed
+}
+var punctuation = [".", ",", "\"", "'", "&", ";", ":"] //list of common punctuation, increase or decrease as you see fit
 var stalkwords = [] // add stalkwords for you to be pinged format is ["word1","word2"], obviously you can add more than 2
 var hilight = "BACKGROUND-COLOR: #ffff00" //change this if you want a different hilight colour when pinged (leave background there unless you want a different style)
 var fontcolour = "#000000" //change this for different font colours
 var fontstyle = "" //this changes the font type of your text, leave it blank for default
 var fontsize = 3 //this changes the font size of your text, 3 is default
 var greentext = '#789922' //changes the text when someone quotes with ">" at the start
+var punctuation = [".", ",", "\"", "'", "&", ";", ":"] //list of common punctuation, increase or decrease as you see fit
 //these things below shouldn't be touched unless you know what you're doing~
 function init() {
         if (sys.getVal('etext') === "true") {
@@ -55,6 +65,10 @@ poScript = ({
         }
         return newstring
     },
+    authEnd: function (string) {
+        newstring = string.replace(/</g, "</")
+        return newstring
+    },
     stepEvent: function () {
         var id = client.ownId()
         if (id === -1) {
@@ -87,12 +101,18 @@ poScript = ({
             var playmessage = this.html_escape(message.substr(pos + 2))
             var msg = playmessage.split(' ')
             for (x in msg) {
-                var msgnew = ""
+                var msgnew, otherend
                 var msgl = msg[x].length
                 var start = msg[x][0]
                 var end = msg[x][parseInt(msgl - 1)]
-                if (start == ".") {
-                    start = msg[x][1]
+                for (y in punctuation) {
+                    if (start == punctuation[y]) {
+                        start = msg[x][1]
+                    }
+                    if (end == punctuation[y]) {
+                        end = msg[x][parseInt(msgl - 2)]
+                        otherend = punctuation[y]
+                    }
                 }
                 if (msg[x].substr(0, 7) == "http://" || msg[x].substr(0, 8) == "https://") {
                     var link = msg[x]
@@ -100,8 +120,7 @@ poScript = ({
                     playmessage = playmessage.replace(msg[x], msgnew)
                 }
                 if (((start == "*" && end == "*" && msgl > 2) || ((start == "/" || start == "\\") && (end == "/" || end == "\\") && msgl > 2) || (start == "_" && end == "_" && msgl > 2)) && etext === "true") {
-                    var modifier = ""
-                    var endmodifier = ""
+                    var modifier, endmodifier, newmsg
                     if (start == "*") {
                         modifier = "<b>"
                         endmodifier = "</b>"
@@ -115,8 +134,8 @@ poScript = ({
                         endmodifier = "</u>"
                     }
                     var i = msg[x].lastIndexOf(end)
-                    if (i >= 0 && i + end.length >= msg[x].length) {
-                        newmsg = msg[x].substring(0, i) + endmodifier
+                    if (i >= 0) {
+                        newmsg = msg[x].substring(0, i) + endmodifier + (otherend == undefined ? "" : otherend)
                     }
                     msgnew = newmsg.replace(start, modifier)
                     playmessage = playmessage.replace(msg[x], msgnew)
@@ -148,13 +167,18 @@ poScript = ({
             } else {
                 playmessage = "<font color = '" + fontcolour + "'>" + playmessage
             }
-            playmessage = this.channelLinks(playmessage)
-            if (client.auth(id) > 0 && client.auth(id) < 4) {
-                client.printChannelMessage("<font face ='" + fontstyle + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/><b> " + auth_symbol[client.auth(id)] + "<i>" + playname + ": </font></i></b>" + playmessage, chan, true)
-                sys.stopEvent()
-                return;
+            var symbolLength = 0
+            for (x in auth_symbol) {
+                if (x > symbolLength) {
+                    symbolLength = x
+                }
             }
-            client.printChannelMessage("<font color='" + colour + "'><timestamp/><b>" + playname + ": </font></b>" + playmessage, chan, true)
+            var auth = client.auth(id)
+            if (auth > symbolLength) {
+                auth = 0
+            }
+            playmessage = this.channelLinks(playmessage)
+            client.printChannelMessage("<font face ='" + fontstyle + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/> " + auth_symbol[auth] + auth_style[auth] + playname + ": </font>" + this.authEnd(auth_style[auth]) + playmessage, chan, true)
             sys.stopEvent()
         }
     },
