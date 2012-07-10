@@ -190,7 +190,7 @@ poScript = ({
             }
             if (command == "commandlist") {
                 sys.stopEvent()
-                this.sendMessage("Commands:")
+                this.sendMessage("*** Client Commands ***")
                 this.sendMessage(commandsymbol + "etext on/off: Allows you to turn Enriched text on/off")
                 this.sendMessage(commandsymbol + "greentext on/off: Allows you to turn greentext on/off")
                 this.sendMessage(commandsymbol + "idle on/off: Allows you to turn auto-idle on/off")
