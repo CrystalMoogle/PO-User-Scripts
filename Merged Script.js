@@ -21,7 +21,7 @@ var auth_style = {
     //change this to the style you have set, only start tags are needed
 }
 var commandsymbol = "~" //change this if you want to use another symbol. Make sure it is 1 character still and if you use "!" or "/" that it doesn't conflict with existing scripts
-var stalkwords = [""] // add stalkwords for you to be pinged format is ["word1","word2"], obviously you can add more than 2
+var stalkwords = [] // add stalkwords for you to be pinged format is ["word1","word2"], obviously you can add more than 2
 var hilight = "BACKGROUND-COLOR: #ffff00" //change this if you want a different hilight colour when pinged (leave background there unless you want a different style)
 var fontcolour = "#000000" //change this for different font colours
 var fontstyle = "" //this changes the font type of your text, leave it blank for default
