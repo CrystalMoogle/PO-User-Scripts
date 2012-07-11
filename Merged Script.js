@@ -202,6 +202,7 @@ poScript = ({
     },
     beforeSendMessage: function (message, channel) {
         if (message[0] == commandsymbol) {
+			var command, commandData
             var pos = message.indexOf(' ');
             if (pos != -1) {
                 command = message.substring(1, pos).toLowerCase();
