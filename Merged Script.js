@@ -45,7 +45,7 @@ function init() {
         stalkwords = eliminateDuplicates(stalkwords)
     }
 
-    function eliminateDuplicates(arr) {
+    function eliminateDuplicates(arr) { //stolen from http://dreaminginjavascript.wordpress.com/2008/08/22/eliminating-duplicates/
         var i,
         len = arr.length,
             out = [],
