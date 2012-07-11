@@ -210,7 +210,7 @@ poScript = ({
             } else {
                 command = message.substr(1).toLowerCase();
             }
-            if (command == "commandlist") {
+            if (command == "commandlist"|| command == "commandslist") {
                 sys.stopEvent()
                 this.sendMessage("*** Client Commands ***")
                 this.sendMessage(commandsymbol + "etext on/off: Allows you to turn Enriched text on/off")
