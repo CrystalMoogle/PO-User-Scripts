@@ -40,9 +40,11 @@ function init() {
         } else {
             tgreentext = "false"
         }
-        var nstalkwords = sys.getVal('stalkwords').split(",")
-        stalkwords = nstalkwords.concat(stalkwords)
-        stalkwords = eliminateDuplicates(stalkwords)
+        if (sys.getVal('stalkwords') !== "") {
+            var nstalkwords = sys.getVal('stalkwords').split(",")
+            stalkwords = nstalkwords.concat(stalkwords)
+            stalkwords = eliminateDuplicates(stalkwords)
+        }
     }
 
     function eliminateDuplicates(arr) { //stolen from http://dreaminginjavascript.wordpress.com/2008/08/22/eliminating-duplicates/
@@ -117,7 +119,8 @@ poScript = ({
             var msg = playmessage.split(' ')
             var link, linkplaceholder
             for (x in msg) {
-                var msgnew, otherend
+                var msgnew = "",
+                    otherend = ""
                 var msgl = msg[x].length
                 var start = msg[x][0]
                 var end = msg[x][parseInt(msgl - 1)]
@@ -202,7 +205,7 @@ poScript = ({
     },
     beforeSendMessage: function (message, channel) {
         if (message[0] == commandsymbol) {
-			var command, commandData
+            var command, commandData
             var pos = message.indexOf(' ');
             if (pos != -1) {
                 command = message.substring(1, pos).toLowerCase();
@@ -210,7 +213,7 @@ poScript = ({
             } else {
                 command = message.substr(1).toLowerCase();
             }
-            if (command == "commandlist"|| command == "commandslist") {
+            if (command == "commandlist" || command == "commandslist") {
                 sys.stopEvent()
                 this.sendMessage("*** Client Commands ***")
                 this.sendMessage(commandsymbol + "etext on/off: Allows you to turn Enriched text on/off")
