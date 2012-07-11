@@ -21,7 +21,7 @@ var auth_style = {
     //change this to the style you have set, only start tags are needed
 }
 var commandsymbol = "~" //change this if you want to use another symbol. Make sure it is 1 character still and if you use "!" or "/" that it doesn't conflict with existing scripts
-var stalkwords = [] // add stalkwords for you to be pinged format is ["word1","word2"], obviously you can add more than 2
+var stalkwords = [""] // add stalkwords for you to be pinged format is ["word1","word2"], obviously you can add more than 2
 var hilight = "BACKGROUND-COLOR: #ffff00" //change this if you want a different hilight colour when pinged (leave background there unless you want a different style)
 var fontcolour = "#000000" //change this for different font colours
 var fontstyle = "" //this changes the font type of your text, leave it blank for default
@@ -40,7 +40,8 @@ function init() {
         } else {
             tgreentext = "false"
         }
-        var nstalkwords = sys.getVal('stalkwords').split(",")
+        var string = sys.getVal('stalkwords').split(",")
+        var nstalkwords = string
         stalkwords = nstalkwords.concat(stalkwords)
         stalkwords = eliminateDuplicates(stalkwords)
     }
@@ -58,14 +59,15 @@ function init() {
         }
         return out;
     }
-init()
+if (client.ownId() !== -1) {
+    init()
+}
 client.network().playerLogin.connect(function () {
     script.awayFunction()
+    init()
 })
 poScript = ({
-    clientStartUp: function () {
-        init()
-    },
+    clientStartUp: function () {},
     awayFunction: function () {
         if (sys.getVal("idle") === "true") {
             client.goAway(true)
@@ -115,6 +117,7 @@ poScript = ({
             var playname = message.substring(0, pos)
             var playmessage = this.html_escape(message.substr(pos + 2))
             var msg = playmessage.split(' ')
+            var link, linkplaceholder
             for (x in msg) {
                 var msgnew, otherend
                 var msgl = msg[x].length
@@ -130,10 +133,10 @@ poScript = ({
                     }
                 }
                 if (msg[x].substr(0, 7) == "http://" || msg[x].substr(0, 8) == "https://") {
-                    var link = msg[x]
+                    link = msg[x]
                     link = link.replace(/&amp;/g, "&")
-                    msgnew = "<a href = '" + link + "'>" + link + "</a>"
-                    playmessage = playmessage.replace(msg[x], msgnew)
+                    linkplaceholder = sys.md5('link') //stops cases of things accidentally being replaced :x
+                    playmessage = playmessage.replace(msg[x], linkplaceholder)
                 }
                 if (((start == "*" && end == "*" && msgl > 2) || ((start == "/" || start == "\\") && (end == "/" || end == "\\") && msgl > 2) || (start == "_" && end == "_" && msgl > 2)) && etext === "true") {
                     var modifier, endmodifier, newmsg
@@ -194,6 +197,7 @@ poScript = ({
                 auth = 0
             }
             playmessage = this.channelLinks(playmessage)
+            playmessage = playmessage.replace(linkplaceholder, "<a href = '" + link + "'>" + link + "</a>") //putting it here to stop all the html stuff messing with it
             client.printChannelMessage("<font face ='" + fontstyle + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/> " + auth_symbol[auth] + auth_style[auth] + playname + ": </font>" + this.authEnd(auth_style[auth]) + playmessage, chan, true)
             sys.stopEvent()
         }
@@ -307,11 +311,11 @@ poScript = ({
                     }
                 }
                 this.sendMessage("+ClientBot: " + commandData + " is not a stalkword!")
-                }
-                if (command == "eval") {
-                    sys.stopEvent()
-                    eval(commandData)
-                }
             }
-        },
-    })
+            if (command == "eval") {
+                sys.stopEvent()
+                eval(commandData)
+            }
+        }
+    },
+})
