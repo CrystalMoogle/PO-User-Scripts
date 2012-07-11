@@ -302,7 +302,7 @@ poScript = ({
                     if (stalkwords[x].toLowerCase() === commandData) {
                         stalkwords.splice(x, 1)
                         sys.saveVal('stalkwords', stalkwords.toString())
-                        this.sendMessage("+ClientBot: You removed " + commandData + " to your stalkwords!")
+                        this.sendMessage("+ClientBot: You removed " + commandData + " from your stalkwords!")
                         return;
                     }
                 }
