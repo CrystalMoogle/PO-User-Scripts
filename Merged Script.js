@@ -305,7 +305,7 @@ poScript = ({
                         return;
                     }
                 }
-                this.sendMessage("+ClientBot: " + commandData + " is not a stalkword!"
+                this.sendMessage("+ClientBot: " + commandData + " is not a stalkword!")
                 }
                 if (command == "eval") {
                     sys.stopEvent()
