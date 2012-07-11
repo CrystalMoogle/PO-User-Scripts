@@ -284,7 +284,7 @@ poScript = ({
             }
             if (command == "stalkwords") {
                 sys.stopEvent()
-                this.sendMessage("+ClientBot: You stalkwords are: " + stalkwords)
+                this.sendMessage("+ClientBot: Your stalkwords are: " + stalkwords)
             }
             if (command == "addstalkword") {
                 sys.stopEvent()
