@@ -40,8 +40,7 @@ function init() {
         } else {
             tgreentext = "false"
         }
-        var string = sys.getVal('stalkwords').split(",")
-        var nstalkwords = string
+        var nstalkwords = sys.getVal('stalkwords').split(",")
         stalkwords = nstalkwords.concat(stalkwords)
         stalkwords = eliminateDuplicates(stalkwords)
     }
@@ -67,7 +66,6 @@ client.network().playerLogin.connect(function () {
     init()
 })
 poScript = ({
-    clientStartUp: function () {},
     awayFunction: function () {
         if (sys.getVal("idle") === "true") {
             client.goAway(true)
