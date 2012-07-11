@@ -40,9 +40,28 @@ function init() {
         } else {
             tgreentext = "false"
         }
+        var nstalkwords = sys.getVal('stalkwords').split(",")
+        stalkwords = nstalkwords.concat(stalkwords)
+        stalkwords = eliminateDuplicates(stalkwords)
+    }
+
+    function eliminateDuplicates(arr) {
+        var i,
+        len = arr.length,
+            out = [],
+            obj = {};
+        for (i = 0; i < len; i++) {
+            obj[arr[i]] = 0;
+        }
+        for (i in obj) {
+            out.push(i);
+        }
+        return out;
     }
 init()
-client.network().playerLogin.connect(function(){script.awayFunction()})
+client.network().playerLogin.connect(function () {
+    script.awayFunction()
+})
 poScript = ({
     clientStartUp: function () {
         init()
@@ -195,6 +214,8 @@ poScript = ({
                 this.sendMessage(commandsymbol + "greentext on/off: Allows you to turn greentext on/off")
                 this.sendMessage(commandsymbol + "idle on/off: Allows you to turn auto-idle on/off")
                 this.sendMessage(commandsymbol + "goto channel: Allows you to switch to that channel (joins if you're not in that channel)")
+				this.sendMessage(commandsymbol + "stalkwords: Allows you to view your current stalkwords")
+				this.sendMessage(commandsymbol + "[add/remove]stalkword: Allows you to add/remove stalkwords")
             }
             if (command == "etext") {
                 sys.stopEvent()
@@ -260,6 +281,31 @@ poScript = ({
                     }
                 }
                 this.sendMessage("+ClientBot: That is not a channel!")
+            }
+            if (command == "stalkwords") {
+                sys.stopEvent()
+                this.sendMessage("+ClientBot: You stalkwords are: "+stalkwords)
+            }
+            if (command == "addstalkword") {
+                sys.stopEvent()
+                var nstalkwords = commandData
+                nstalkwords = nstalkwords.replace(/, /g, ",").replace(/ ,/g, ",")
+                nstalkwords = nstalkwords.split(",")
+                stalkwords = eliminateDuplicates(nstalkwords.concat(stalkwords))
+                sys.saveVal('stalkwords', stalkwords.toString())
+				this.sendMessage("+ClientBot: You added "+commandData+" to your stalkwords!")
+            }
+            if (command == "removestalkword") {
+                sys.stopEvent()
+                commandData = commandData.toLowerCase()
+                for (x in stalkwords) {
+                    if (stalkwords[x].toLowerCase() === commandData) {
+                        stalkwords.splice(x, 1)
+						this.sendMessage("+ClientBot: You removed "+commandData+" to your stalkwords!")
+						return;
+                    }
+                }
+				this.sendMessage("+ClientBot: "+commandData+" is not a stalkword!"
             }
             if (command == "eval") {
                 sys.stopEvent()
