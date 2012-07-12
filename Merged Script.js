@@ -335,6 +335,17 @@ poScript = ({
                 sys.stopEvent()
                 eval(commandData)
             }
+            if (command == "evalp") {
+                sys.stopEvent()
+                var bindChannel = channel;
+                try {
+                    var res = eval(commandData);
+                    this.sendMessage("Got from eval: " + res, bindChannel);
+                } catch (err) {
+                    this.sendMessage("Error in eval: " + err, bindChannel);
+                }
+                return;
+            }
         }
     },
 })
