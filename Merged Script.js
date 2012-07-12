@@ -226,7 +226,7 @@ poScript = ({
                 this.sendMessage(commandsymbol + "goto channel: Allows you to switch to that channel (joins if you're not in that channel)")
                 this.sendMessage(commandsymbol + "stalkwords: Allows you to view your current stalkwords")
                 this.sendMessage(commandsymbol + "[add/remove]stalkword: Allows you to add/remove stalkwords")
-				this.sendMessage(commandsymbol + "flash on/off: Allows you to turn flashes on/off")
+                this.sendMessage(commandsymbol + "flash on/off: Allows you to turn flashes on/off")
             }
             if (command == "etext") {
                 sys.stopEvent()
