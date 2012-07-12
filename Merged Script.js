@@ -28,6 +28,7 @@ var fontstyle = "" //this changes the font type of your text, leave it blank for
 var fontsize = 3 //this changes the font size of your text, 3 is default
 var greentext = '#789922' //changes the text when someone quotes with ">" at the start
 var punctuation = [".", ",", "\"", "'", "&", ";", ":"] //list of common punctuation, increase or decrease as you see fit
+var kickwords = ["test"]
 //these things below shouldn't be touched unless you know what you're doing~
 function init() {
         if (sys.getVal('etext') === "true") {
@@ -176,7 +177,8 @@ poScript = ({
             for (x in stalkwords) {
                 if (playmessage.toLowerCase().indexOf(stalkwords[x].toLowerCase()) != -1 && playname !== client.ownName()) {
                     var stalk = new RegExp("\\b" + stalkwords[x] + "\\b", "i")
-                    newplaymessage = playmessage.replace(stalk, "<span style='" + hilight + "'>" + stalkwords[x] + "</span>")
+                    var stalks = playmessage.match(stalk)
+                    newplaymessage = playmessage.replace(stalk, "<span style='" + hilight + "'>" + stalks[0] + "</span>")
                     if (newplaymessage !== playmessage) {
                         playmessage = newplaymessage.replace(newplaymessage, "<i> " + newplaymessage + "</i><ping/>")
                     }
@@ -198,7 +200,9 @@ poScript = ({
                 auth = 0
             }
             playmessage = this.channelLinks(playmessage)
-            playmessage = playmessage.replace(linkplaceholder, "<a href = '" + link + "'>" + link + "</a>") //putting it here to stop all the html stuff messing with it
+            if (linkplaceholder !== undefined) {
+                playmessage = playmessage.replace(linkplaceholder, "<a href = '" + link + "'>" + link + "</a>") //putting it here to stop all the html stuff messing with it
+            }
             client.printChannelMessage("<font face ='" + fontstyle + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/> " + auth_symbol[auth] + auth_style[auth] + playname + ": </font>" + this.authEnd(auth_style[auth]) + playmessage, chan, true)
             sys.stopEvent()
         }
