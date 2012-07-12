@@ -28,7 +28,7 @@ var fontstyle = "" //this changes the font type of your text, leave it blank for
 var fontsize = 3 //this changes the font size of your text, 3 is default
 var greentext = '#789922' //changes the text when someone quotes with ">" at the start
 var punctuation = [".", ",", "\"", "'", "&", ";", ":"] //list of common punctuation, increase or decrease as you see fit
-var flash = false //turns flashes on/off
+var flash = true //turns flashes on/off
 //these things below shouldn't be touched unless you know what you're doing~
 function init() {
         if (sys.getVal('etext') === "true") {
