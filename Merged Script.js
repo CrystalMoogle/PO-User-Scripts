@@ -171,7 +171,7 @@ poScript = ({
                 var name = new RegExp("\\b" + client.ownName() + "\\b", "i")
                 newplaymessage = playmessage.replace(name, "<span style='" + hilight + "'>" + client.ownName() + "</span>")
                 if (newplaymessage !== playmessage) {
-                    playmessage = newplaymessage.replace(newplaymessage, "<i> " + newplaymessage + "</i>", </ping>)
+                    playmessage = newplaymessage.replace(newplaymessage, "<i> " + newplaymessage + "</i></ping>")
                 }
             }
             for (x in stalkwords) {
