@@ -28,6 +28,7 @@ var fontstyle = "" //this changes the font type of your text, leave it blank for
 var fontsize = 3 //this changes the font size of your text, 3 is default
 var greentext = '#789922' //changes the text when someone quotes with ">" at the start
 var punctuation = [".", ",", "\"", "'", "&", ";", ":"] //list of common punctuation, increase or decrease as you see fit
+var flash = false //turns flashes on/off
 //these things below shouldn't be touched unless you know what you're doing~
 function init() {
         if (sys.getVal('etext') === "true") {
@@ -166,17 +167,17 @@ poScript = ({
                 var clist = ['#5811b1', '#399bcd', '#0474bb', '#f8760d', '#a00c9e', '#0d762b', '#5f4c00', '#9a4f6d', '#d0990f', '#1b1390', '#028678', '#0324b1'];
                 colour = clist[src % clist.length];
             }
-            if (playmessage.toLowerCase().indexOf(client.ownName().toLowerCase()) != -1 && playname !== client.ownName()) {
+            if (playmessage.toLowerCase().indexOf(client.ownName().toLowerCase()) != -1 && playname !== client.ownName() && flash !== false) {
                 var name = new RegExp("\\b" + client.ownName() + "\\b", "i")
-                newplaymessage = playmessage.replace(name, "<span style='" + hilight + "'>" + client.ownName() + "</span>")
+                newplaymessage = playmessage.replace(name, "<span style='" + hilight + "'>" + "Crystal Moogle" + "</span>")
                 if (newplaymessage !== playmessage) {
-                    playmessage = newplaymessage.replace(newplaymessage, "<i> " + newplaymessage + "</i><ping/>")
+                    playmessage = newplaymessage.replace(newplaymessage, "<i> " + newplaymessage + "</i>")
                 }
             }
             for (x in stalkwords) {
                 var stalk = new RegExp("\\b" + stalkwords[x] + "\\b", "i")
                 var stalks = playmessage.match(stalk)
-                if (playmessage.toLowerCase().search(stalk) != -1) {
+                if (playmessage.toLowerCase().search(stalk) != -1 && playname !== client.ownName() && flash !== false) {
                     newplaymessage = playmessage.replace(stalk, "<span style='" + hilight + "'>" + stalks[0] + "</span>")
                     if (newplaymessage !== playmessage) {
                         playmessage = newplaymessage.replace(newplaymessage, "<i> " + newplaymessage + "</i><ping/>")
@@ -316,6 +317,18 @@ poScript = ({
                     }
                 }
                 this.sendMessage("+ClientBot: " + commandData + " is not a stalkword!")
+            }
+            if (command == "flash") {
+                sys.stopEvent()
+                if (commandData == "on") {
+                    flash = true
+                    this.sendMessage("+ClientBot: You turned flashes on!")
+                    return;
+                } else {
+                    flash = false
+                    this.sendMessage("+ClientBot: You turned flashes on!")
+                    return;
+                }
             }
             if (command == "eval") {
                 sys.stopEvent()
