@@ -1,7 +1,7 @@
 //this script has all the current scripts merged together into one neat package
 //report bugs to Crystal Moogle
 //feel free to use it, edit it, improve it, do whatever.
-//lot of stuff "borrowed" from main scripts :3
+//lot of stuff "borrowed" from main scripts and stackoverflow~ :3
 //commands found by using ~commandlist
 //currently needs 2.0.05 to fix channel links
 var auth_symbol = {
@@ -174,9 +174,9 @@ poScript = ({
                 }
             }
             for (x in stalkwords) {
-                if (playmessage.toLowerCase().indexOf(stalkwords[x].toLowerCase()) != -1 && playname !== client.ownName()) {
-                    var stalk = new RegExp("\\b" + stalkwords[x] + "\\b", "i")
-                    var stalks = playmessage.match(stalk)
+                var stalk = new RegExp("\\b" + stalkwords[x] + "\\b", "i")
+                var stalks = playmessage.match(stalk)
+                if (playmessage.toLowerCase().search(stalk) != -1) {
                     newplaymessage = playmessage.replace(stalk, "<span style='" + hilight + "'>" + stalks[0] + "</span>")
                     if (newplaymessage !== playmessage) {
                         playmessage = newplaymessage.replace(newplaymessage, "<i> " + newplaymessage + "</i><ping/>")
