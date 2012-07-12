@@ -326,7 +326,7 @@ poScript = ({
                     return;
                 } else {
                     flash = false
-                    this.sendMessage("+ClientBot: You turned flashes on!")
+                    this.sendMessage("+ClientBot: You turned flashes off!")
                     return;
                 }
             }
