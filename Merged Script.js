@@ -169,9 +169,9 @@ poScript = ({
             }
             if (playmessage.toLowerCase().indexOf(client.ownName().toLowerCase()) != -1 && playname !== client.ownName() && flash !== false) {
                 var name = new RegExp("\\b" + client.ownName() + "\\b", "i")
-                newplaymessage = playmessage.replace(name, "<span style='" + hilight + "'>" + "Crystal Moogle" + "</span>")
+                newplaymessage = playmessage.replace(name, "<span style='" + hilight + "'>" + client.ownName() + "</span>")
                 if (newplaymessage !== playmessage) {
-                    playmessage = newplaymessage.replace(newplaymessage, "<i> " + newplaymessage + "</i>")
+                    playmessage = newplaymessage.replace(newplaymessage, "<i> " + newplaymessage + "</i>", </ping>)
                 }
             }
             for (x in stalkwords) {
