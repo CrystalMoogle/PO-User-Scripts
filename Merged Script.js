@@ -123,17 +123,18 @@ poScript = ({
                 var msgnew = "",
                     otherend = ""
                 var msgl = msg[x].length
+                var nmsgl = msg[x].length
                 var start = msg[x][0]
                 var end = msg[x][parseInt(msgl - 1)]
                 for (y in punctuation) {
                     if (start == punctuation[y]) {
                         start = msg[x][1]
-                        msgl = msgl -1
+                        msgl = msgl - 1
                     }
                     if (end == punctuation[y]) {
-                        end = msg[x][parseInt(msgl - 2)]
+                        end = msg[x][parseInt(nmsgl - 2)]
                         otherend = punctuation[y]
-                        msgl = msgl -1
+                        msgl = msgl - 1
                     }
                 }
                 if (msg[x].substr(0, 7) == "http://" || msg[x].substr(0, 8) == "https://") {
