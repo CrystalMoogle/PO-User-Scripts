@@ -300,7 +300,9 @@ poScript = ({
             if (command == "addstalkword") {
                 sys.stopEvent()
                 var nstalkwords = commandData
-                nstalkwords = nstalkwords.replace(/, /g, ",").replace(/ ,/g, ",")
+                if (nstalkwords.search(/, /g) !== -1 || nstalkwords.search(/ ,/g) !== -1) {
+                    nstalkwords = nstalkwords.replace(/, /g, ",").replace(/ ,/g, ",")
+                }
                 nstalkwords = nstalkwords.split(",")
                 stalkwords = eliminateDuplicates(nstalkwords.concat(stalkwords))
                 sys.saveVal('stalkwords', stalkwords.toString())
