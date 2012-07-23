@@ -31,7 +31,7 @@ var greentext = '#789922' //changes the text when someone quotes with ">" at the
 var punctuation = [".", ",", "\"", "'", "&", ";", ":"] //list of common punctuation, increase or decrease as you see fit
 var flash = true //turns flashes on/off
 //these things below shouldn't be touched unless you know what you're doing~
-function init() {
+    function init() {
         if (sys.getVal('etext') === "true") {
             etext = "true"
         } else {
@@ -116,6 +116,10 @@ poScript = ({
                 return;
             }
             var id = client.id(message.substring(0, pos))
+            if (client.isIgnored(id)) {
+                return;
+                sys.stopEvent()
+            }
             var playname = message.substring(0, pos)
             var playmessage = this.html_escape(message.substr(pos + 2))
             var msg = playmessage.split(' ')
