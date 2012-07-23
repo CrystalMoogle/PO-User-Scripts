@@ -118,7 +118,6 @@ poScript = ({
             var id = client.id(message.substring(0, pos))
             if (client.isIgnored(id)) {
                 return;
-                sys.stopEvent()
             }
             var playname = message.substring(0, pos)
             var playmessage = this.html_escape(message.substr(pos + 2))
