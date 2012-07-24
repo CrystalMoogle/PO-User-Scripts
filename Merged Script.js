@@ -92,6 +92,10 @@ poScript = ({
             return "";
         }
     },
+    htmlLinks: function (text) {
+        var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        return text.replace(exp, "<a href='$1'>$1</a>");
+    },
     sendMessage: function (message, channel) {
         if (channel === undefined) {
             channel = client.currentChannel()
@@ -132,12 +136,6 @@ poScript = ({
                         msgl = msgl - 1
                     }
                 }
-                if (msg[x].substr(0, 7) == "http://" || msg[x].substr(0, 8) == "https://") {
-                    link = msg[x]
-                    link = link.replace(/&amp;/g, "&")
-                    linkplaceholder = sys.md5('link') //stops cases of things accidentally being replaced :x
-                    playmessage = playmessage.replace(msg[x], linkplaceholder)
-                }
                 if (((start == "*" && end == "*" && msgl > 2) || ((start == "/" || start == "\\") && (end == "/" || end == "\\") && msgl > 2) || (start == "_" && end == "_" && msgl > 2)) && etext === "true") {
                     var modifier, endmodifier, newmsg
                     if (start == "*") {
@@ -175,8 +173,8 @@ poScript = ({
             for (x in stalkwords) {
                 var stalk = new RegExp("\\b" + stalkwords[x] + "\\b", "i")
                 var stalks = playmessage.match(stalk)
-                if (playmessage.toLowerCase().search(stalk) != -1 && playname !== client.ownName() && flash !== false) {
-                    newplaymessage = playmessage.replace(stalk, "<span style='" + hilight + "'>" + stalks[0] + "</span>")
+                if (playmessage.toLowerCase().search(stalk) != -1 && flash !== false) {
+                    newplaymessage = playmessage.replace(stalk, "<span style='" + hilight + "'>" + stalks + "</span>")
                     if (newplaymessage !== playmessage) {
                         playmessage = newplaymessage.replace(newplaymessage, "<i> " + newplaymessage + "</i><ping/>")
                     }
@@ -198,9 +196,7 @@ poScript = ({
                 auth = 0
             }
             playmessage = client.channel(chan).addChannelLinks(playmessage)
-            if (linkplaceholder !== undefined) {
-                playmessage = playmessage.replace(linkplaceholder, "<a href = '" + link + "'>" + link + "</a>") //putting it here to stop all the html stuff messing with it
-            }
+            playmessage = this.htmlLinks(playmessage)
             client.printChannelMessage("<font face ='" + fonttype + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/> " + auth_symbol[auth] + auth_style[auth] + playname + ": </font>" + this.tagEnd(auth_style[auth]) + fontstyle + playmessage + this.tagEnd(fontstyle), chan, true)
             sys.stopEvent()
         }
