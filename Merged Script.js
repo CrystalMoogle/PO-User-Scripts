@@ -77,16 +77,6 @@ poScript = ({
             client.goAway(false)
         }
     },
-    channelLinks: function (string) {
-        var channels = client.channelNames()
-        for (x in channels) {
-            if (string.toLowerCase().indexOf("#" + channels[x].toLowerCase()) != -1) {
-                var channel = new RegExp("#" + channels[x], "i")
-                string = string.replace(channel, '<a href="po:join/' + channels[x] + '">#' + channels[x] + "</a>")
-            }
-        }
-        return string
-    },
     tagEnd: function (string) {
         newstring = string.replace(/</g, "</")
         return newstring
@@ -206,7 +196,7 @@ poScript = ({
             if (auth > symbolLength) {
                 auth = 0
             }
-            playmessage = this.channelLinks(playmessage)
+            playmessage = client.channel(chan).addChannelLinks(playmessage)
             if (linkplaceholder !== undefined) {
                 playmessage = playmessage.replace(linkplaceholder, "<a href = '" + link + "'>" + link + "</a>") //putting it here to stop all the html stuff messing with it
             }
