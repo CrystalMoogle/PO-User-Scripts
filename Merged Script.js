@@ -99,7 +99,8 @@ poScript = ({
         client.printChannelMessage(message, channel, false)
         return;
     },
-    beforeChannelMessage: function (message, chan, html) {
+    beforeChannelMessage: function (message, channel, html) {
+        var chan = channel
         var pos = message.indexOf(': ');
         if (pos != -1) {
             if (client.id(message.substring(0, pos)) == -1) {
