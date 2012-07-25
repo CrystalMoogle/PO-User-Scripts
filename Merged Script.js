@@ -28,8 +28,8 @@ var fonttype = "" //this changes the font type of your text, leave it blank for 
 var fontstyle = "" //this changes the style of the font (bold/italics/etc), start tags only are needed.
 var fontsize = 3 //this changes the font size of your text, 3 is default
 var greentext = '#789922' //changes the text when someone quotes with ">" at the start
-var punctuation = [".", ",", "\"", "'", "&", ";", ":"] //list of common punctuation, increase or decrease as you see fit
-var flash = true //turns flashes on/off
+//var punctuation = [".", ",", "\"", "'", "&", ";", ":"] //list of common punctuation, increase or decrease as you see fit. No longer needed with the new way of doing enriched text, will probably remove after more testing is done on the new method
+var flash = true //turns flashes on/off (probably best to use ~flash on/off though)
 //these things below shouldn't be touched unless you know what you're doing~
     function init() {
         if (sys.getVal('etext') === "true") {
@@ -104,7 +104,9 @@ poScript = ({
             newtext = ("<a href ='" + newfound + "'>" + newfound + "</a>").replace(/&amp;/gi, "&")
             text = text.replace(newfound, newtext)
         }
-        text = this.enrichedText(text)
+		if(extext == "true"){
+			text = this.enrichedText(text)
+		}
         var expt = new RegExp(sys.md5('/'), "g")
         if (text.search(expt) != -1) {
             text = text.replace(expt, "/")
