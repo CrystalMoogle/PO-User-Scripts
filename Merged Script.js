@@ -96,10 +96,31 @@ poScript = ({
         var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
         var found = text.match(exp)
         var newtext
+        var newfound
         for (x in found) {
-            newtext = ("<a href ='" + found[x] + "'>" + found[x] + "</a>").replace(/&amp;/gi, "&")
-            text = text.replace(found[x], newtext)
+            newfound = found[x].replace(/\//g, sys.md5('/'))
+            text = text.replace(found[x], newfound)
+            print(found[x])
+            print(text)
+            newtext = ("<a href ='" + newfound + "'>" + newfound + "</a>").replace(/&amp;/gi, "&")
+            text = text.replace(newfound, newtext)
         }
+        text = this.enrichedText(text)
+        var expt = new RegExp(sys.md5('/'), "g")
+        if (text.search(expt) != -1) {
+            text = text.replace(expt, "/")
+        }
+        return text
+    },
+    enrichedText: function (text) {
+        var expi = new RegExp("/(\\S+)/(?![^\\s<]*>)")
+        text = text.replace(expi, "<i>$1</i>")
+        var expii = new RegExp("\\\\(\\S+)\\\\(?![^\\s<]*>)")
+        text = text.replace(expii, "<i>$1</i>")
+        var expb = new RegExp("\\*(\\S+)\\*(?![^\\s<]*>)")
+        text = text.replace(expb, "<b>$1</b>")
+        var expu = new RegExp("_(\\S+)_(?![^\\s<]*>)")
+        text = text.replace(expu, "<u>$1</u>")
         return text
     },
     sendMessage: function (message, channel) {
@@ -124,7 +145,7 @@ poScript = ({
             var playmessage = this.html_escape(message.substr(pos + 2))
             var msg = playmessage.split(' ')
             var link, linkplaceholder
-            for (x in msg) {
+            /*for (x in msg) {
                 var msgnew = "",
                     otherend = ""
                 var msgl = msg[x].length
@@ -163,7 +184,7 @@ poScript = ({
                     msgnew = newmsg.replace(start, modifier)
                     playmessage = playmessage.replace(msg[x], msgnew)
                 }
-            }
+            }*/
             var colour = client.color(id)
             if (colour === "#000000") {
                 var clist = ['#5811b1', '#399bcd', '#0474bb', '#f8760d', '#a00c9e', '#0d762b', '#5f4c00', '#9a4f6d', '#d0990f', '#1b1390', '#028678', '#0324b1'];
