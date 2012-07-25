@@ -104,9 +104,9 @@ poScript = ({
             newtext = ("<a href ='" + newfound + "'>" + newfound + "</a>").replace(/&amp;/gi, "&")
             text = text.replace(newfound, newtext)
         }
-		if(extext == "true"){
-			text = this.enrichedText(text)
-		}
+        if (extext == "true") {
+            text = this.enrichedText(text)
+        }
         var expt = new RegExp(sys.md5('/'), "g")
         if (text.search(expt) != -1) {
             text = text.replace(expt, "/")
