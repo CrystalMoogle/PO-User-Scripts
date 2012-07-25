@@ -169,8 +169,7 @@ poScript = ({
                 var clist = ['#5811b1', '#399bcd', '#0474bb', '#f8760d', '#a00c9e', '#0d762b', '#5f4c00', '#9a4f6d', '#d0990f', '#1b1390', '#028678', '#0324b1'];
                 colour = clist[src % clist.length];
             }
-            var ownName = client.ownName()
-            ownName = this.html_escape(ownName)
+            var ownName = this.html_escape(client.ownName())
             if (playmessage.toLowerCase().indexOf(ownName.toLowerCase()) != -1 && playname !== ownName && flash !== false) {
                 var name = new RegExp("\\b" + ownName + "\\b", "i")
                 newplaymessage = playmessage.replace(name, "<span style='" + hilight + "'>" + client.ownName() + "</span>")
