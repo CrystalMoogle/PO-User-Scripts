@@ -99,6 +99,7 @@ poScript = ({
         var newfound
         for (x in found) {
             newfound = found[x].replace(/\//g, sys.md5('/'))
+			newfound = newfound.replace(/_/g, sys.md5('_'))
             text = text.replace(found[x], newfound)
             newtext = ("<a href ='" + newfound + "'>" + newfound + "</a>").replace(/&amp;/gi, "&")
             text = text.replace(newfound, newtext)
@@ -107,6 +108,10 @@ poScript = ({
         var expt = new RegExp(sys.md5('/'), "g")
         if (text.search(expt) != -1) {
             text = text.replace(expt, "/")
+        }
+		expt= new RegExp(sys.md5('_'), "g")
+		if (text.search(expt) != -1) {
+            text = text.replace(expt, "_")
         }
         return text
     },
