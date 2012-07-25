@@ -315,7 +315,7 @@ poScript = ({
                 }
                 this.sendMessage("+ClientBot: " + commandData + " is not a stalkword!")
             }
-            if (command == "flash") {
+            if (command == "flash" || command == "flashes") {
                 sys.stopEvent()
                 if (commandData == "on") {
                     flash = true
