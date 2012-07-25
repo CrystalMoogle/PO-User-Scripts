@@ -100,8 +100,6 @@ poScript = ({
         for (x in found) {
             newfound = found[x].replace(/\//g, sys.md5('/'))
             text = text.replace(found[x], newfound)
-            print(found[x])
-            print(text)
             newtext = ("<a href ='" + newfound + "'>" + newfound + "</a>").replace(/&amp;/gi, "&")
             text = text.replace(newfound, newtext)
         }
