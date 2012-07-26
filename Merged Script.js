@@ -98,7 +98,7 @@ poScript = ({
         var newtext
         var newfound
         for (x in found) {
-            newfound = found[x].replace(/\//g, sys.md5('/'))
+            newfound = found[x].replace(/\//g	, sys.md5('/'))
             newfound = newfound.replace(/_/g, sys.md5('_'))
             text = text.replace(found[x], newfound)
             newtext = ("<a href ='" + newfound + "'>" + newfound + "</a>").replace(/&amp;/gi, "&")
@@ -118,13 +118,13 @@ poScript = ({
         return text
     },
     enrichedText: function (text) {
-        var expi = new RegExp("/(\\S+)/(?![^\\s<]*>)")
+        var expi = new RegExp("/(\\S+)/(?![^\\s<]*>)", "g")
         text = text.replace(expi, "<i>$1</i>")
-        var expii = new RegExp("\\\\(\\S+)\\\\(?![^\\s<]*>)")
+        var expii = new RegExp("\\\\(\\S+)\\\\(?![^\\s<]*>)", "g")
         text = text.replace(expii, "<i>$1</i>")
-        var expb = new RegExp("\\*(\\S+)\\*(?![^\\s<]*>)")
+        var expb = new RegExp("\\*(\\S+)\\*(?![^\\s<]*>)", "g")
         text = text.replace(expb, "<b>$1</b>")
-        var expu = new RegExp("_(\\S+)_(?![^\\s<]*>)")
+        var expu = new RegExp("_(\\S+)_(?![^\\s<]*>)", "g")
         text = text.replace(expu, "<u>$1</u>")
         return text
     },
