@@ -481,9 +481,6 @@ poScript = ({
                 }
                 this.sendBotMessage(commandData + " is not a friend!")
             }
-			if(command == "friendflash"){
-				sys.stopEvent()
-				if(commandData
             if(command == "ignorelist") {
                 sys.stopEvent()
                 this.sendBotMessage("Your ignorelist is: " + ignore)
