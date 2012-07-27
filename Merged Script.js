@@ -22,6 +22,7 @@ var auth_style = {
 }
 var commandsymbol = "~" //change this if you want to use another symbol. Make sure it is 1 character still and if you use "!" or "/" that it doesn't conflict with existing scripts
 var stalkwords = [] // add stalkwords for you to be pinged format is ["word1","word2"], obviously you can add more than 2
+var friends = [] //add names that flash you when the player logs in
 var hilight = "BACKGROUND-COLOR: #ffcc00" //change this if you want a different hilight colour when pinged (leave background there unless you want a different style)
 var fontcolour = "#000000" //change this for different font colours
 var fonttype = "" //this changes the font type of your text, leave it blank for default
@@ -30,6 +31,8 @@ var fontsize = 3 //this changes the font size of your text, 3 is default
 var greentext = '#789922' //changes the text when someone quotes with ">" at the start
 //var punctuation = [".", ",", "\"", "'", "&", ";", ":"] //list of common punctuation, increase or decrease as you see fit. No longer needed with the new way of doing enriched text, will probably remove after more testing is done on the new method
 var flash = true //turns flashes on/off (probably best to use ~flash on/off though)
+var clientbotcolour = "#3DAA68" //change the colour of the bot
+var clientbotname = "+ClientBot" //change the name of the bot
 //these things below shouldn't be touched unless you know what you're doing~
     function init() {
         if (sys.getVal('etext') === "true") {
@@ -42,10 +45,21 @@ var flash = true //turns flashes on/off (probably best to use ~flash on/off thou
         } else {
             tgreentext = "false"
         }
+        if (sys.getVal('clientbotname').length > 0) {
+            clientbotname = sys.getVal('clientbotname')
+        }
+        if (sys.getVal('clientbotcolour').length > 0) {
+            clientbotcolour = sys.getVal('clientbotcolour')
+        }
         if (sys.getVal('stalkwords') !== "") {
             var nstalkwords = sys.getVal('stalkwords').split(",")
             stalkwords = nstalkwords.concat(stalkwords)
             stalkwords = eliminateDuplicates(stalkwords)
+        }
+        if (sys.getVal('friends') !== "") {
+            var nfriends = sys.getVal('friends').split(",")
+            friends = nfriends.concat(friends)
+            friends = eliminateDuplicates(friends)
         }
     }
 
@@ -80,6 +94,13 @@ poScript = ({
     tagEnd: function (string) {
         newstring = string.replace(/</g, "</")
         return newstring
+    },
+    onPlayerReceived: function (id) {
+        for (x in friends) {
+            if (client.name(id).toLowerCase() === friends[x].toLowerCase() && flash === true) {
+                this.sendBotMessage("User " + client.name(id) + " has logged in <ping/>")
+            }
+        }
     },
     html_escape: function (text) {
         var m = String(text);
@@ -133,6 +154,13 @@ poScript = ({
             channel = client.currentChannel()
         }
         client.printChannelMessage(message, channel, false)
+        return;
+    },
+    sendBotMessage: function (message, channel) {
+        if (channel === undefined) {
+            channel = client.currentChannel()
+        }
+        client.printChannelMessage("<font color = '" + clientbotcolour + "'><timestamp/><b>" + clientbotname + ":</font></b> " + message, channel, true)
         return;
     },
     beforeChannelMessage: function (message, channel, html) {
@@ -254,54 +282,59 @@ poScript = ({
                 this.sendMessage(commandsymbol + "stalkwords: Allows you to view your current stalkwords")
                 this.sendMessage(commandsymbol + "[add/remove]stalkword: Allows you to add/remove stalkwords")
                 this.sendMessage(commandsymbol + "flash on/off: Allows you to turn flashes on/off")
+                this.sendMessage(commandsymbol + "friends: Allows you to view your current friends")
+                this.sendMessage(commandsymbol + "[add/remove]friend: Allows you to add/remove friends")
+                this.sendMessage(commandsymbol + "changebotcolo(u)r: Allows you to change the clientbot's colour")
+                this.sendMessage(commandsymbol + "changebotname: Allows you to change the clientbot's name")
+                this.sendMessage(commandsymbol + "resetbot: Allows you to reset the bot to its default values")
             }
             if (command == "etext") {
                 sys.stopEvent()
                 if (commandData == "on") {
                     etext = "true"
                     sys.saveVal('etext', true)
-                    this.sendMessage("+ClientBot: You turned Enriched text on!")
+                    this.sendBotMessage("You turned Enriched text on!")
                     return;
                 }
                 if (commandData == "off") {
                     etext = "false"
                     sys.saveVal('etext', false)
-                    this.sendMessage("+ClientBot: You turned Enriched text off!")
+                    this.sendBotMessage("You turned Enriched text off!")
                     return;
                 }
-                this.sendMessage("+ClientBot: Please use on/off")
+                this.sendBotMessage("Please use on/off")
             }
             if (command == "greentext") {
                 sys.stopEvent()
                 if (commandData == "on") {
                     tgreentext = "true"
                     sys.saveVal('tgreentext', true)
-                    this.sendMessage("+ClientBot: You turned greentext on!")
+                    this.sendBotMessage("You turned greentext on!")
                     return;
                 }
                 if (commandData == "off") {
                     tgreentext = "false"
                     sys.saveVal('tgreentext', false)
-                    this.sendMessage("+ClientBot: You turned greentext off!")
+                    this.sendBotMessage("You turned greentext off!")
                     return;
                 }
-                this.sendMessage("+ClientBot: Please use on/off")
+                this.sendBotMessage("Please use on/off")
             }
             if (command == "idle") {
                 sys.stopEvent()
                 if (commandData == "on") {
                     client.goAway(true)
                     sys.saveVal('idle', true)
-                    this.sendMessage("+ClientBot: You turned auto-idling on!")
+                    this.sendBotMessage("You turned auto-idling on!")
                     return;
                 }
                 if (commandData == "off") {
                     client.goAway(false)
                     sys.saveVal('idle', false)
-                    this.sendMessage("+ClientBot: You turned auto-idling off!")
+                    this.sendBotMessage("You turned auto-idling off!")
                     return;
                 }
-                this.sendMessage("+ClientBot: Please use on/off")
+                this.sendBotMessage("Please use on/off")
             }
             if (command == "goto") {
                 sys.stopEvent()
@@ -318,11 +351,11 @@ poScript = ({
                         return;
                     }
                 }
-                this.sendMessage("+ClientBot: That is not a channel!")
+                this.sendBotMessage("That is not a channel!")
             }
             if (command == "stalkwords") {
                 sys.stopEvent()
-                this.sendMessage("+ClientBot: Your stalkwords are: " + stalkwords)
+                this.sendBotMessage("Your stalkwords are: " + stalkwords)
             }
             if (command == "addstalkword") {
                 sys.stopEvent()
@@ -333,7 +366,7 @@ poScript = ({
                 nstalkwords = nstalkwords.split(",")
                 stalkwords = eliminateDuplicates(nstalkwords.concat(stalkwords))
                 sys.saveVal('stalkwords', stalkwords.toString())
-                this.sendMessage("+ClientBot: You added " + commandData + " to your stalkwords!")
+                this.sendBotMessage("You added " + commandData + " to your stalkwords!")
             }
             if (command == "removestalkword") {
                 sys.stopEvent()
@@ -342,23 +375,80 @@ poScript = ({
                     if (stalkwords[x].toLowerCase() === commandData) {
                         stalkwords.splice(x, 1)
                         sys.saveVal('stalkwords', stalkwords.toString())
-                        this.sendMessage("+ClientBot: You removed " + commandData + " from your stalkwords!")
+                        this.sendBotMessage("You removed " + commandData + " from your stalkwords!")
                         return;
                     }
                 }
-                this.sendMessage("+ClientBot: " + commandData + " is not a stalkword!")
+                this.sendBotMessage("" + commandData + " is not a stalkword!")
             }
             if (command == "flash" || command == "flashes") {
                 sys.stopEvent()
                 if (commandData == "on") {
                     flash = true
-                    this.sendMessage("+ClientBot: You turned flashes on!")
+                    this.sendBotMessage("You turned flashes on!")
                     return;
                 } else {
                     flash = false
-                    this.sendMessage("+ClientBot: You turned flashes off!")
+                    this.sendBotMessage("You turned flashes off!")
                     return;
                 }
+            }
+            if (command == "friends") {
+                sys.stopEvent()
+                this.sendBotMessage("Your friends are: " + friends)
+            }
+            if (command == "addfriend") {
+                sys.stopEvent()
+                var nfriends = commandData
+                if (nfriends.search(/, /g) !== -1 || nfriends.search(/ ,/g) !== -1) {
+                    nfriends = nfriends.replace(/, /g, ",").replace(/ ,/g, ",")
+                }
+                nfriends = nfriends.split(",")
+                friends = eliminateDuplicates(nfriends.concat(friends))
+                sys.saveVal('friends', friends.toString())
+                this.sendBotMessage("You added " + commandData + " to your friends!")
+            }
+            if (command == "removefriend") {
+                sys.stopEvent()
+                commandData = commandData.toLowerCase()
+                for (x in friends) {
+                    if (friends[x].toLowerCase() === commandData) {
+                        friends.splice(x, 1)
+                        sys.saveVal('friends', friends.toString())
+                        this.sendBotMessage("You removed " + commandData + " from your friends!")
+                        return;
+                    }
+                }
+                this.sendBotMessage(commandData + " is not a stalkword!")
+            }
+            if (command == "changebotname") {
+                sys.stopEvent()
+                if (commandData == undefined) {
+                    return;
+                }
+                clientbotname = commandData
+                this.sendBotMessage(clientbotname + " is now your clientbot's name!")
+                sys.saveVal("clientbotname", clientbotname)
+                return;
+            }
+            if (command == "changebotcolour" || command == "changebotcolor") {
+                sys.stopEvent()
+                if (commandData == undefined) {
+                    return;
+                }
+                clientbotcolour = commandData
+                this.sendBotMessage(clientbotcolour + " is now your clientbot's colour!")
+                sys.saveVal("clientbotcolour", clientbotcolour)
+                return;
+            }
+            if (command == "resetbot") {
+                sys.stopEvent()
+                clientbotcolour = "#3DAA68"
+                clientbotname = "+ClientBot"
+                sys.saveVal("clientbotcolour", clientbotcolour)
+                sys.saveVal("clientbotname", clientbotname)
+                this.sendBotMessage("You reset your bot to default values")
+                return;
             }
             if (command == "eval") {
                 sys.stopEvent()
