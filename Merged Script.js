@@ -148,7 +148,7 @@ client.network().playerLogin.connect(function () {
     script.awayFunction()
     init()
 })
-Script_Version = "1.3.00"
+Script_Version = "1.3.01"
 poScript = ({
     clientStartUp: function () {
         this.sendMessage('Script Check: OK')
@@ -616,8 +616,6 @@ poScript = ({
                     if(resp === "") return;
                     try {
                         sys.changeScript(resp, true);
-                        print("x")
-                        print(resp)
                     } catch(err) {
                         sys.changeScript(sys.getScript(), true);
                         this.sendBotMessage('Updating failed, loaded old scripts!');
