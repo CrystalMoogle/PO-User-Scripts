@@ -104,7 +104,7 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
             var type = {
                 "0": "Major Release (huge changes)",
                 "1": "Minor Release (new features)",
-                "2": "Bug fixes"
+                "2": "Bug fixes/Minor Update"
             }
             if(version !== Script_Version) {
                 var typeno
@@ -148,7 +148,7 @@ client.network().playerLogin.connect(function () {
     script.awayFunction()
     init()
 })
-Script_Version = "1.2.01"
+Script_Version = "1.2.02"
 poScript = ({
     awayFunction: function () {
         if(sys.getVal("idle") === "true") {
@@ -577,13 +577,27 @@ poScript = ({
                 }
                 changelog = JSON.parse(changelog)
                 if(changelog.versions[commandData] === undefined) {
-                    this.sendBotMessage("Version does not exist!")
+                    this.sendBotMessage("Version does not exist! Use " + commandsymbol + "versions to check versions")
                     return;
                 }
                 var details = changelog.versions[commandData].split('\n')
                 this.sendBotMessage("Details for version: " + commandData)
                 for(x in details) {
                     this.sendBotMessage(details[x])
+                }
+                return;
+            }
+            if(command == "versions") {
+                sys.stopEvent()
+                var changelog = sys.synchronousWebCall("https://raw.github.com/gist/3189629/ChangeLog.json")
+                if(changelog.length < 1) {
+                    this.sendBotMessage("Error retrieving file")
+                    return;
+                }
+                changelog = JSON.parse(changelog)
+                this.sendBotMessage('Versions of this script are: ')
+                for(x in changelog.versions) {
+                    this.sendBotMessage(x)
                 }
                 return;
             }
