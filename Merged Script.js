@@ -148,7 +148,7 @@ client.network().playerLogin.connect(function () {
     script.awayFunction()
     init()
 })
-Script_Version = "1.3.02"
+Script_Version = "1.3.03"
 poScript = ({
     clientStartUp: function () {
         this.sendMessage('Script Check: OK')
@@ -336,6 +336,7 @@ poScript = ({
                 this.sendMessage(commandsymbol + "checkversion: Allows you to check for updates")
                 this.sendMessage(commandsymbol + "updatealert on/off: Allows you to get automatically alerted about new versions")
                 this.sendMessage(commandsymbol + "changelog version: Allows you to view the changelog")
+				this.sendMessage(commandsymbol + "versions: Allows you to view the current versions")
                 this.sendMessage(commandsymbol + "updatescripts: Allows you to updatescripts")
             }
             if(command == "etext") {
