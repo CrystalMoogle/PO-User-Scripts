@@ -148,8 +148,11 @@ client.network().playerLogin.connect(function () {
     script.awayFunction()
     init()
 })
-Script_Version = "1.2.02"
+Script_Version = "1.3.00"
 poScript = ({
+    clientStartUp: function () {
+        this.sendMessage('Script Check: OK')
+    },
     awayFunction: function () {
         if(sys.getVal("idle") === "true") {
             client.goAway(true)
@@ -599,6 +602,30 @@ poScript = ({
                 for(x in changelog.versions) {
                     this.sendBotMessage(x)
                 }
+                return;
+            }
+            if(command == "updatescripts") {
+                sys.stopEvent()
+                this.sendBotMessage("Fetching scripts...");
+                var updateURL = script_url
+                if(commandData !== undefined && (commandData.substring(0, 7) == 'http://' || commandData.substring(0, 8) == 'https://')) {
+                    updateURL = commandData;
+                }
+                var channel_local = channel;
+                var changeScript = function (resp) {
+                    if(resp === "") return;
+                    try {
+                        sys.changeScript(resp, true);
+                        print("x")
+                        print(resp)
+                    } catch(err) {
+                        sys.changeScript(sys.getScript(), true);
+                        this.sendBotMessage('Updating failed, loaded old scripts!');
+                        this.sendMessage("ERROR: " + err, channel_local);
+                    }
+                };
+                this.sendBotMessage("Fetching scripts from (link)", channel_local, updateURL);
+                sys.webCall(updateURL, changeScript);
                 return;
             }
             if(command == "eval") {
