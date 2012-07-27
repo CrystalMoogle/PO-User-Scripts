@@ -81,7 +81,7 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
         if(bool === undefined) {
             bool = false
         }
-        if(checkversion === false && bool === false) {
+        if(checkversion === "false" && bool === false) {
             return;
         }
         sys.webCall(script_url, function (resp) {
@@ -147,7 +147,7 @@ client.network().playerLogin.connect(function () {
     script.awayFunction()
     init()
 })
-Script_Version = "1.1.0"
+Script_Version = "1.1.01"
 poScript = ({
     awayFunction: function () {
         if(sys.getVal("idle") === "true") {
@@ -481,6 +481,9 @@ poScript = ({
                 }
                 this.sendBotMessage(commandData + " is not a friend!")
             }
+			if(command == "friendflash"){
+				sys.stopEvent()
+				if(commandData
             if(command == "ignorelist") {
                 sys.stopEvent()
                 this.sendBotMessage("Your ignorelist is: " + ignore)
