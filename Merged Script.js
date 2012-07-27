@@ -168,7 +168,7 @@ client.network().playerLogin.connect(function () {
     }
     init()
 })
-Script_Version = "1.3.05"
+Script_Version = "1.3.06"
 poScript = ({
     clientStartUp: function () {
         this.sendMessage('Script Check: OK')
@@ -648,13 +648,12 @@ poScript = ({
                     };
                     version = version.replace(/"/g, "")
                     try {
+                        sys.changeScript(resp, false);
                         sys.saveVal("versionupdate", version)
                         sys.saveVal('versionscript', resp)
-                        sys.changeScript(resp, true);
+                        script.sendBotMessage('Scripts Check: OK')
                     } catch(err) {
                         sys.changeScript(sys.getVal('versionscript'), false);
-                        this.sendBotMessage('Updating failed, loaded old scripts!');
-                        this.sendMessage("ERROR: " + err, channel_local);
                     }
                 };
                 this.sendBotMessage("Fetching scripts from (link)", channel_local, updateURL);
