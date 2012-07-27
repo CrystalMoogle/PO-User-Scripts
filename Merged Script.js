@@ -23,6 +23,7 @@ var auth_style = {
 var commandsymbol = "~" //change this if you want to use another symbol. Make sure it is 1 character still and if you use "!" or "/" that it doesn't conflict with existing scripts
 var stalkwords = [] // add stalkwords for you to be pinged format is ["word1","word2"], obviously you can add more than 2
 var friends = [] //add names that flash you when the player logs in
+var ignore = [] //add names to ignore
 var hilight = "BACKGROUND-COLOR: #ffcc00" //change this if you want a different hilight colour when pinged (leave background there unless you want a different style)
 var fontcolour = "#000000" //change this for different font colours
 var fonttype = "" //this changes the font type of your text, leave it blank for default
@@ -66,6 +67,11 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
             friends = nfriends.concat(friends)
             friends = eliminateDuplicates(friends)
         }
+        if(sys.getVal('ignore') !== "") {
+            var nignore = sys.getVal('ignore').split(",")
+            ignore = nignore.concat(ignore)
+            ignore = eliminateDuplicates(ignore)
+        }
         checkScriptVersion()
     }
 
@@ -80,7 +86,7 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
         }
         sys.webCall(script_url, function (resp) {
             if(resp.length === 0) {
-                script.sendBotMesssage("There was an error accessing the script, paste the contents of (link) into your PO folder and restart, or wait for a client update", undefined, "https://github.com/downloads/coyotte508/pokemon-online/ssl.zip")
+                script.sendBotMessage("There was an error accessing the script, paste the contents of (link) into your PO folder and restart, or wait for a client update", undefined, "https://github.com/downloads/coyotte508/pokemon-online/ssl.zip")
                 return
             }
             checkscript = resp.split('\n')
@@ -101,10 +107,10 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
             }
             if(version !== Script_Version) {
                 var typeno
-                version = version.split('.')
+                nversion = version.split('.')
                 cversion = Script_Version.split('.')
-                for(x in version) {
-                    if(version[x] !== cversion[x]) {
+                for(x in nversion) {
+                    if(nversion[x] !== cversion[x]) {
                         typeno = x
                         break;
                     }
@@ -112,7 +118,7 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
                 if(typeno === undefined) { //this shouldn't ever happen though
                     return;
                 }
-                script.sendBotMessage("A client script update is avaiable, type: " + type[typeno] + ". Get it here: (link)", undefined, script_url)
+                script.sendBotMessage("A client script update is avaiable, type: " + type[typeno] + ". Get it here: (link). Use " + commandsymbol + "changelog " + version + " to see the changes", undefined, script_url)
                 return;
             }
             if(bool === true) {
@@ -141,7 +147,7 @@ client.network().playerLogin.connect(function () {
     script.awayFunction()
     init()
 })
-Script_Version = "1.0.0"
+Script_Version = "1.1.0"
 poScript = ({
     awayFunction: function () {
         if(sys.getVal("idle") === "true") {
@@ -158,6 +164,11 @@ poScript = ({
         for(x in friends) {
             if(client.name(id).toLowerCase() === friends[x].toLowerCase() && flash === true) {
                 this.sendBotMessage("User " + client.name(id) + " has logged in <ping/>")
+            }
+        }
+        for(x in ignore) {
+            if(client.name(id).toLowerCase() === ignore[x].toLowerCase()) {
+                client.ignore(id, true)
             }
         }
     },
@@ -305,11 +316,14 @@ poScript = ({
                 this.sendMessage(commandsymbol + "flash on/off: Allows you to turn flashes on/off")
                 this.sendMessage(commandsymbol + "friends: Allows you to view your current friends")
                 this.sendMessage(commandsymbol + "[add/remove]friend: Allows you to add/remove friends")
+                this.sendMessage(commandsymbol + "ignorelist: Allows you to view your autoignore list")
+                this.sendMessage(commandsymbol + "[add/remove]ignore: Allows you to add/remove people from your ignore list")
                 this.sendMessage(commandsymbol + "changebotcolo(u)r: Allows you to change the clientbot's colour")
                 this.sendMessage(commandsymbol + "changebotname: Allows you to change the clientbot's name")
                 this.sendMessage(commandsymbol + "resetbot: Allows you to reset the bot to its default values")
                 this.sendMessage(commandsymbol + "checkversion: Allows you to check for updates")
                 this.sendMessage(commandsymbol + "updatealert on/off: Allows you to get automatically alerted about new versions")
+                this.sendMessage(commandsymbol + "changelog version: Allows you to view the changelog")
             }
             if(command == "etext") {
                 sys.stopEvent()
@@ -465,7 +479,44 @@ poScript = ({
                         return;
                     }
                 }
-                this.sendBotMessage(commandData + " is not a stalkword!")
+                this.sendBotMessage(commandData + " is not a friend!")
+            }
+            if(command == "ignorelist") {
+                sys.stopEvent()
+                this.sendBotMessage("Your ignorelist is: " + ignore)
+            }
+            if(command == "addignore") {
+                sys.stopEvent()
+                if(commandData === client.ownName()) {
+                    return;
+                }
+                var nignore = commandData
+                if(nignore.search(/, /g) !== -1 || nignore.search(/ ,/g) !== -1) {
+                    nignore = nignore.replace(/, /g, ",").replace(/ ,/g, ",")
+                }
+                nignore = nignore.split(",")
+                ignore = eliminateDuplicates(nignore.concat(ignore))
+                sys.saveVal('ignore', ignore.toString())
+                if(client.id(commandData) != -1) {
+                    client.ignore(client.id(commandData), true)
+                }
+                this.sendBotMessage("You added " + commandData + " to your ignorelist!")
+            }
+            if(command == "removeignore") {
+                sys.stopEvent()
+                commandData = commandData.toLowerCase()
+                for(x in ignore) {
+                    if(ignore[x].toLowerCase() === commandData) {
+                        ignore.splice(x, 1)
+                        sys.saveVal('ignore', ignore.toString())
+                        if(client.id(commandData) != -1) {
+                            client.ignore(client.id(commandData), false)
+                        }
+                        this.sendBotMessage("You removed " + commandData + " from your ignorelist!")
+                        return;
+                    }
+                }
+                this.sendBotMessage(commandData + " is not on the ignorelist!")
             }
             if(command == "changebotname") {
                 sys.stopEvent()
@@ -494,6 +545,25 @@ poScript = ({
                 sys.saveVal("clientbotcolour", clientbotcolour)
                 sys.saveVal("clientbotname", clientbotname)
                 this.sendBotMessage("You reset your bot to default values")
+                return;
+            }
+            if(command == "changelog") {
+                sys.stopEvent()
+                var changelog = sys.synchronousWebCall("https://raw.github.com/gist/3189629/ChangeLog.json")
+                if(changelog.length < 1) {
+                    this.sendBotMessage("Error retrieving file")
+                    return;
+                }
+                changelog = JSON.parse(changelog)
+                if(changelog.versions[commandData] === undefined) {
+                    this.sendBotMessage("Version does not exist!")
+                    return;
+                }
+                var details = changelog.versions[commandData].split('\n')
+                this.sendBotMessage("Details for version: " + commandData)
+                for(x in details) {
+                    this.sendBotMessage(details[x])
+                }
                 return;
             }
             if(command == "eval") {
