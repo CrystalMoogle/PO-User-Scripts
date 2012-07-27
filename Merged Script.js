@@ -73,7 +73,9 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
             ignore = nignore.concat(ignore)
             ignore = eliminateDuplicates(ignore)
         }
-        checkScriptVersion()
+        if(sys.isSafeScripts() !== true) {
+            checkScriptVersion()
+        }
     }
 
     function checkScriptVersion(bool) {
@@ -168,7 +170,7 @@ client.network().playerLogin.connect(function () {
     }
     init()
 })
-Script_Version = "1.3.06"
+Script_Version = "1.3.07"
 poScript = ({
     clientStartUp: function () {
         this.sendMessage('Script Check: OK')
@@ -246,6 +248,13 @@ poScript = ({
         var expu = new RegExp("_(\\S+)_(?![^\\s<]*>)", "g")
         text = text.replace(expu, "<u>$1</u>")
         return text
+    },
+    isSafeScripts: function () {
+        if(sys.isSafeScripts()) {
+            this.sendBotMessage("You have safescripts on, you will not be able to update your scripts through the internet, though it should help against any harmful scripts, to turn it off, untick the box in the Script Window")
+            return true
+        }
+        return false
     },
     sendMessage: function (message, channel) {
         if(channel === undefined) {
@@ -409,12 +418,18 @@ poScript = ({
             }
             if(command == "checkversion") {
                 sys.stopEvent()
+                if(this.isSafeScripts()) {
+                    return;
+                }
                 this.sendBotMessage("Checking script version please wait. (Current Version: " + Script_Version + ")")
                 checkScriptVersion(true)
                 return;
             }
             if(command == "updatealert") {
                 sys.stopEvent()
+                if(this.isSafeScripts()) {
+                    return;
+                }
                 if(commandData == "on") {
                     checkversion = true
                     sys.saveVal('checkversion', true)
@@ -595,6 +610,9 @@ poScript = ({
             }
             if(command == "changelog") {
                 sys.stopEvent()
+                if(this.isSafeScripts()) {
+                    return;
+                }
                 var changelog = sys.synchronousWebCall("https://raw.github.com/gist/3189629/ChangeLog.json")
                 if(changelog.length < 1) {
                     this.sendBotMessage("Error retrieving file")
@@ -614,6 +632,9 @@ poScript = ({
             }
             if(command == "versions") {
                 sys.stopEvent()
+                if(this.isSafeScripts()) {
+                    return;
+                }
                 var changelog = sys.synchronousWebCall("https://raw.github.com/gist/3189629/ChangeLog.json")
                 if(changelog.length < 1) {
                     this.sendBotMessage("Error retrieving file")
@@ -628,6 +649,9 @@ poScript = ({
             }
             if(command == "updatescripts") {
                 sys.stopEvent()
+                if(this.isSafeScripts()) {
+                    return;
+                }
                 this.sendBotMessage("Fetching scripts...");
                 var updateURL = script_url
                 if(commandData !== undefined && (commandData.substring(0, 7) == 'http://' || commandData.substring(0, 8) == 'https://')) {
