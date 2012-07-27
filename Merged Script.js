@@ -148,7 +148,7 @@ client.network().playerLogin.connect(function () {
     script.awayFunction()
     init()
 })
-Script_Version = "1.2.01"
+Script_Version = "1.2.00"
 poScript = ({
     awayFunction: function () {
         if(sys.getVal("idle") === "true") {
