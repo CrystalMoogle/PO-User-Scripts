@@ -73,9 +73,9 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
         var checkscript, version
         var regex = /"([^"]*)"/g
         if(bool === undefined) {
-            bool === false
+            bool = false
         }
-        if(checkversion === false) {
+        if(checkversion === false && bool === false) {
             return;
         }
         sys.webCall(script_url, function (resp) {
