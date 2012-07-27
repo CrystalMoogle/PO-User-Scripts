@@ -31,6 +31,7 @@ var fontstyle = "" //this changes the style of the font (bold/italics/etc), star
 var fontsize = 3 //this changes the font size of your text, 3 is default
 var greentext = '#789922' //changes the text when someone quotes with ">" at the start
 var flash = true //turns flashes on/off (probably best to use ~flash on/off though)
+var friendsflash = false //turns flashes when friends log in on/off
 var clientbotcolour = "#3DAA68" //change the colour of the bot
 var clientbotname = "+ClientBot" //change the name of the bot
 var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Merged%20Script.js" //where the script is stored
@@ -147,7 +148,7 @@ client.network().playerLogin.connect(function () {
     script.awayFunction()
     init()
 })
-Script_Version = "1.1.01"
+Script_Version = "1.2.01"
 poScript = ({
     awayFunction: function () {
         if(sys.getVal("idle") === "true") {
@@ -161,9 +162,13 @@ poScript = ({
         return newstring
     },
     onPlayerReceived: function (id) {
+        var flash = ""
+        if(friendsflash === true) {
+            flash = "<ping/>"
+        }
         for(x in friends) {
             if(client.name(id).toLowerCase() === friends[x].toLowerCase() && flash === true) {
-                this.sendBotMessage("User " + client.name(id) + " has logged in <ping/>")
+                this.sendBotMessage("User " + client.name(id) + " has logged in" + flash + "")
             }
         }
         for(x in ignore) {
@@ -316,6 +321,7 @@ poScript = ({
                 this.sendMessage(commandsymbol + "flash on/off: Allows you to turn flashes on/off")
                 this.sendMessage(commandsymbol + "friends: Allows you to view your current friends")
                 this.sendMessage(commandsymbol + "[add/remove]friend: Allows you to add/remove friends")
+                this.sendMessage(commandsymbol + "friendflash: Allows you turn friend flashes on/off")
                 this.sendMessage(commandsymbol + "ignorelist: Allows you to view your autoignore list")
                 this.sendMessage(commandsymbol + "[add/remove]ignore: Allows you to add/remove people from your ignore list")
                 this.sendMessage(commandsymbol + "changebotcolo(u)r: Allows you to change the clientbot's colour")
@@ -480,6 +486,15 @@ poScript = ({
                     }
                 }
                 this.sendBotMessage(commandData + " is not a friend!")
+            }
+            if(command == "friendflash") {
+                sys.stopEvent()
+                if(commandData === "on") {
+                    friendflash = true
+                } else {
+                    friendflash = false
+                }
+                return;
             }
             if(command == "ignorelist") {
                 sys.stopEvent()
