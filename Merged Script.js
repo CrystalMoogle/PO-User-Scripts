@@ -73,23 +73,6 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
             ignore = nignore.concat(ignore)
             ignore = eliminateDuplicates(ignore)
         }
-        versionupdate = sys.getVal('versionupdate')
-        if(versionupdate !== undefined) {
-            sys.webCall(script_url, function (resp) {
-                var checkscript, version
-                var regex = /"([^"]*)"/g
-                checkscript = resp.split('\n')
-                for(x in checkscript) {
-                    if(checkscript[x].substr(0, 14) == "Script_Version") {
-                        version = String(checkscript[x].match(regex))
-                    }
-                };
-                version = version.replace(/"/g, "")
-                if(version === versionupdate) {
-                    sys.changeScript(resp, false)
-                }
-            })
-        }
         checkScriptVersion()
     }
 
@@ -163,6 +146,27 @@ if(client.ownId() !== -1) {
 }
 client.network().playerLogin.connect(function () {
     script.awayFunction()
+    versionupdate = sys.getVal('versionupdate')
+    if(versionupdate !== undefined) {
+        var resp = sys.getVal('versionscript')
+        if(resp.length === 0) {
+            return;
+        }
+        var checkscript, version
+        var regex = /"([^"]*)"/g
+        checkscript = resp.split('\n')
+        for(x in checkscript) {
+            print(checkscript[x])
+            if(checkscript[x].substr(0, 14) == "Script_Version") {
+                version = String(checkscript[x].match(regex))
+            }
+        };
+        version = version.replace(/"/g, "")
+        if(version === versionupdate) {
+            versionupdate = undefined
+            sys.changeScript(resp, false)
+        }
+    }
     init()
 })
 Script_Version = "1.3.04"
@@ -637,8 +641,9 @@ poScript = ({
                         return
                     }
                     try {
-                        sys.changeScript(resp, true);
                         sys.saveVal("versionupdate", Script_Version)
+                        sys.saveVal('versionscript', resp)
+                        sys.changeScript(resp, true);
                     } catch(err) {
                         sys.changeScript(sys.getScript(), true);
                         this.sendBotMessage('Updating failed, loaded old scripts!');
