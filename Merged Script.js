@@ -168,7 +168,7 @@ client.network().playerLogin.connect(function () {
     }
     init()
 })
-Script_Version = "1.3.04"
+Script_Version = "1.3.05"
 poScript = ({
     clientStartUp: function () {
         this.sendMessage('Script Check: OK')
@@ -639,12 +639,20 @@ poScript = ({
                         this.sendBotMessage("There was an error accessing the script, paste the contents of (link) into your PO folder and restart, or wait for a client update", undefined, "https://github.com/downloads/coyotte508/pokemon-online/ssl.zip")
                         return
                     }
+                    var checkscript = resp.split('\n')
+                    var regex = /"([^"]*)"/g
+                    for(x in checkscript) {
+                        if(checkscript[x].substr(0, 14) == "Script_Version") {
+                            version = String(checkscript[x].match(regex))
+                        }
+                    };
+                    version = version.replace(/"/g, "")
                     try {
-                        sys.saveVal("versionupdate", Script_Version)
+                        sys.saveVal("versionupdate", version)
                         sys.saveVal('versionscript', resp)
                         sys.changeScript(resp, true);
                     } catch(err) {
-                        sys.changeScript(sys.getScript(), true);
+                        sys.changeScript(sys.getVal('versionscript'), false);
                         this.sendBotMessage('Updating failed, loaded old scripts!');
                         this.sendMessage("ERROR: " + err, channel_local);
                     }
