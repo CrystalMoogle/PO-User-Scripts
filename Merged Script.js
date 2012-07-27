@@ -119,7 +119,7 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
                 if(typeno === undefined) { //this shouldn't ever happen though
                     return;
                 }
-                script.sendBotMessage("A client script update is avaiable, type: " + type[typeno] + ". Get it here: (link). Use " + commandsymbol + "changelog " + version + " to see the changes", undefined, script_url)
+                script.sendBotMessage("A client script update is avaiable, type: " + type[typeno] + ". Use " + commandsymbol + "updatescripts. Use " + commandsymbol + "changelog " + version + " to see the changes", undefined, script_url)
                 return;
             }
             if(bool === true) {
@@ -148,7 +148,7 @@ client.network().playerLogin.connect(function () {
     script.awayFunction()
     init()
 })
-Script_Version = "1.3.01"
+Script_Version = "1.3.02"
 poScript = ({
     clientStartUp: function () {
         this.sendMessage('Script Check: OK')
@@ -336,6 +336,7 @@ poScript = ({
                 this.sendMessage(commandsymbol + "checkversion: Allows you to check for updates")
                 this.sendMessage(commandsymbol + "updatealert on/off: Allows you to get automatically alerted about new versions")
                 this.sendMessage(commandsymbol + "changelog version: Allows you to view the changelog")
+                this.sendMessage(commandsymbol + "updatescripts: Allows you to updatescripts")
             }
             if(command == "etext") {
                 sys.stopEvent()
@@ -613,7 +614,10 @@ poScript = ({
                 }
                 var channel_local = channel;
                 var changeScript = function (resp) {
-                    if(resp === "") return;
+                    if(resp === "") {
+                        this.sendBotMessage("There was an error accessing the script, paste the contents of (link) into your PO folder and restart, or wait for a client update", undefined, "https://github.com/downloads/coyotte508/pokemon-online/ssl.zip")
+                        return
+                    }
                     try {
                         sys.changeScript(resp, true);
                     } catch(err) {
