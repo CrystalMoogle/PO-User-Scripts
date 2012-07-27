@@ -160,7 +160,8 @@ poScript = ({
         if (channel === undefined) {
             channel = client.currentChannel()
         }
-        client.printChannelMessage("<font color = '" + clientbotcolour + "'><timestamp/><b>" + clientbotname + ":</font></b> " + message, channel, true)
+        message = this.html_escape(message)
+        client.printChannelMessage("<font color = '" + this.html_escape(clientbotcolour) + "'><timestamp/><b>" + this.html_escape(clientbotname) + ":</font></b> " + message, channel, true)
         return;
     },
     beforeChannelMessage: function (message, channel, html) {
