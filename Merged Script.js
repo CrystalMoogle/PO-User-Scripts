@@ -148,7 +148,7 @@ client.network().playerLogin.connect(function () {
     script.awayFunction()
     init()
 })
-Script_Version = "1.2.00"
+Script_Version = "1.2.01"
 poScript = ({
     awayFunction: function () {
         if(sys.getVal("idle") === "true") {
@@ -162,13 +162,13 @@ poScript = ({
         return newstring
     },
     onPlayerReceived: function (id) {
-        var flash = ""
+        var flashvar = ""
         if(friendsflash === true) {
-            flash = "<ping/>"
+            flashvar = "<ping/>"
         }
         for(x in friends) {
             if(client.name(id).toLowerCase() === friends[x].toLowerCase() && flash === true) {
-                this.sendBotMessage("User " + client.name(id) + " has logged in" + flash + "")
+                this.sendBotMessage("User " + client.name(id) + " has logged in" + flashvar + "", client.currentChannel(), "<ping/>")
             }
         }
         for(x in ignore) {
@@ -236,6 +236,9 @@ poScript = ({
             channel = client.currentChannel()
         }
         message = this.html_escape(message)
+        if(link == "<ping/>") {
+            message = message.replace(/&lt;ping\/&gt;/g, link)
+        }
         if(message.indexOf("(link)") !== -1 && link !== undefined) {
             message = message.replace(/\(link\)/g, "<a href ='" + link + "'>" + link + "</a>")
         }
@@ -487,12 +490,15 @@ poScript = ({
                 }
                 this.sendBotMessage(commandData + " is not a friend!")
             }
-            if(command == "friendflash") {
+            if(command == "friendflash" || command == "friendsflash") {
                 sys.stopEvent()
                 if(commandData === "on") {
-                    friendflash = true
+                    friendsflash = true
+                    this.sendBotMessage("You turned friend flashes on!")
+                    return;
                 } else {
-                    friendflash = false
+                    friendsflash = false
+                    this.sendBotMessage("You turned friend flashes off!")
                 }
                 return;
             }
