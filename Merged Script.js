@@ -156,7 +156,6 @@ client.network().playerLogin.connect(function () {
         var regex = /"([^"]*)"/g
         checkscript = resp.split('\n')
         for(x in checkscript) {
-            print(checkscript[x])
             if(checkscript[x].substr(0, 14) == "Script_Version") {
                 version = String(checkscript[x].match(regex))
             }
