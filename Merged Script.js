@@ -29,38 +29,96 @@ var fonttype = "" //this changes the font type of your text, leave it blank for 
 var fontstyle = "" //this changes the style of the font (bold/italics/etc), start tags only are needed.
 var fontsize = 3 //this changes the font size of your text, 3 is default
 var greentext = '#789922' //changes the text when someone quotes with ">" at the start
-//var punctuation = [".", ",", "\"", "'", "&", ";", ":"] //list of common punctuation, increase or decrease as you see fit. No longer needed with the new way of doing enriched text, will probably remove after more testing is done on the new method
 var flash = true //turns flashes on/off (probably best to use ~flash on/off though)
 var clientbotcolour = "#3DAA68" //change the colour of the bot
 var clientbotname = "+ClientBot" //change the name of the bot
+var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Merged%20Script.js" //where the script is stored
 //these things below shouldn't be touched unless you know what you're doing~
     function init() {
-        if (sys.getVal('etext') === "true") {
+        if(sys.getVal('etext') === "true") {
             etext = "true"
         } else {
             etext = "false"
         }
-        if (sys.getVal('tgreentext') === "true") {
+        if(sys.getVal('tgreentext') === "true") {
             tgreentext = "true"
         } else {
             tgreentext = "false"
         }
-        if (sys.getVal('clientbotname').length > 0) {
+        if(sys.getVal('checkversion') === "true") {
+            checkversion = "true"
+        } else {
+            checkversion = "false"
+        }
+        if(sys.getVal('clientbotname').length > 0) {
             clientbotname = sys.getVal('clientbotname')
         }
-        if (sys.getVal('clientbotcolour').length > 0) {
+        if(sys.getVal('clientbotcolour').length > 0) {
             clientbotcolour = sys.getVal('clientbotcolour')
         }
-        if (sys.getVal('stalkwords') !== "") {
+        if(sys.getVal('stalkwords') !== "") {
             var nstalkwords = sys.getVal('stalkwords').split(",")
             stalkwords = nstalkwords.concat(stalkwords)
             stalkwords = eliminateDuplicates(stalkwords)
         }
-        if (sys.getVal('friends') !== "") {
+        if(sys.getVal('friends') !== "") {
             var nfriends = sys.getVal('friends').split(",")
             friends = nfriends.concat(friends)
             friends = eliminateDuplicates(friends)
         }
+        checkScriptVersion()
+    }
+
+    function checkScriptVersion(bool) {
+        var checkscript, version
+        var regex = /"([^"]*)"/g
+        if(bool === undefined) {
+            bool === false
+        }
+        if(checkversion === false) {
+            return;
+        }
+        sys.webCall(script_url, function (resp) {
+            if(resp.length === 0) {
+                script.sendBotMesssage("There was an error accessing the script, paste the contents of (link) into your PO folder and restart, or wait for a client update", undefined, "https://github.com/downloads/coyotte508/pokemon-online/ssl.zip")
+                return
+            }
+            checkscript = resp.split('\n')
+            for(x in checkscript) {
+                if(checkscript[x].substr(0, 14) == "Script_Version") {
+                    version = String(checkscript[x].match(regex))
+                }
+            };
+            if(version === undefined) {
+                script.sendBotMessage('There was an error with the version, please report to Crystal Moogle')
+                return;
+            }
+            version = version.replace(/"/g, "")
+            var type = {
+                "0": "Major Release (huge changes)",
+                "1": "Minor Release (new features)",
+                "2": "Bug fixes"
+            }
+            if(version !== Script_Version) {
+                var typeno
+                version = version.split('.')
+                cversion = Script_Version.split('.')
+                for(x in version) {
+                    if(version[x] !== cversion[x]) {
+                        typeno = x
+                        break;
+                    }
+                }
+                if(typeno === undefined) { //this shouldn't ever happen though
+                    return;
+                }
+                script.sendBotMessage("A client script update is avaiable, type: " + type[typeno] + ". Get it here: (link)", undefined, script_url)
+                return;
+            }
+            if(bool === true) {
+                script.sendBotMessage("No update detected")
+            }
+        })
     }
 
     function eliminateDuplicates(arr) { //stolen from http://dreaminginjavascript.wordpress.com/2008/08/22/eliminating-duplicates/
@@ -68,24 +126,25 @@ var clientbotname = "+ClientBot" //change the name of the bot
         len = arr.length,
             out = [],
             obj = {};
-        for (i = 0; i < len; i++) {
+        for(i = 0; i < len; i++) {
             obj[arr[i]] = 0;
         }
-        for (i in obj) {
+        for(i in obj) {
             out.push(i);
         }
         return out;
     }
-if (client.ownId() !== -1) {
+if(client.ownId() !== -1) {
     init()
 }
 client.network().playerLogin.connect(function () {
     script.awayFunction()
     init()
 })
+Script_Version = "1.0.0"
 poScript = ({
     awayFunction: function () {
-        if (sys.getVal("idle") === "true") {
+        if(sys.getVal("idle") === "true") {
             client.goAway(true)
         } else {
             client.goAway(false)
@@ -96,15 +155,15 @@ poScript = ({
         return newstring
     },
     onPlayerReceived: function (id) {
-        for (x in friends) {
-            if (client.name(id).toLowerCase() === friends[x].toLowerCase() && flash === true) {
+        for(x in friends) {
+            if(client.name(id).toLowerCase() === friends[x].toLowerCase() && flash === true) {
                 this.sendBotMessage("User " + client.name(id) + " has logged in <ping/>")
             }
         }
     },
     html_escape: function (text) {
         var m = String(text);
-        if (m.length > 0) {
+        if(m.length > 0) {
             var amp = "&am" + "p;";
             var lt = "&l" + "t;";
             var gt = "&g" + "t;";
@@ -118,22 +177,22 @@ poScript = ({
         var found = text.match(exp)
         var newtext
         var newfound
-        for (x in found) {
+        for(x in found) {
             newfound = found[x].replace(/\//g, sys.md5('/'))
             newfound = newfound.replace(/_/g, sys.md5('_'))
             text = text.replace(found[x], newfound)
             newtext = ("<a href ='" + newfound + "'>" + newfound + "</a>").replace(/&amp;/gi, "&")
             text = text.replace(newfound, newtext)
         }
-        if (etext == "true") {
+        if(etext == "true") {
             text = this.enrichedText(text)
         }
         var expt = new RegExp(sys.md5('/'), "g")
-        if (text.search(expt) != -1) {
+        if(text.search(expt) != -1) {
             text = text.replace(expt, "/")
         }
         expt = new RegExp(sys.md5('_'), "g")
-        if (text.search(expt) != -1) {
+        if(text.search(expt) != -1) {
             text = text.replace(expt, "_")
         }
         return text
@@ -150,111 +209,72 @@ poScript = ({
         return text
     },
     sendMessage: function (message, channel) {
-        if (channel === undefined) {
+        if(channel === undefined) {
             channel = client.currentChannel()
         }
         client.printChannelMessage(message, channel, false)
         return;
     },
-    sendBotMessage: function (message, channel) {
-        if (channel === undefined) {
+    sendBotMessage: function (message, channel, link) {
+        if(channel === undefined) {
             channel = client.currentChannel()
         }
         message = this.html_escape(message)
+        if(message.indexOf("(link)") !== -1 && link !== undefined) {
+            message = message.replace(/\(link\)/g, "<a href ='" + link + "'>" + link + "</a>")
+        }
         client.printChannelMessage("<font color = '" + this.html_escape(clientbotcolour) + "'><timestamp/><b>" + this.html_escape(clientbotname) + ":</font></b> " + message, channel, true)
         return;
     },
     beforeChannelMessage: function (message, channel, html) {
         var chan = channel
         var pos = message.indexOf(': ');
-        if (pos != -1) {
-            if (client.id(message.substring(0, pos)) == -1) {
+        if(pos != -1) {
+            if(client.id(message.substring(0, pos)) == -1) {
                 return;
             }
             var id = client.id(message.substring(0, pos))
-            if (client.isIgnored(id)) {
+            if(client.isIgnored(id)) {
                 return;
             }
             var playname = message.substring(0, pos)
             var playmessage = this.html_escape(message.substr(pos + 2))
-            var msg = playmessage.split(' ')
-            var link, linkplaceholder
-            /*for (x in msg) {
-                var msgnew = "",
-                    otherend = ""
-                var msgl = msg[x].length
-                var nmsgl = msg[x].length
-                var start = msg[x][0]
-                var end = msg[x][parseInt(msgl - 1)]
-                for (y in punctuation) {
-                    if (start == punctuation[y]) {
-                        start = msg[x][1]
-                        msgl = msgl - 1
-                    }
-                    if (end == punctuation[y]) {
-                        end = msg[x][parseInt(nmsgl - 2)]
-                        otherend = punctuation[y]
-                        msgl = msgl - 1
-                    }
-                }
-                if (((start == "*" && end == "*" && msgl > 2) || ((start == "/" || start == "\\") && (end == "/" || end == "\\") && msgl > 2) || (start == "_" && end == "_" && msgl > 2)) && etext === "true") {
-                    var modifier, endmodifier, newmsg
-                    if (start == "*") {
-                        modifier = "<b>"
-                        endmodifier = "</b>"
-                    }
-                    if (start == "/" || start == "\\") {
-                        modifier = "<i>"
-                        endmodifier = "</i>"
-                    }
-                    if (start == "_") {
-                        modifier = "<u>"
-                        endmodifier = "</u>"
-                    }
-                    var i = msg[x].lastIndexOf(end)
-                    if (i >= 0) {
-                        newmsg = msg[x].substring(0, i) + endmodifier + (otherend == undefined ? "" : otherend)
-                    }
-                    msgnew = newmsg.replace(start, modifier)
-                    playmessage = playmessage.replace(msg[x], msgnew)
-                }
-            }*/
             var colour = client.color(id)
-            if (colour === "#000000") {
+            if(colour === "#000000") {
                 var clist = ['#5811b1', '#399bcd', '#0474bb', '#f8760d', '#a00c9e', '#0d762b', '#5f4c00', '#9a4f6d', '#d0990f', '#1b1390', '#028678', '#0324b1'];
                 colour = clist[src % clist.length];
             }
             var ownName = this.html_escape(client.ownName())
-            if (playmessage.toLowerCase().indexOf(ownName.toLowerCase()) != -1 && playname !== ownName && flash !== false) {
+            if(playmessage.toLowerCase().indexOf(ownName.toLowerCase()) != -1 && playname !== ownName && flash !== false) {
                 var name = new RegExp("\\b" + ownName + "\\b", "i")
                 newplaymessage = playmessage.replace(name, "<span style='" + hilight + "'>" + client.ownName() + "</span>")
-                if (newplaymessage !== playmessage) {
+                if(newplaymessage !== playmessage) {
                     playmessage = newplaymessage.replace(newplaymessage, "<i> " + newplaymessage + "</i><ping/>")
                 }
             }
-            for (x in stalkwords) {
+            for(x in stalkwords) {
                 var stalk = new RegExp("\\b" + stalkwords[x] + "\\b", "i")
                 var stalks = playmessage.match(stalk)
-                if (playmessage.toLowerCase().search(stalk) != -1 && playname !== client.ownName() && flash !== false) {
+                if(playmessage.toLowerCase().search(stalk) != -1 && playname !== client.ownName() && flash !== false) {
                     newplaymessage = playmessage.replace(stalk, "<span style='" + hilight + "'>" + stalks + "</span>")
-                    if (newplaymessage !== playmessage) {
+                    if(newplaymessage !== playmessage) {
                         playmessage = newplaymessage.replace(newplaymessage, "<i> " + newplaymessage + "</i><ping/>")
                     }
                 }
             }
-            if (playmessage.substr(0, 4) == "&gt;" && tgreentext === "true") {
+            if(playmessage.substr(0, 4) == "&gt;" && tgreentext === "true") {
                 playmessage = "<font color = '" + greentext + "'>" + playmessage + "</font>"
             } else {
                 playmessage = "<font color = '" + fontcolour + "'>" + playmessage
             }
             var symbolLength = 0
-            for (x in auth_symbol) {
-                if (x > symbolLength) {
+            for(x in auth_symbol) {
+                if(x > symbolLength) {
                     symbolLength = x
                 }
             }
             var auth = client.auth(id)
-            if (auth > symbolLength) {
+            if(auth > symbolLength) {
                 auth = 0
             }
             playmessage = client.channel(chan).addChannelLinks(playmessage)
@@ -264,16 +284,16 @@ poScript = ({
         }
     },
     beforeSendMessage: function (message, channel) {
-        if (message[0] == commandsymbol) {
+        if(message[0] == commandsymbol) {
             var command, commandData
             var pos = message.indexOf(' ');
-            if (pos != -1) {
+            if(pos != -1) {
                 command = message.substring(1, pos).toLowerCase();
                 commandData = message.substr(pos + 1);
             } else {
                 command = message.substr(1).toLowerCase();
             }
-            if (command == "commandlist" || command == "commandslist") {
+            if(command == "commandlist" || command == "commandslist") {
                 sys.stopEvent()
                 this.sendMessage("*** Client Commands ***")
                 this.sendMessage(commandsymbol + "etext on/off: Allows you to turn Enriched text on/off")
@@ -288,16 +308,18 @@ poScript = ({
                 this.sendMessage(commandsymbol + "changebotcolo(u)r: Allows you to change the clientbot's colour")
                 this.sendMessage(commandsymbol + "changebotname: Allows you to change the clientbot's name")
                 this.sendMessage(commandsymbol + "resetbot: Allows you to reset the bot to its default values")
+                this.sendMessage(commandsymbol + "checkversion: Allows you to check for updates")
+                this.sendMessage(commandsymbol + "updatealert on/off: Allows you to get automatically alerted about new versions")
             }
-            if (command == "etext") {
+            if(command == "etext") {
                 sys.stopEvent()
-                if (commandData == "on") {
+                if(commandData == "on") {
                     etext = "true"
                     sys.saveVal('etext', true)
                     this.sendBotMessage("You turned Enriched text on!")
                     return;
                 }
-                if (commandData == "off") {
+                if(commandData == "off") {
                     etext = "false"
                     sys.saveVal('etext', false)
                     this.sendBotMessage("You turned Enriched text off!")
@@ -305,15 +327,15 @@ poScript = ({
                 }
                 this.sendBotMessage("Please use on/off")
             }
-            if (command == "greentext") {
+            if(command == "greentext") {
                 sys.stopEvent()
-                if (commandData == "on") {
+                if(commandData == "on") {
                     tgreentext = "true"
                     sys.saveVal('tgreentext', true)
                     this.sendBotMessage("You turned greentext on!")
                     return;
                 }
-                if (commandData == "off") {
+                if(commandData == "off") {
                     tgreentext = "false"
                     sys.saveVal('tgreentext', false)
                     this.sendBotMessage("You turned greentext off!")
@@ -321,15 +343,15 @@ poScript = ({
                 }
                 this.sendBotMessage("Please use on/off")
             }
-            if (command == "idle") {
+            if(command == "idle") {
                 sys.stopEvent()
-                if (commandData == "on") {
+                if(commandData == "on") {
                     client.goAway(true)
                     sys.saveVal('idle', true)
                     this.sendBotMessage("You turned auto-idling on!")
                     return;
                 }
-                if (commandData == "off") {
+                if(commandData == "off") {
                     client.goAway(false)
                     sys.saveVal('idle', false)
                     this.sendBotMessage("You turned auto-idling off!")
@@ -337,14 +359,37 @@ poScript = ({
                 }
                 this.sendBotMessage("Please use on/off")
             }
-            if (command == "goto") {
+            if(command == "checkversion") {
+                sys.stopEvent()
+                this.sendBotMessage("Checking script version please wait. (Current Version: " + Script_Version + ")")
+                checkScriptVersion(true)
+                return;
+            }
+            if(command == "updatealert") {
+                sys.stopEvent()
+                if(commandData == "on") {
+                    checkversion = true
+                    sys.saveVal('checkversion', true)
+                    this.sendBotMessage("You now get alerted about new versions")
+                    checkScriptVersion()
+                    return;
+                }
+                if(commandData == "off") {
+                    checkversion = false
+                    sys.saveVal('checkversion', false)
+                    this.sendBotMessage("You no longer get alerted about new versions")
+                    return;
+                }
+                this.sendBotMessage("Please use on/off")
+            }
+            if(command == "goto") {
                 sys.stopEvent()
                 var channela = commandData
                 var channels = client.channelNames()
-                for (x in channels) {
-                    if (channela === channels[x].toLowerCase()) {
+                for(x in channels) {
+                    if(channela === channels[x].toLowerCase()) {
                         channela = channels[x]
-                        if (!client.hasChannel(client.channelId(channela))) {
+                        if(!client.hasChannel(client.channelId(channela))) {
                             client.join(channela)
                             return;
                         }
@@ -354,14 +399,14 @@ poScript = ({
                 }
                 this.sendBotMessage("That is not a channel!")
             }
-            if (command == "stalkwords") {
+            if(command == "stalkwords") {
                 sys.stopEvent()
                 this.sendBotMessage("Your stalkwords are: " + stalkwords)
             }
-            if (command == "addstalkword") {
+            if(command == "addstalkword") {
                 sys.stopEvent()
                 var nstalkwords = commandData
-                if (nstalkwords.search(/, /g) !== -1 || nstalkwords.search(/ ,/g) !== -1) {
+                if(nstalkwords.search(/, /g) !== -1 || nstalkwords.search(/ ,/g) !== -1) {
                     nstalkwords = nstalkwords.replace(/, /g, ",").replace(/ ,/g, ",")
                 }
                 nstalkwords = nstalkwords.split(",")
@@ -369,11 +414,11 @@ poScript = ({
                 sys.saveVal('stalkwords', stalkwords.toString())
                 this.sendBotMessage("You added " + commandData + " to your stalkwords!")
             }
-            if (command == "removestalkword") {
+            if(command == "removestalkword") {
                 sys.stopEvent()
                 commandData = commandData.toLowerCase()
-                for (x in stalkwords) {
-                    if (stalkwords[x].toLowerCase() === commandData) {
+                for(x in stalkwords) {
+                    if(stalkwords[x].toLowerCase() === commandData) {
                         stalkwords.splice(x, 1)
                         sys.saveVal('stalkwords', stalkwords.toString())
                         this.sendBotMessage("You removed " + commandData + " from your stalkwords!")
@@ -382,9 +427,9 @@ poScript = ({
                 }
                 this.sendBotMessage("" + commandData + " is not a stalkword!")
             }
-            if (command == "flash" || command == "flashes") {
+            if(command == "flash" || command == "flashes") {
                 sys.stopEvent()
-                if (commandData == "on") {
+                if(commandData == "on") {
                     flash = true
                     this.sendBotMessage("You turned flashes on!")
                     return;
@@ -394,14 +439,14 @@ poScript = ({
                     return;
                 }
             }
-            if (command == "friends") {
+            if(command == "friends") {
                 sys.stopEvent()
                 this.sendBotMessage("Your friends are: " + friends)
             }
-            if (command == "addfriend") {
+            if(command == "addfriend") {
                 sys.stopEvent()
                 var nfriends = commandData
-                if (nfriends.search(/, /g) !== -1 || nfriends.search(/ ,/g) !== -1) {
+                if(nfriends.search(/, /g) !== -1 || nfriends.search(/ ,/g) !== -1) {
                     nfriends = nfriends.replace(/, /g, ",").replace(/ ,/g, ",")
                 }
                 nfriends = nfriends.split(",")
@@ -409,11 +454,11 @@ poScript = ({
                 sys.saveVal('friends', friends.toString())
                 this.sendBotMessage("You added " + commandData + " to your friends!")
             }
-            if (command == "removefriend") {
+            if(command == "removefriend") {
                 sys.stopEvent()
                 commandData = commandData.toLowerCase()
-                for (x in friends) {
-                    if (friends[x].toLowerCase() === commandData) {
+                for(x in friends) {
+                    if(friends[x].toLowerCase() === commandData) {
                         friends.splice(x, 1)
                         sys.saveVal('friends', friends.toString())
                         this.sendBotMessage("You removed " + commandData + " from your friends!")
@@ -422,9 +467,9 @@ poScript = ({
                 }
                 this.sendBotMessage(commandData + " is not a stalkword!")
             }
-            if (command == "changebotname") {
+            if(command == "changebotname") {
                 sys.stopEvent()
-                if (commandData == undefined) {
+                if(commandData == undefined) {
                     return;
                 }
                 clientbotname = commandData
@@ -432,9 +477,9 @@ poScript = ({
                 sys.saveVal("clientbotname", clientbotname)
                 return;
             }
-            if (command == "changebotcolour" || command == "changebotcolor") {
+            if(command == "changebotcolour" || command == "changebotcolor") {
                 sys.stopEvent()
-                if (commandData == undefined) {
+                if(commandData == undefined) {
                     return;
                 }
                 clientbotcolour = commandData
@@ -442,7 +487,7 @@ poScript = ({
                 sys.saveVal("clientbotcolour", clientbotcolour)
                 return;
             }
-            if (command == "resetbot") {
+            if(command == "resetbot") {
                 sys.stopEvent()
                 clientbotcolour = "#3DAA68"
                 clientbotname = "+ClientBot"
@@ -451,17 +496,17 @@ poScript = ({
                 this.sendBotMessage("You reset your bot to default values")
                 return;
             }
-            if (command == "eval") {
+            if(command == "eval") {
                 sys.stopEvent()
                 eval(commandData)
             }
-            if (command == "evalp") {
+            if(command == "evalp") {
                 sys.stopEvent()
                 var bindChannel = channel;
                 try {
                     var res = eval(commandData);
                     this.sendMessage("Got from eval: " + res, bindChannel);
-                } catch (err) {
+                } catch(err) {
                     this.sendMessage("Error in eval: " + err, bindChannel);
                 }
                 return;
