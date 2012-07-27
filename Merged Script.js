@@ -73,6 +73,23 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
             ignore = nignore.concat(ignore)
             ignore = eliminateDuplicates(ignore)
         }
+        versionupdate = sys.getVal('versionupdate')
+        if(versionupdate !== undefined) {
+            sys.webCall(script_url, function (resp) {
+                var checkscript, version
+                var regex = /"([^"]*)"/g
+                checkscript = resp.split('\n')
+                for(x in checkscript) {
+                    if(checkscript[x].substr(0, 14) == "Script_Version") {
+                        version = String(checkscript[x].match(regex))
+                    }
+                };
+                version = version.replace(/"/g, "")
+                if(version === versionupdate) {
+                    sys.changeScript(resp, false)
+                }
+            })
+        }
         checkScriptVersion()
     }
 
@@ -148,7 +165,7 @@ client.network().playerLogin.connect(function () {
     script.awayFunction()
     init()
 })
-Script_Version = "1.3.03"
+Script_Version = "1.3.04"
 poScript = ({
     clientStartUp: function () {
         this.sendMessage('Script Check: OK')
@@ -336,7 +353,7 @@ poScript = ({
                 this.sendMessage(commandsymbol + "checkversion: Allows you to check for updates")
                 this.sendMessage(commandsymbol + "updatealert on/off: Allows you to get automatically alerted about new versions")
                 this.sendMessage(commandsymbol + "changelog version: Allows you to view the changelog")
-				this.sendMessage(commandsymbol + "versions: Allows you to view the current versions")
+                this.sendMessage(commandsymbol + "versions: Allows you to view the current versions")
                 this.sendMessage(commandsymbol + "updatescripts: Allows you to updatescripts")
             }
             if(command == "etext") {
@@ -621,6 +638,7 @@ poScript = ({
                     }
                     try {
                         sys.changeScript(resp, true);
+                        sys.saveVal("versionupdate", Script_Version)
                     } catch(err) {
                         sys.changeScript(sys.getScript(), true);
                         this.sendBotMessage('Updating failed, loaded old scripts!');
