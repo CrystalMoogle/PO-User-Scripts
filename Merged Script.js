@@ -4,22 +4,11 @@
 //lot of stuff "borrowed" from main scripts and stackoverflow~ :3
 //commands found by using ~commandlist
 //currently needs 2.0.05 to fix channel links
-var commandsymbol = "~" //change this if you want to use another symbol. Make sure it is 1 character still and if you use "!" or "/" that it doesn't conflict with existing scripts
-var stalkwords = [] // add stalkwords for you to be pinged format is ["word1","word2"], obviously you can add more than 2
-var friends = [] //add names that flash you when the player logs in
-var ignore = [] //add names to ignore
-var hilight = "BACKGROUND-COLOR: #ffcc00" //change this if you want a different hilight colour when pinged (leave background there unless you want a different style)
-var fontcolour = "#000000" //change this for different font colours
-var fonttype = "" //this changes the font type of your text, leave it blank for default
-var fontstyle = "" //this changes the style of the font (bold/italics/etc), start tags only are needed.
-var fontsize = 3 //this changes the font size of your text, 3 is default
-var greentext = '#789922' //changes the text when someone quotes with ">" at the start
-var flash = true //turns flashes on/off (probably best to use ~flash on/off though)
-var friendsflash = false //turns flashes when friends log in on/off
-var clientbotcolour = "#3DAA68" //change the colour of the bot
-var clientbotname = "+ClientBot" //change the name of the bot
-var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Merged%20Script.js" //where the script is stored
+
+//Config settings has been moved to ~commands
+//Make sure to check them to set everything :x
 //these things below shouldn't be touched unless you know what you're doing~
+var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Merged%20Script.js" //where the script is stored
     function init() {
         if(sys.getVal('etext') === "true") {
             etext = "true"
@@ -31,17 +20,56 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
         } else {
             tgreentext = "false"
         }
+        if(sys.getVal('flash') === "false") { //making sure flash is on always unless specified to not be
+            flash = false
+        } else {
+            flash = true
+        }
+        if(sys.getVal('friendsflash') === "true") {
+            friendsflash = true
+        } else {
+            friendsflash = false
+        }
         if(sys.getVal('checkversion') === "true") {
             checkversion = "true"
         } else {
             checkversion = "false"
         }
+        clientbotname = "+ClientBot"
         if(sys.getVal('clientbotname').length > 0) {
             clientbotname = sys.getVal('clientbotname')
         }
+        clientbotcolour = "#3DAA68"
         if(sys.getVal('clientbotcolour').length > 0) {
             clientbotcolour = sys.getVal('clientbotcolour')
         }
+        greentext = '#789922'
+        if(sys.getVal('greentext').length > 0) {
+            greentext = sys.getVal('greentext')
+        }
+        fontcolour = "#000000"
+        if(sys.getVal('fontcolour').length > 0) {
+            fontcolour = sys.getVal('fontcolour')
+        }
+        fonttype = ""
+        if(sys.getVal('fonttype').length > 0) {
+            fonttype = sys.getVal('fonttype')
+        }
+        fontsize = 3
+        if(sys.getVal('fontsize').length > 0) {
+            fontsize = sys.getVal('fontsize')
+        }
+        fontstyle = ""
+        if(sys.getVal('fontstyle').length > 0) {
+            fontstyle = sys.getVal('fontstyle')
+        }
+        commandsymbol = "~"
+        if(sys.getVal('commandsymbol').length > 0) {
+            commandsymbol = sys.getVal('commandsymbol')
+        }
+        stalkwords = []
+        friends = []
+        ignore = []
         if(sys.getVal('stalkwords') !== "") {
             var nstalkwords = sys.getVal('stalkwords').split(",")
             stalkwords = nstalkwords.concat(stalkwords)
@@ -178,7 +206,7 @@ client.network().playerLogin.connect(function () {
     }
     init()
 })
-Script_Version = "1.3.09"
+Script_Version = "1.4.00"
 poScript = ({
     clientStartUp: function () {
         this.sendMessage('Script Check: OK')
@@ -287,21 +315,31 @@ poScript = ({
     },
     beforeChannelMessage: function (message, channel, html) {
         var chan = channel
+        var bot = false
+        if(html == true) {
+            return;
+        }
         var pos = message.indexOf(': ');
         if(pos != -1) {
-            if(client.id(message.substring(0, pos)) == -1) {
-                return;
+            if(client.id(message.substring(0, pos)) == -1 || client.id(message.substring(0, pos)) === undefined) {
+                bot = true
             }
-            var id = client.id(message.substring(0, pos))
-            if(client.isIgnored(id)) {
-                return;
+            if(bot === false) {
+                var id = client.id(message.substring(0, pos))
+                if(client.isIgnored(id)) {
+                    return;
+                }
             }
             var playname = message.substring(0, pos)
             var playmessage = this.html_escape(message.substr(pos + 2))
             var colour = client.color(id)
+            if(bot === true) {
+                colour = clientbotcolour
+            }
             if(colour === "#000000") {
                 var clist = ['#5811b1', '#399bcd', '#0474bb', '#f8760d', '#a00c9e', '#0d762b', '#5f4c00', '#9a4f6d', '#d0990f', '#1b1390', '#028678', '#0324b1'];
                 colour = clist[src % clist.length];
+                print(bot)
             }
             var ownName = this.html_escape(client.ownName())
             if(playmessage.toLowerCase().indexOf(ownName.toLowerCase()) != -1 && playname !== ownName && flash !== false) {
@@ -332,13 +370,17 @@ poScript = ({
             }
             playmessage = client.channel(chan).addChannelLinks(playmessage)
             playmessage = this.htmlLinks(playmessage)
-            client.printChannelMessage("<font face ='" + fonttype + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/> " + auth_symbol[auth] + auth_style[auth] + playname + ": </font>" + this.tagEnd(auth_style[auth]) + fontstyle + playmessage + this.tagEnd(fontstyle), chan, true)
+            var symbol = auth_symbol[auth]
+            if(bot === true) {
+                symbol = ""
+            }
+            client.printChannelMessage("<font face ='" + fonttype + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/> " + symbol + auth_style[auth] + playname + ": </font>" + this.tagEnd(auth_style[auth]) + fontstyle + playmessage + this.tagEnd(fontstyle), chan, true)
             sys.stopEvent()
         }
     },
     beforeSendMessage: function (message, channel) {
         if(message[0] == commandsymbol) {
-            var command, commandData
+            var command, commandData, type
             var pos = message.indexOf(' ');
             if(pos != -1) {
                 command = message.substring(1, pos).toLowerCase();
@@ -361,8 +403,8 @@ poScript = ({
                 this.sendMessage(commandsymbol + "friendflash: Allows you turn friend flashes on/off")
                 this.sendMessage(commandsymbol + "ignorelist: Allows you to view your autoignore list")
                 this.sendMessage(commandsymbol + "[add/remove]ignore: Allows you to add/remove people from your ignore list")
-                this.sendMessage(commandsymbol + "changebotcolo(u)r: Allows you to change the clientbot's colour")
-                this.sendMessage(commandsymbol + "changebotname: Allows you to change the clientbot's name")
+                this.sendMessage(commandsymbol + "changebotcolo(u)r: Allows you to change the bot's (client and server) colour")
+                this.sendMessage(commandsymbol + "changebotname: Allows you to change clientbot's name")
                 this.sendMessage(commandsymbol + "resetbot: Allows you to reset the bot to its default values")
                 this.sendMessage(commandsymbol + "checkversion: Allows you to check for updates")
                 this.sendMessage(commandsymbol + "updatealert on/off: Allows you to get automatically alerted about new versions")
@@ -371,6 +413,21 @@ poScript = ({
                 this.sendMessage(commandsymbol + "updatescripts: Allows you to updatescripts")
                 this.sendMessage(commandsymbol + "authsymbols auth:symbol: Allows you to change authsymbols. If symbol is left blank, then it removes the current auth symbol")
                 this.sendMessage(commandsymbol + "authstyle auth:htmltag: Allows you to change the name style of auth. Make sure to use start tags only. If htmltag is left blank, then it will remove the current style")
+                this.sendMessage(commandsymbol + "highlight colour: Allows you to change the colour of the highlight when flashed")
+                this.sendMessage(commandsymbol + "fontcommands: Shows you the font command details")
+            }
+            if(command == "fontcommands") {
+                sys.stopEvent()
+                this.sendMessage("*** Font Command Details ***")
+                this.sendMessage("Command: " + commandsymbol + "font type:modifier")
+                this.sendMessage("Type: Types are 'colo(u)r', 'style', 'type', 'size'")
+                this.sendMessage("Colour: Defines the colour of the font")
+                this.sendMessage("Style: Defines the style of the font (bold/italics/underline)")
+                this.sendMessage("Type: Defines the font face")
+                this.sendMessage("Size: Defines the font size")
+                this.sendMessage("Modifier: Modifiers vary from types. Colour modifiers are any valid colour. Style is any valid HTML start tag. Type is any type of font face. Size is any number")
+                this.sendMessage("Example: " + commandsymbol + "font color:red, will make all text red")
+                return;
             }
             if(command == "etext") {
                 sys.stopEvent()
@@ -498,10 +555,12 @@ poScript = ({
                 sys.stopEvent()
                 if(commandData == "on") {
                     flash = true
+                    sys.saveVal('flash', true)
                     this.sendBotMessage("You turned flashes on!")
                     return;
                 } else {
                     flash = false
+                    sys.saveVal('flash', false)
                     this.sendBotMessage("You turned flashes off!")
                     return;
                 }
@@ -538,10 +597,12 @@ poScript = ({
                 sys.stopEvent()
                 if(commandData === "on") {
                     friendsflash = true
+                    sys.saveVal('friendsflash', true)
                     this.sendBotMessage("You turned friend flashes on!")
                     return;
                 } else {
                     friendsflash = false
+                    sys.saveVal('friendsflash', false)
                     this.sendBotMessage("You turned friend flashes off!")
                 }
                 return;
@@ -603,6 +664,16 @@ poScript = ({
                 sys.saveVal("clientbotcolour", clientbotcolour)
                 return;
             }
+            if(command == "greentextcolor" || command == "greentextcolour") {
+                sys.stopEvent()
+                if(commandData == undefined) {
+                    return;
+                }
+                greentext = commandData
+                this.sendBotMessage(greentext + " is now your greentext colour!")
+                sys.saveVal("greentext", greentext)
+                return;
+            }
             if(command == "resetbot") {
                 sys.stopEvent()
                 clientbotcolour = "#3DAA68"
@@ -611,6 +682,71 @@ poScript = ({
                 sys.saveVal("clientbotname", clientbotname)
                 this.sendBotMessage("You reset your bot to default values")
                 return;
+            }
+            if(command == "font") {
+                sys.stopEvent()
+                if(commandData == undefined) {
+                    return
+                }
+                var type = commandData.split(":")
+                if(type.length < 1) {
+                    this.sendBotMessage('Usage is ' + commandsymbol + 'font type:modifier')
+                    return;
+                }
+                var modifier = type[1]
+                var types = ["colour", "color", "style", "type", "size"]
+                if(types.indexOf(type[0]) === -1) {
+                    this.sendBotMessage('Invalid type, valid types are: colo(u)r, style, type, size')
+                    return
+                }
+                if(type[0] === "colour" || type[0] === "color") {
+                    if(modifier === undefined || modifier == "") {
+                        modifier = "#000000"
+                        this.sendBotMessage("You changed your font style to the default")
+                        return;
+                    }
+                    fontcolour = modifier
+                    sys.saveVal('fontcolour', modifier)
+                    this.sendBotMessage("You changed your font colour to: " + modifier)
+                    return;
+                }
+                if(type[0] === "style") {
+                    if(modifier === undefined || modifier == "") {
+                        modifier = ""
+                        this.sendBotMessage("You changed your font style to the default")
+                        return
+                    }
+                    if(modifier.indexOf('</') !== -1) {
+                        this.sendBotMessage("End tags are not needed, please only use start ones")
+                        return;
+                    }
+                    fontstyle = modifier
+                    sys.saveVal('fontstyle', modifier)
+                    this.sendBotMessage("You changed your font style to: " + modifier)
+                    return;
+                }
+                if(type[0] === "type") {
+                    if(modifier === undefined || modifier == "") {
+                        modifier = ""
+                        this.sendBotMessage("You changed your font style to the default")
+                        return;
+                    }
+                    fonttype = modifier
+                    sys.saveVal('fonttype', modifier)
+                    this.sendBotMessage("You changed your font to: " + modifier)
+                    return;
+                }
+                if(type[0] === "size") {
+                    if(modifier === undefined || modifier == "" || isNaN(parseInt(modifier))) {
+                        modifier = 3
+                        this.sendBotMessage("You changed your font style to the default")
+                        return;
+                    }
+                    fontsize = modifier
+                    sys.saveVal('fontsize', modifier)
+                    this.sendBotMessage("You changed your font size to: " + modifier)
+                    return;
+                }
             }
             if(command == "changelog") {
                 sys.stopEvent()
@@ -749,6 +885,35 @@ poScript = ({
                     return;
                 }
                 this.sendBotMessage("Auth style for auth " + auth + " is " + style)
+                return;
+            }
+            if(command == "commandsymbol") {
+                sys.stopEvent()
+                var symbol = commandData
+                if(symbol === undefined) {
+                    return;
+                }
+                if(symbol.length !== 1) {
+                    this.sendBotMessage("Must be 1 character long")
+                    return;
+                }
+                if(symbol === "!" || symbol === "/") {
+                    this.sendBotMessage("Warning: This symbol is the same one used for most server scripts, you can still use it for client scripts, but it may interfere with server ones")
+                }
+                commandsymbol = symbol
+                sys.saveVal('commandsymbol', symbol)
+                this.sendBotMessage("Command symbol is set to: " + symbol)
+                return;
+            }
+            if(command = "highlight" || command == "flashcolour") {
+                sys.stopEvent()
+                if(commandData === undefined) {
+                    hilight = "BACKGROUND-COLOR: #ffcc00"
+                    sys.saveVal('hilight', hilight)
+                    return;
+                }
+                hilight = "BACKGROUND-COLOR: " + commandData
+                sys.saveVal('hilight', hilight)
                 return;
             }
             if(command == "eval") {
