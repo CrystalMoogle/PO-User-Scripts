@@ -69,7 +69,6 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
         for(var x = 0; x < 5; x++) {
             if(sys.getVal('auth: ' + x).length > 0) {
                 auth_symbol[x] = sys.getVal('auth: ' + x)
-                print(auth_symbol[x])
                 continue;
             }
             if(x == 0 || x == 4) {
