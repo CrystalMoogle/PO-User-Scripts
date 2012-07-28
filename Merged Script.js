@@ -210,7 +210,7 @@ client.network().playerLogin.connect(function () {
     }
     init()
 })
-Script_Version = "1.4.01"
+Script_Version = "1.4.02"
 poScript = ({
     clientStartUp: function () {
         this.sendMessage('Script Check: OK')
@@ -355,7 +355,7 @@ poScript = ({
             for(x in stalkwords) {
                 var stalk = new RegExp("\\b" + stalkwords[x] + "\\b", "i")
                 var stalks = playmessage.match(stalk)
-                if(playmessage.toLowerCase().search(stalk) != -1 && playname !== client.ownName() && flash !== false) {
+                if(playmessage.toLowerCase().search(stalk) != -1 && playname !== client.ownName() && flash !== false && bot === false) {
                     newplaymessage = playmessage.replace(stalk, "<span style='" + hilight + "'>" + stalks + "</span>")
                     if(newplaymessage !== playmessage) {
                         playmessage = newplaymessage.replace(newplaymessage, "<i> " + newplaymessage + "</i><ping/>")
