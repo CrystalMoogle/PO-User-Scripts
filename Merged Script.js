@@ -703,7 +703,7 @@ poScript = ({
                     return;
                 }
                 if(auth < 0 || auth > 4) {
-                    this.sendBotMessage("Must be between 0 and 4")
+                    this.sendBotMessage("Auth must be between 0 and 4")
                     return;
                 }
                 auth_symbol[auth] = symbol
