@@ -648,7 +648,7 @@ poScript = ({
                 }
                 changelog = JSON.parse(changelog)
                 for(x in changelog.versions) {
-                    version.push(x+", ")
+                    version.push(x)
                 }
 				this.sendBotMessage('Versions of this script are: '+version)
                 return;
