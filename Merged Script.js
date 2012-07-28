@@ -905,7 +905,7 @@ poScript = ({
                 this.sendBotMessage("Command symbol is set to: " + symbol)
                 return;
             }
-            if(command = "highlight" || command == "flashcolour") {
+            if(command == "highlight" || command == "flashcolour") {
                 sys.stopEvent()
                 if(commandData === undefined) {
                     hilight = "BACKGROUND-COLOR: #ffcc00"
