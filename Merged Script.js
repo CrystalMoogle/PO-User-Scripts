@@ -5,7 +5,7 @@
 //commands found by using ~commandlist
 //currently needs 2.0.05 to fix channel links
 
-//Config settings has been moved to ~commands
+//Config settings has been moved to ~commandslist
 //Make sure to check them to set everything :x
 //these things below shouldn't be touched unless you know what you're doing~
 var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Merged%20Script.js" //where the script is stored
