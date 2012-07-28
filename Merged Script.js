@@ -637,6 +637,7 @@ poScript = ({
             }
             if(command == "versions") {
                 sys.stopEvent()
+				var version = []
                 if(this.isSafeScripts()) {
                     return;
                 }
@@ -646,10 +647,10 @@ poScript = ({
                     return;
                 }
                 changelog = JSON.parse(changelog)
-                this.sendBotMessage('Versions of this script are: ')
                 for(x in changelog.versions) {
-                    this.sendBotMessage(x)
+                    version.push(x+", ")
                 }
+				this.sendBotMessage('Versions of this script are: '+version)
                 return;
             }
             if(command == "updatescripts") {
