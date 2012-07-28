@@ -4,14 +4,6 @@
 //lot of stuff "borrowed" from main scripts and stackoverflow~ :3
 //commands found by using ~commandlist
 //currently needs 2.0.05 to fix channel links
-var auth_style = {
-    "0": "<b>",
-    "1": "<i><b>",
-    "2": "<i><b>",
-    "3": "<i><b>",
-    "4": "<b>"
-    //change this to the style you have set, only start tags are needed
-}
 var commandsymbol = "~" //change this if you want to use another symbol. Make sure it is 1 character still and if you use "!" or "/" that it doesn't conflict with existing scripts
 var stalkwords = [] // add stalkwords for you to be pinged format is ["word1","word2"], obviously you can add more than 2
 var friends = [] //add names that flash you when the player logs in
@@ -76,6 +68,18 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
                 continue
             }
             auth_symbol[x] = "+"
+        }
+        auth_style = new Array()
+        for(var x = 0; x < 5; x++) {
+            if(sys.getVal('auths: ' + x).length > 0) {
+                auth_style[x] = sys.getVal('auths: ' + x)
+                continue;
+            }
+            if(x == 0 || x == 4) {
+                auth_style[x] = "<b>"
+                continue
+            }
+            auth_style[x] = "<i><b>"
         }
         if(sys.isSafeScripts() !== true) {
             checkScriptVersion()
@@ -153,7 +157,7 @@ if(client.ownId() !== -1) {
 client.network().playerLogin.connect(function () {
     script.awayFunction()
     versionupdate = sys.getVal('versionupdate')
-    if(versionupdate !== undefined) {
+    if(versionupdate.length > 0) {
         var resp = sys.getVal('versionscript')
         if(resp.length === 0) {
             return;
@@ -174,7 +178,7 @@ client.network().playerLogin.connect(function () {
     }
     init()
 })
-Script_Version = "1.3.08"
+Script_Version = "1.3.09"
 poScript = ({
     clientStartUp: function () {
         this.sendMessage('Script Check: OK')
@@ -322,15 +326,9 @@ poScript = ({
             } else {
                 playmessage = "<font color = '" + fontcolour + "'>" + playmessage
             }
-            var symbolLength = 0
-            for(x in auth_symbol) {
-                if(x > symbolLength) {
-                    symbolLength = x
-                }
-            }
             var auth = client.auth(id)
-            if(auth > symbolLength) {
-                auth = 0
+            if(auth > 4) {
+                auth = 4
             }
             playmessage = client.channel(chan).addChannelLinks(playmessage)
             playmessage = this.htmlLinks(playmessage)
@@ -371,7 +369,8 @@ poScript = ({
                 this.sendMessage(commandsymbol + "changelog version: Allows you to view the changelog")
                 this.sendMessage(commandsymbol + "versions: Allows you to view the current versions")
                 this.sendMessage(commandsymbol + "updatescripts: Allows you to updatescripts")
-                this.sendMessage(commandsymbol + "authsymbols number:symbol: Allows you to change authsymbols")
+                this.sendMessage(commandsymbol + "authsymbols auth:symbol: Allows you to change authsymbols. If symbol is left blank, then it removes the current auth symbol")
+                this.sendMessage(commandsymbol + "authstyle auth:htmltag: Allows you to change the name style of auth. Make sure to use start tags only. If htmltag is left blank, then it will remove the current style")
             }
             if(command == "etext") {
                 sys.stopEvent()
@@ -637,7 +636,7 @@ poScript = ({
             }
             if(command == "versions") {
                 sys.stopEvent()
-				var version = []
+                var version = []
                 if(this.isSafeScripts()) {
                     return;
                 }
@@ -648,9 +647,9 @@ poScript = ({
                 }
                 changelog = JSON.parse(changelog)
                 for(x in changelog.versions) {
-                    version.push(" "+x)
+                    version.push(" " + x)
                 }
-				this.sendBotMessage('Versions of this script are: '+version)
+                this.sendBotMessage('Versions of this script are: ' + version)
                 return;
             }
             if(command == "updatescripts") {
@@ -695,7 +694,7 @@ poScript = ({
                 var symbols = commandData.split(":")
                 var auth = symbols[0]
                 var symbol = symbols[1]
-                if(symbols.length != 2) {
+                if(symbols.length > 2 || symbols.length < 1) {
                     this.sendBotMessage("Command usage is: \"" + commandsymbol + "changesymbols number:symbol\"")
                     return;
                 }
@@ -707,13 +706,48 @@ poScript = ({
                     this.sendBotMessage("Auth must be between 0 and 4")
                     return;
                 }
+                if(symbol === undefined) {
+                    symbol = ""
+                }
                 auth_symbol[auth] = symbol
                 sys.saveVal("auth: " + auth, symbol)
-				if(symbol === ""){
-					 this.sendBotMessage("Auth " + auth + " now has no symbol")
-					 return;
-				}
+                if(symbol === "") {
+                    this.sendBotMessage("Auth " + auth + " now has no symbol")
+                    return;
+                }
                 this.sendBotMessage("Auth symbol for auth " + auth + " is " + symbol)
+                return;
+            }
+            if(command == "authstyle") {
+                sys.stopEvent()
+                var styles = commandData.split(":")
+                var auth = styles[0]
+                var style = styles[1]
+                if(styles.length > 2 || styles.length < 1) {
+                    this.sendBotMessage("Command usage is: \"" + commandstyle + "changestyles number:html\"")
+                    return;
+                }
+                if(isNaN(parseInt(auth))) {
+                    this.sendBotMessage("The first parameter must be a number!")
+                    return;
+                }
+                if(auth < 0 || auth > 4) {
+                    this.sendBotMessage("Auth must be between 0 and 4")
+                    return;
+                }
+                if(style.indexOf('</') !== -1) {
+                    this.sendBotMessage("End tags are not needed, please only use start ones")
+                }
+                if(style === undefined) {
+                    style = ""
+                }
+                auth_style[auth] = style
+                sys.saveVal("auth: " + auth, style)
+                if(style === "") {
+                    this.sendBotMessage("Auth " + auth + " now has no style")
+                    return;
+                }
+                this.sendBotMessage("Auth style for auth " + auth + " is " + style)
                 return;
             }
             if(command == "eval") {
