@@ -708,6 +708,9 @@ poScript = ({
                 }
                 auth_symbol[auth] = symbol
                 sys.saveVal("auth: " + auth, symbol)
+				if(symbol === undefined){
+					 this.sendBotMessage("Auth " + auth + " now has no symbol")
+				}
                 this.sendBotMessage("Auth symbol for auth " + auth + " is " + symbol)
                 return;
             }
