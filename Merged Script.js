@@ -372,6 +372,7 @@ poScript = ({
                 this.sendMessage(commandsymbol + "changelog version: Allows you to view the changelog")
                 this.sendMessage(commandsymbol + "versions: Allows you to view the current versions")
                 this.sendMessage(commandsymbol + "updatescripts: Allows you to updatescripts")
+                this.sendMessage(commandsymbol + "authsymbols number:symbol: Allows you to change authsymbols")
             }
             if(command == "etext") {
                 sys.stopEvent()
@@ -689,7 +690,7 @@ poScript = ({
                 sys.webCall(updateURL, changeScript);
                 return;
             }
-            if(command == "changesymbols") {
+            if(command == "authsymbol" || command == "authsymbols") {
                 sys.stopEvent()
                 var symbols = commandData.split(":")
                 var auth = symbols[0]
