@@ -737,6 +737,7 @@ poScript = ({
                 }
                 if(style.indexOf('</') !== -1) {
                     this.sendBotMessage("End tags are not needed, please only use start ones")
+                    return;
                 }
                 if(style === undefined) {
                     style = ""
