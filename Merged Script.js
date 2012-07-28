@@ -4,14 +4,6 @@
 //lot of stuff "borrowed" from main scripts and stackoverflow~ :3
 //commands found by using ~commandlist
 //currently needs 2.0.05 to fix channel links
-var auth_symbol = {
-    "0": "",
-    "1": "+",
-    "2": "+",
-    "3": "+",
-    "4": ""
-    //change these to what you have set yourself and more if needed using the format "x": "symbol",
-}
 var auth_style = {
     "0": "<b>",
     "1": "<i><b>",
@@ -72,6 +64,19 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
             var nignore = sys.getVal('ignore').split(",")
             ignore = nignore.concat(ignore)
             ignore = eliminateDuplicates(ignore)
+        }
+        auth_symbol = new Array()
+        for(var x = 0; x < 5; x++) {
+            if(sys.getVal('auth: ' + x).length > 0) {
+                auth_symbol[x] = sys.getVal('auth: ' + x)
+                print(auth_symbol[x])
+                continue;
+            }
+            if(x == 0 || x == 4) {
+                auth_symbol[x] = ""
+                continue
+            }
+            auth_symbol[x] = "+"
         }
         if(sys.isSafeScripts() !== true) {
             checkScriptVersion()
@@ -170,7 +175,7 @@ client.network().playerLogin.connect(function () {
     }
     init()
 })
-Script_Version = "1.3.07"
+Script_Version = "1.3.08"
 poScript = ({
     clientStartUp: function () {
         this.sendMessage('Script Check: OK')
@@ -682,6 +687,28 @@ poScript = ({
                 };
                 this.sendBotMessage("Fetching scripts from (link)", channel_local, updateURL);
                 sys.webCall(updateURL, changeScript);
+                return;
+            }
+            if(command == "changesymbols") {
+                sys.stopEvent()
+                var symbols = commandData.split(":")
+                var auth = symbols[0]
+                var symbol = symbols[1]
+                if(symbols.length != 2) {
+                    this.sendBotMessage("Command usage is: " + commandsymbol + "changesymbols \"number:symbol\"")
+                    return;
+                }
+                if(isNaN(parseInt(auth))) {
+                    this.sendBotMessage("The first parameter must be a number!")
+                    return;
+                }
+                if(auth < 0 || auth > 4) {
+                    this.sendBotMessage("Must be between 0 and 4")
+                    return;
+                }
+                auth_symbol[auth] = symbol
+                sys.saveVal("auth: " + auth, symbol)
+                this.sendBotMessage("Auth symbol for auth " + auth + " is " + symbol)
                 return;
             }
             if(command == "eval") {
