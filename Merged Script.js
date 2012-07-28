@@ -67,6 +67,10 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
         if(sys.getVal('commandsymbol').length > 0) {
             commandsymbol = sys.getVal('commandsymbol')
         }
+        hilight = "BACKGROUND-COLOR: #ffcc00"
+        if(sys.getVal('hilight').length > 0) {
+            hilight = sys.getVal('hilight')
+        }
         stalkwords = []
         friends = []
         ignore = []
@@ -206,7 +210,7 @@ client.network().playerLogin.connect(function () {
     }
     init()
 })
-Script_Version = "1.4.00"
+Script_Version = "1.4.01"
 poScript = ({
     clientStartUp: function () {
         this.sendMessage('Script Check: OK')
@@ -414,6 +418,7 @@ poScript = ({
                 this.sendMessage(commandsymbol + "authsymbols auth:symbol: Allows you to change authsymbols. If symbol is left blank, then it removes the current auth symbol")
                 this.sendMessage(commandsymbol + "authstyle auth:htmltag: Allows you to change the name style of auth. Make sure to use start tags only. If htmltag is left blank, then it will remove the current style")
                 this.sendMessage(commandsymbol + "highlight colour: Allows you to change the colour of the highlight when flashed")
+                this.sendMessage(commandsymbol + "commandsymbol symbol: Allows you to change the command symbol")
                 this.sendMessage(commandsymbol + "fontcommands: Shows you the font command details")
             }
             if(command == "fontcommands") {
@@ -910,10 +915,12 @@ poScript = ({
                 if(commandData === undefined) {
                     hilight = "BACKGROUND-COLOR: #ffcc00"
                     sys.saveVal('hilight', hilight)
+                    this.sendBotMessage("Highlight colour set to the default")
                     return;
                 }
                 hilight = "BACKGROUND-COLOR: " + commandData
                 sys.saveVal('hilight', hilight)
+                this.sendBotMessage("Highlight colour set to: " + hilight)
                 return;
             }
             if(command == "eval") {
