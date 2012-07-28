@@ -695,7 +695,7 @@ poScript = ({
                 var auth = symbols[0]
                 var symbol = symbols[1]
                 if(symbols.length != 2) {
-                    this.sendBotMessage("Command usage is: " + commandsymbol + "changesymbols \"number:symbol\"")
+                    this.sendBotMessage("Command usage is: \"" + commandsymbol + "changesymbols number:symbol\"")
                     return;
                 }
                 if(isNaN(parseInt(auth))) {
