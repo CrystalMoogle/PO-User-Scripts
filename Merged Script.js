@@ -204,7 +204,6 @@ client.network().playerLogin.connect(function () {
         };
         version = version.replace(/"/g, "")
         if(version === versionupdate) {
-            versionupdate = undefined
             sys.changeScript(resp, false)
         }
     }
