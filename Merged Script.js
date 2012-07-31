@@ -4,7 +4,6 @@
 //lot of stuff "borrowed" from main scripts and stackoverflow~ :3
 //commands found by using ~commandlist
 //currently needs 2.0.05 to fix channel links
-
 //Config settings has been moved to ~commandslist
 //Make sure to check them to set everything :x
 //these things below shouldn't be touched unless you know what you're doing~
@@ -74,6 +73,7 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
         stalkwords = []
         friends = []
         ignore = []
+        logchannel = []
         if(sys.getVal('stalkwords') !== "") {
             var nstalkwords = sys.getVal('stalkwords').split(",")
             stalkwords = nstalkwords.concat(stalkwords)
@@ -88,6 +88,11 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
             var nignore = sys.getVal('ignore').split(",")
             ignore = nignore.concat(ignore)
             ignore = eliminateDuplicates(ignore)
+        }
+        if(sys.getVal('logchannel') !== "") {
+            var nlogchannel = sys.getVal('logchannel').split(",")
+            logchannel = nlogchannel.concat(logchannel)
+            logchannel = eliminateDuplicates(logchannel)
         }
         auth_symbol = new Array()
         for(var x = 0; x < 5; x++) {
@@ -183,6 +188,38 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
         }
         return out;
     }
+
+    function saveToLog(message, channel) {
+        var logging = false
+        for(var x in logchannel) {
+            if(client.channelName(channel).toLowerCase() === logchannel[x].toLowerCase()) {
+                logging = true
+                break;
+            }
+        }
+        if(logging === false) {
+            return;
+        }
+        var time = new Date()
+        var h = time.getHours()
+        var m = time.getMinutes()
+        var s = time.getSeconds()
+        var d = time.getDate()
+        var mo = parseInt(time.getMonth() + 1)
+        var y = time.getFullYear()
+        var date = d + "-" + mo + "-" + y
+        m = checkTime(m)
+        s = checkTime(s)
+        var timestamp = h + ":" + m + ":" + s
+        sys.appendToFile("Channel Logs/" + client.channelName(channel) + " " + date + ".txt", "(" + timestamp + ") " + message + "\n")
+    }
+
+    function checkTime(i) {
+        if(i < 10) {
+            i = "0" + i;
+        }
+        return i;
+    }
 if(client.ownId() !== -1) {
     init()
 }
@@ -209,7 +246,7 @@ client.network().playerLogin.connect(function () {
     }
     init()
 })
-Script_Version = "1.4.02"
+Script_Version = "1.5.02"
 poScript = ({
     clientStartUp: function () {
         this.sendMessage('Script Check: OK')
@@ -230,7 +267,7 @@ poScript = ({
         if(friendsflash === true) {
             flashvar = "<ping/>"
         }
-        for(x in friends) {
+        for(var x in friends) {
             if(client.name(id).toLowerCase() === friends[x].toLowerCase() && flash === true) {
                 this.sendBotMessage("User " + client.name(id) + " has logged in" + flashvar + "", client.currentChannel(), "<ping/>")
             }
@@ -257,7 +294,7 @@ poScript = ({
         var found = text.match(exp)
         var newtext
         var newfound
-        for(x in found) {
+        for(var x in found) {
             newfound = found[x].replace(/\//g, sys.md5('/'))
             newfound = newfound.replace(/_/g, sys.md5('_'))
             text = text.replace(found[x], newfound)
@@ -322,6 +359,7 @@ poScript = ({
         if(html == true) {
             return;
         }
+        saveToLog(message, channel)
         var pos = message.indexOf(': ');
         if(pos != -1) {
             if(client.id(message.substring(0, pos)) == -1 || client.id(message.substring(0, pos)) === undefined) {
@@ -341,7 +379,7 @@ poScript = ({
             }
             if(colour === "#000000") {
                 var clist = ['#5811b1', '#399bcd', '#0474bb', '#f8760d', '#a00c9e', '#0d762b', '#5f4c00', '#9a4f6d', '#d0990f', '#1b1390', '#028678', '#0324b1'];
-                colour = clist[src % clist.length];
+                colour = clist[client.id(playname) % clist.length];
             }
             var ownName = this.html_escape(client.ownName())
             if(playmessage.toLowerCase().indexOf(ownName.toLowerCase()) != -1 && playname !== ownName && flash !== false) {
@@ -405,6 +443,8 @@ poScript = ({
                 this.sendMessage(commandsymbol + "friendflash: Allows you turn friend flashes on/off")
                 this.sendMessage(commandsymbol + "ignorelist: Allows you to view your autoignore list")
                 this.sendMessage(commandsymbol + "[add/remove]ignore: Allows you to add/remove people from your ignore list")
+                this.sendMessage(commandsymbol + "logchannels: Allows you to view your log channels")
+                this.sendMessage(commandsymbol + "[add/remove]logchannel: Allows you to add/remove channels from the channels you log")
                 this.sendMessage(commandsymbol + "changebotcolo(u)r: Allows you to change the bot's (client and server) colour")
                 this.sendMessage(commandsymbol + "changebotname: Allows you to change clientbot's name")
                 this.sendMessage(commandsymbol + "resetbot: Allows you to reset the bot to its default values")
@@ -920,6 +960,41 @@ poScript = ({
                 sys.saveVal('hilight', hilight)
                 this.sendBotMessage("Highlight colour set to: " + hilight)
                 return;
+            }
+            if(command == "logchannels") {
+                sys.stopEvent()
+                this.sendBotMessage("You are logging: " + logchannel)
+            }
+            if(command == "addlogchannel") {
+                sys.stopEvent()
+                if(this.isSafeScripts()) {
+                    return;
+                }
+                if(typeof (sys.filesForDirectory('Channel Logs')) === "undefined") {
+                    this.sendBotMessage("Please make a folder in your PO folder called \"Channel Logs\"")
+                    return;
+                }
+                var nlogchannel = commandData
+                if(nlogchannel.search(/, /g) !== -1 || nlogchannel.search(/ ,/g) !== -1) {
+                    nlogchannel = nlogchannel.replace(/, /g, ",").replace(/ ,/g, ",")
+                }
+                nlogchannel = nlogchannel.split(",")
+                logchannel = eliminateDuplicates(nlogchannel.concat(logchannel))
+                sys.saveVal('logchannel', logchannel.toString())
+                this.sendBotMessage("You added " + commandData + " to your log channels!")
+            }
+            if(command == "removelogchannel") {
+                sys.stopEvent()
+                commandData = commandData.toLowerCase()
+                for(x in logchannel) {
+                    if(logchannel[x].toLowerCase() === commandData) {
+                        logchannel.splice(x, 1)
+                        sys.saveVal('logchannel', logchannel.toString())
+                        this.sendBotMessage("You removed " + commandData + " from your log channels!")
+                        return;
+                    }
+                }
+                this.sendBotMessage(commandData + " is not a log channel!")
             }
             if(command == "eval") {
                 sys.stopEvent()
