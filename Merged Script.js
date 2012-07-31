@@ -382,7 +382,7 @@ poScript = ({
                 colour = clist[client.id(playname) % clist.length];
             }
             var ownName = this.html_escape(client.ownName())
-            if(playmessage.toLowerCase().indexOf(ownName.toLowerCase()) != -1 && playname !== ownName && flash !== false) {
+            if(playmessage.toLowerCase().indexOf(ownName.toLowerCase()) != -1 && playname !== ownName && flash !== false && bot === false) {
                 var name = new RegExp("\\b" + ownName + "\\b", "i")
                 newplaymessage = playmessage.replace(name, "<span style='" + hilight + "'>" + client.ownName() + "</span>")
                 if(newplaymessage !== playmessage) {
