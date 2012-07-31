@@ -246,7 +246,7 @@ client.network().playerLogin.connect(function () {
     }
     init()
 })
-Script_Version = "1.5.02"
+Script_Version = "1.5.01"
 poScript = ({
     clientStartUp: function () {
         this.sendMessage('Script Check: OK')
@@ -290,7 +290,7 @@ poScript = ({
         }
     },
     htmlLinks: function (text) {
-        var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\(\)\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/\(\)%=~_|])/ig;
         var found = text.match(exp)
         var newtext
         var newfound
