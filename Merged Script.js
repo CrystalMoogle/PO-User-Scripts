@@ -246,7 +246,7 @@ client.network().playerLogin.connect(function () {
     }
     init()
 })
-Script_Version = "1.5.01"
+Script_Version = "1.5.02"
 poScript = ({
     clientStartUp: function () {
         this.sendMessage('Script Check: OK')
@@ -922,7 +922,7 @@ poScript = ({
                     style = ""
                 }
                 auth_style[auth] = style
-                sys.saveVal("auth: " + auth, style)
+                sys.saveVal("auths: " + auth, style)
                 if(style === "") {
                     this.sendBotMessage("Auth " + auth + " now has no style")
                     return;
