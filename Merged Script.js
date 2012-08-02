@@ -551,7 +551,7 @@ poScript = ({
             }
             if(command == "goto") {
                 sys.stopEvent()
-                var channela = commandData
+                var channela = commandData.toLowerCase()
                 var channels = client.channelNames()
                 for(x in channels) {
                     if(channela === channels[x].toLowerCase()) {
