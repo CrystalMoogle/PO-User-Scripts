@@ -70,6 +70,10 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
         if(sys.getVal('hilight').length > 0) {
             hilight = sys.getVal('hilight')
         }
+        armessage = sys.getVal('armessage')
+        arstart = sys.getVal('arstart')
+        arend = sys.getVal('arend')
+        artype = sys.getVal('artype')
         stalkwords = []
         friends = []
         ignore = []
@@ -118,6 +122,7 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
             }
             auth_style[x] = "<i><b>"
         }
+        playerswarn = []
         if(sys.isSafeScripts() !== true) {
             checkScriptVersion()
         }
@@ -246,7 +251,7 @@ client.network().playerLogin.connect(function () {
     }
     init()
 })
-Script_Version = "1.5.02"
+Script_Version = "1.6.00"
 poScript = ({
     clientStartUp: function () {
         this.sendMessage('Script Check: OK')
@@ -418,6 +423,33 @@ poScript = ({
             sys.stopEvent()
         }
     },
+    afterPMReceived: function (id, message) {
+        if(playerswarn[id] === true) {
+            return;
+        }
+        var time = new Date();
+        var h = time.getHours()
+        if(artype === "time") {
+            if(arstart < arend) {
+                if(h >= arstart && h < arend) {
+                    client.network().sendPM(id, armessage);
+                    playerswarn[id] = true
+                    return;
+                }
+            }
+            if(h >= arend && h < arstart) {
+                client.network().sendPM(id, armessage);
+                playerswarn[id] = true
+                return;
+            }
+        }
+        if(autoresponse === true) {
+            client.network().sendPM(id, armessage);
+            playerswarn[id] = true
+            return;
+        }
+        return;
+    },
     beforeSendMessage: function (message, channel) {
         if(message[0] == commandsymbol) {
             var command, commandData, type
@@ -457,6 +489,10 @@ poScript = ({
                 this.sendMessage(commandsymbol + "authstyle auth:htmltag: Allows you to change the name style of auth. Make sure to use start tags only. If htmltag is left blank, then it will remove the current style")
                 this.sendMessage(commandsymbol + "highlight colour: Allows you to change the colour of the highlight when flashed")
                 this.sendMessage(commandsymbol + "commandsymbol symbol: Allows you to change the command symbol")
+                this.sendMessage(commandsymobol + "armessage: sets your autoresponse message")
+                this.sendMessage(commandsymbol + "artype [command/time]: sets how to activate your autoresponse, time does it between certain hours, command activates it by command")
+                this.sendMessage(commandsymbol + "ar[on/off]: turns your autoresponse on/off if type if command")
+                this.sendMessage(commandsymbol + "artime hour1:hour2: sets your autoresponse to activate between hour1 and hour2")
                 this.sendMessage(commandsymbol + "fontcommands: Shows you the font command details")
             }
             if(command == "fontcommands") {
@@ -995,6 +1031,66 @@ poScript = ({
                     }
                 }
                 this.sendBotMessage(commandData + " is not a log channel!")
+            }
+            if(command == "armessage") {
+                sys.stopEvent()
+                armessage = commandData
+                sys.saveVal('armessage', armessage)
+                this.sendBotMessage('You set your auto-respond message to: ' + armessage)
+                return;
+            }
+            if(command == "artype") {
+                sys.stopEvent()
+                if(commandData == "command") {
+                    artype = "command"
+                    sys.saveVal('artype', artype)
+                    this.sendBotMessage('Your auto-respond message will be activated by command')
+                    return;
+                }
+                if(commandData == "time") {
+                    artype = "time"
+                    sys.saveVal('artype', artype)
+                    this.sendBotMessage('Your auto-respond message will be activated by time')
+                    return;
+                }
+                this.sendBotMessage('This is not a valid type!')
+                return;
+            }
+            if(command == "artime") {
+                sys.stopEvent()
+                var time = commandData.split(':')
+                if(time.length !== 2) {
+                    this.sendBotMessage('Usage of this command is: ' + commandsymbol + 'artime starthour:endhour')
+                    return;
+                }
+                if(isNaN(time[0]) || isNaN(time[1]) || time[0] < 0 || time[0] > 24 || time[1] < 0 || time[1] > 24 || time[0] == "" || time[1] == "") {
+                    this.sendBotMessage('Make sure both parameters are numbers and are between 0 and 24')
+                    return;
+                }
+                arstart = time[0]
+                arend = time[1]
+                sys.saveVal('arend', arend)
+                sys.saveVal('arstart', arstart)
+                this.sendBotMessage('You auto response message will activate between ' + arstart + ':00 and ' + arend + ':00')
+                return;
+            }
+            if(command == "aron") {
+                sys.stopEvent()
+                if(artype !== "command") {
+                    return;
+                }
+                autoresponse = true
+                this.sendBotMessage('You turned your auto response on')
+                return;
+            }
+            if(command == "aroff") {
+                sys.stopEvent()
+                if(artype !== "command") {
+                    return;
+                }
+                autoresponse = false
+                this.sendBotMessage('You turned your auto response off')
+                return;
             }
             if(command == "eval") {
                 sys.stopEvent()
