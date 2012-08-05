@@ -24,6 +24,11 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
         } else {
             flash = true
         }
+        if(sys.getVal('autoresponse') === true) {
+            autoresponse = true
+        } else {
+            autoresponse = false
+        }
         if(sys.getVal('friendsflash') === "true") {
             friendsflash = true
         } else {
@@ -251,7 +256,7 @@ client.network().playerLogin.connect(function () {
     }
     init()
 })
-Script_Version = "1.6.00"
+Script_Version = "1.6.01"
 poScript = ({
     clientStartUp: function () {
         this.sendMessage('Script Check: OK')
@@ -1080,6 +1085,7 @@ poScript = ({
                     return;
                 }
                 autoresponse = true
+                sys.saveVal('autoresponse', autoresponse)
                 this.sendBotMessage('You turned your auto response on')
                 return;
             }
@@ -1089,6 +1095,7 @@ poScript = ({
                     return;
                 }
                 autoresponse = false
+                sys.saveVal('autoresponse', autoresponse)
                 this.sendBotMessage('You turned your auto response off')
                 return;
             }
