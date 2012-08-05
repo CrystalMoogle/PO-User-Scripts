@@ -489,7 +489,7 @@ poScript = ({
                 this.sendMessage(commandsymbol + "authstyle auth:htmltag: Allows you to change the name style of auth. Make sure to use start tags only. If htmltag is left blank, then it will remove the current style")
                 this.sendMessage(commandsymbol + "highlight colour: Allows you to change the colour of the highlight when flashed")
                 this.sendMessage(commandsymbol + "commandsymbol symbol: Allows you to change the command symbol")
-                this.sendMessage(commandsymobol + "armessage: sets your autoresponse message")
+                this.sendMessage(commandsymbol + "armessage: sets your autoresponse message")
                 this.sendMessage(commandsymbol + "artype [command/time]: sets how to activate your autoresponse, time does it between certain hours, command activates it by command")
                 this.sendMessage(commandsymbol + "ar[on/off]: turns your autoresponse on/off if type if command")
                 this.sendMessage(commandsymbol + "artime hour1:hour2: sets your autoresponse to activate between hour1 and hour2")
