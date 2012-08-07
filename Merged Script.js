@@ -256,7 +256,7 @@ client.network().playerLogin.connect(function () {
     }
     init()
 })
-Script_Version = "1.6.01"
+Script_Version = "1.6.02"
 poScript = ({
     clientStartUp: function () {
         this.sendMessage('Script Check: OK')
@@ -811,7 +811,7 @@ poScript = ({
                 }
                 if(type[0] === "type") {
                     if(modifier === undefined || modifier == "") {
-                        modifier = ""
+                        modifier = "Tahoma"
                         this.sendBotMessage("You changed your font style to the default")
                         return;
                     }
