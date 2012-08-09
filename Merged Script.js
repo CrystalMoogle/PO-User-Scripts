@@ -248,7 +248,7 @@ client.network().channelCommandReceived.connect(function (command, channel) {
         return;
     }
     for(x in playersonline) {
-        if(client.channel(channel).hasPlayer(playersonline[x]) && client.channel(channel).hasPlayer(client.ownId()) && channel !== 0) {
+        if(client.channel(channel).hasPlayer(playersonline[x])) {
             tempusers.push(playersonline[x])
         }
     }
