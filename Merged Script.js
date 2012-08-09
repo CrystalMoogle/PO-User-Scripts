@@ -128,6 +128,7 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
             auth_style[x] = "<i><b>"
         }
         playerswarn = []
+        channelusers = []
         if(sys.isSafeScripts() !== true) {
             checkScriptVersion()
         }
@@ -233,6 +234,52 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
 if(client.ownId() !== -1) {
     init()
 }
+client.network().channelCommandReceived.connect(function (command, channel) {
+    var tempchannelusers
+    var tempusers = []
+    var logging = false
+    for(z in logchannel) {
+        if(logchannel[z].toLowerCase() == client.channelName(channel).toLowerCase()) {
+            logging = true
+            break
+        }
+    }
+    if(logging !== true) {
+        return;
+    }
+    for(x in playersonline) {
+        if(client.channel(channel).hasPlayer(playersonline[x]) && client.channel(channel).hasPlayer(client.ownId()) && channel !== 0) {
+            tempusers.push(playersonline[x])
+        }
+    }
+    tempchannelusers = tempusers.join(':')
+    if(typeof channelusers[channel] === "undefined") {
+        channelusers[channel] = tempchannelusers
+        return;
+    }
+    if(command == 46) { //command for joining
+        var a = channelusers[channel].split(':')
+        var b = tempchannelusers.split(':')
+        for(y in b) {
+            if(a[y] !== b[y]) {
+                saveToLog(client.name(b[y]) + " joined the channel", channel)
+                break
+            }
+        }
+        channelusers[channel] = tempchannelusers
+    }
+    if(command == 47) { //command for leaving
+        var a = channelusers[channel].split(':')
+        var b = tempchannelusers.split(':')
+        for(y in a) {
+            if(a[y] !== b[y]) {
+                saveToLog(client.name(a[y]) + " left the channel", channel)
+                break
+            }
+        }
+        channelusers[channel] = tempchannelusers
+    }
+})
 client.network().playerLogin.connect(function () {
     script.awayFunction()
     versionupdate = sys.getVal('versionupdate')
@@ -256,7 +303,7 @@ client.network().playerLogin.connect(function () {
     }
     init()
 })
-Script_Version = "1.6.02"
+Script_Version = "1.6.03"
 poScript = ({
     clientStartUp: function () {
         this.sendMessage('Script Check: OK')
@@ -272,7 +319,18 @@ poScript = ({
         newstring = string.replace(/</g, "</")
         return newstring
     },
+    onPlayerRemoved: function (id) {
+        for(x in playersonline) {
+            if(playersonline[x] === id) {
+                playersonline.splice(x, 1)
+            }
+        }
+    },
     onPlayerReceived: function (id) {
+        if(typeof playersonline === "undefined") {
+            playersonline = []
+        }
+        playersonline.push(id)
         var flashvar = ""
         if(friendsflash === true) {
             flashvar = "<ping/>"
