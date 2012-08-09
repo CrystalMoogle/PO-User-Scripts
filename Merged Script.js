@@ -1001,7 +1001,7 @@ poScript = ({
                 var styles = commandData.split(":")
                 var auth = styles[0]
                 var style = styles[1]
-                if(styles.length > 2 || styles.length < 1) {
+                if(styles.length > 2 || styles.length < 2) {
                     this.sendBotMessage("Command usage is: \"" + commandstyle + "changestyles number:html\"")
                     return;
                 }
