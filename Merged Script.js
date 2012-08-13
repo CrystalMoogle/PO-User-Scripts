@@ -231,6 +231,25 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
         }
         return i;
     }
+
+    function getName(string, type) {
+        var name = ""
+        if(type == "rainbow") {
+            var regex = /(<([^>]+)>)/ig;
+            string = string.replace(regex, "")
+            var pos = string.indexOf(': ');
+            if(pos != -1) {
+                name = string.substring('> ', pos)
+                if(name[0] == "+") { //auth symbol is + here rather than user defined, since the PO Server Scripts print "+" out automatically for auth
+                    name = name.substr(1)
+                }
+            }
+        }
+        if(type == "me") {
+            name = string.substring(string.indexOf('<b>') + 3, string.indexOf('</b>')) //this is assuming it's used on PO Server Scripts, or any scripts that use the same /me system
+        }
+        return name
+    }
 if(client.ownId() !== -1) {
     init()
 }
@@ -303,7 +322,7 @@ client.network().playerLogin.connect(function () {
     }
     init()
 })
-Script_Version = "1.6.03"
+Script_Version = "1.6.04"
 poScript = ({
     clientStartUp: function () {
         this.sendMessage('Script Check: OK')
@@ -424,6 +443,20 @@ poScript = ({
     beforeChannelMessage: function (message, channel, html) {
         var chan = channel
         var bot = false
+        if(message.indexOf('<timestamp/> *** <b>') !== -1) {
+            var ignore = getName(message, "me")
+            if(client.isIgnored(client.id(ignore))) {
+                sys.stopEvent()
+                return;
+            }
+        }
+        if(message.indexOf('<timestamp/><b><span style') !== -1) {
+            var ignore = getName(message, "rainbow")
+            if(client.isIgnored(client.id(ignore))) {
+                sys.stopEvent()
+                return;
+            }
+        }
         if(html == true) {
             return;
         }
@@ -436,6 +469,7 @@ poScript = ({
             if(bot === false) {
                 var id = client.id(message.substring(0, pos))
                 if(client.isIgnored(id)) {
+                    sys.stopEvent()
                     return;
                 }
             }
@@ -552,11 +586,15 @@ poScript = ({
                 this.sendMessage(commandsymbol + "authstyle auth:htmltag: Allows you to change the name style of auth. Make sure to use start tags only. If htmltag is left blank, then it will remove the current style")
                 this.sendMessage(commandsymbol + "highlight colour: Allows you to change the colour of the highlight when flashed")
                 this.sendMessage(commandsymbol + "commandsymbol symbol: Allows you to change the command symbol")
-                this.sendMessage(commandsymbol + "armessage: sets your autoresponse message")
-                this.sendMessage(commandsymbol + "artype [command/time]: sets how to activate your autoresponse, time does it between certain hours, command activates it by command")
-                this.sendMessage(commandsymbol + "ar[on/off]: turns your autoresponse on/off if type if command")
-                this.sendMessage(commandsymbol + "artime hour1:hour2: sets your autoresponse to activate between hour1 and hour2")
+                this.sendMessage(commandsymbol + "armessage: Sets your autoresponse message")
+                this.sendMessage(commandsymbol + "artype [command/time]: Sets how to activate your autoresponse, time does it between certain hours, command activates it by command")
+                this.sendMessage(commandsymbol + "ar[on/off]: Turns your autoresponse on/off if type if command")
+                this.sendMessage(commandsymbol + "artime hour1:hour2: Sets your autoresponse to activate between hour1 and hour2")
                 this.sendMessage(commandsymbol + "fontcommands: Shows you the font command details")
+                this.sendMessage(commandsymbol + "damagecalc [s]atk:move power:modifier:[s]def:HP: Basic damage calculator")
+                this.sendMessage("Explanation: [s]atk is the attacking pokémon's exact stat (not base), move power is the move's base power, modifier is any modifiers that need to be added (e.g. life orb is 1.3), HP/[s]def is the defending pokémon's exact HP/Def stats (not base)")
+                this.sendMessage("Example: "+commandsymbol+"damagecalc 100:100:1.3:100:100 will show you the result of a pokémon with 100 [s]atk, with Life Orb using a 100bp move against a pokémon with 100HP/[s]def")
+                
             }
             if(command == "fontcommands") {
                 sys.stopEvent()
@@ -1001,7 +1039,7 @@ poScript = ({
                 var styles = commandData.split(":")
                 var auth = styles[0]
                 var style = styles[1]
-                if(styles.length > 2 || styles.length < 1) {
+                if(styles.length > 2 || styles.length < 2) {
                     this.sendBotMessage("Command usage is: \"" + commandstyle + "changestyles number:html\"")
                     return;
                 }
@@ -1027,6 +1065,27 @@ poScript = ({
                     return;
                 }
                 this.sendBotMessage("Auth style for auth " + auth + " is " + style)
+                return;
+            }
+            if(command == "damagecalc") {
+                sys.stopEvent()
+                var paras = commandData.split(':')
+                if(paras.length !== 5) {
+                    this.sendBotMessage("Format is [s]atk:movepower:boosts:[s]def:hp")
+                    return;
+                }
+                for(x in paras) {
+                    paras[x] = parseFloat(paras[x])
+                    if(isNaN(paras[x])) {
+                        this.sendBotMessage('Parameters must be all numbers!')
+                        return;
+                    }
+                }
+                if(paras[2] == 0) {
+                    paras[2] = 1
+                }
+                var calc = (84 * paras[0] * paras[1] * paras[2]) / (paras[3] * paras[4])
+                this.sendBotMessage(paras[1] + "BP move coming from " + paras[0] + "[s]atk with a " + paras[2] + " modifier on " + paras[4] + "HP and " + paras[3] + "[s]def, does approxmiately " + calc + " damage")
                 return;
             }
             if(command == "commandsymbol") {
