@@ -301,28 +301,9 @@ client.network().channelCommandReceived.connect(function (command, channel) {
 })
 client.network().playerLogin.connect(function () {
     script.awayFunction()
-    versionupdate = sys.getVal('versionupdate')
-    if(versionupdate.length > 0) {
-        var resp = sys.getVal('versionscript')
-        if(resp.length === 0) {
-            return;
-        }
-        var checkscript, version
-        var regex = /"([^"]*)"/g
-        checkscript = resp.split('\n')
-        for(x in checkscript) {
-            if(checkscript[x].substr(0, 14) == "Script_Version") {
-                version = String(checkscript[x].match(regex))
-            }
-        };
-        version = version.replace(/"/g, "")
-        if(version === versionupdate) {
-            sys.changeScript(resp, false)
-        }
-    }
     init()
 })
-Script_Version = "1.6.04"
+Script_Version = "1.6.05"
 poScript = ({
     clientStartUp: function () {
         this.sendMessage('Script Check: OK')
@@ -593,8 +574,7 @@ poScript = ({
                 this.sendMessage(commandsymbol + "fontcommands: Shows you the font command details")
                 this.sendMessage(commandsymbol + "damagecalc [s]atk:move power:modifier:[s]def:HP: Basic damage calculator")
                 this.sendMessage("Explanation: [s]atk is the attacking pokémon's exact stat (not base), move power is the move's base power, modifier is any modifiers that need to be added (e.g. life orb is 1.3), HP/[s]def is the defending pokémon's exact HP/Def stats (not base)")
-                this.sendMessage("Example: "+commandsymbol+"damagecalc 100:100:1.3:100:100 will show you the result of a pokémon with 100 [s]atk, with Life Orb using a 100bp move against a pokémon with 100HP/[s]def")
-                
+                this.sendMessage("Example: " + commandsymbol + "damagecalc 100:100:1.3:100:100 will show you the result of a pokémon with 100 [s]atk, with Life Orb using a 100bp move against a pokémon with 100HP/[s]def")
             }
             if(command == "fontcommands") {
                 sys.stopEvent()
@@ -984,21 +964,12 @@ poScript = ({
                         this.sendBotMessage("There was an error accessing the script, paste the contents of (link) into your PO folder and restart, or wait for a client update", undefined, "https://github.com/downloads/coyotte508/pokemon-online/ssl.zip")
                         return
                     }
-                    var checkscript = resp.split('\n')
-                    var regex = /"([^"]*)"/g
-                    for(x in checkscript) {
-                        if(checkscript[x].substr(0, 14) == "Script_Version") {
-                            version = String(checkscript[x].match(regex))
-                        }
-                    };
-                    version = version.replace(/"/g, "")
                     try {
-                        sys.changeScript(resp, false);
-                        sys.saveVal("versionupdate", version)
-                        sys.saveVal('versionscript', resp)
-                        script.sendBotMessage('Scripts Check: OK')
+                        sys.changeScript(resp, true);
+                        sys.writeToFile(sys.scriptsFolder + "scripts.js", resp);
                     } catch(err) {
-                        sys.changeScript(sys.getVal('versionscript'), false);
+                        sys.changeScript(sys.getFileContent(sys.scriptsFolder + 'scripts.js'));
+                        this.sendBotMessage('Updating failed, loaded old scripts!');
                     }
                 };
                 this.sendBotMessage("Fetching scripts from (link)", channel_local, updateURL);
