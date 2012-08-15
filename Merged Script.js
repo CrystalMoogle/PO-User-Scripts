@@ -83,6 +83,7 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
         friends = []
         ignore = []
         logchannel = []
+        fchannel = []
         if(sys.getVal('stalkwords') !== "") {
             var nstalkwords = sys.getVal('stalkwords').split(",")
             stalkwords = nstalkwords.concat(stalkwords)
@@ -102,6 +103,11 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
             var nlogchannel = sys.getVal('logchannel').split(",")
             logchannel = nlogchannel.concat(logchannel)
             logchannel = eliminateDuplicates(logchannel)
+        }
+        if(sys.getVal('fchannel') !== "") {
+            var nfchannel = sys.getVal('fchannel').split(",")
+            fchannel = nfchannel.concat(fchannel)
+            fchannel = eliminateDuplicates(fchannel)
         }
         auth_symbol = new Array()
         for(var x = 0; x < 5; x++) {
@@ -303,7 +309,7 @@ client.network().playerLogin.connect(function () {
     script.awayFunction()
     init()
 })
-Script_Version = "1.6.05"
+Script_Version = "1.6.06"
 poScript = ({
     clientStartUp: function () {
         this.sendMessage('Script Check: OK')
@@ -407,6 +413,13 @@ poScript = ({
         client.printChannelMessage(message, channel, false)
         return;
     },
+    sendHtmlMessage: function (message, channel) {
+        if(channel === undefined) {
+            channel = client.currentChannel()
+        }
+        client.printChannelMessage(message, channel, true)
+        return;
+    },
     sendBotMessage: function (message, channel, link) {
         if(channel === undefined) {
             channel = client.currentChannel()
@@ -465,7 +478,7 @@ poScript = ({
                 colour = clist[client.id(playname) % clist.length];
             }
             var ownName = this.html_escape(client.ownName())
-            if(playmessage.toLowerCase().indexOf(ownName.toLowerCase()) != -1 && playname !== ownName && flash !== false && bot === false) {
+            if(playmessage.toLowerCase().indexOf(ownName.toLowerCase()) != -1 && playname !== ownName && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
                 var name = new RegExp("\\b" + ownName + "\\b", "i")
                 newplaymessage = playmessage.replace(name, "<span style='" + hilight + "'>" + client.ownName() + "</span>")
                 if(newplaymessage !== playmessage) {
@@ -475,7 +488,7 @@ poScript = ({
             for(x in stalkwords) {
                 var stalk = new RegExp("\\b" + stalkwords[x] + "\\b", "i")
                 var stalks = playmessage.match(stalk)
-                if(playmessage.toLowerCase().search(stalk) != -1 && playname !== client.ownName() && flash !== false && bot === false) {
+                if(playmessage.toLowerCase().search(stalk) != -1 && playname !== client.ownName() && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
                     newplaymessage = playmessage.replace(stalk, "<span style='" + hilight + "'>" + stalks + "</span>")
                     if(newplaymessage !== playmessage) {
                         playmessage = newplaymessage.replace(newplaymessage, "<i> " + newplaymessage + "</i><ping/>")
@@ -547,7 +560,7 @@ poScript = ({
                 this.sendMessage(commandsymbol + "goto channel: Allows you to switch to that channel (joins if you're not in that channel)")
                 this.sendMessage(commandsymbol + "stalkwords: Allows you to view your current stalkwords")
                 this.sendMessage(commandsymbol + "[add/remove]stalkword word: Allows you to add/remove stalkwords")
-                this.sendMessage(commandsymbol + "flash on/off: Allows you to turn flashes on/off")
+                this.sendMessage(commandsymbol + "flash on/off:channel Allows you to turn flashes on/off. Channel is an optional parameter to turn flashes off for one channel")
                 this.sendMessage(commandsymbol + "friends: Allows you to view your current friends")
                 this.sendMessage(commandsymbol + "[add/remove]friend friend: Allows you to add/remove friends")
                 this.sendMessage(commandsymbol + "friendflash on/off: Allows you turn friend flashes on/off")
@@ -713,16 +726,39 @@ poScript = ({
             }
             if(command == "flash" || command == "flashes") {
                 sys.stopEvent()
-                if(commandData == "on") {
-                    flash = true
-                    sys.saveVal('flash', true)
-                    this.sendBotMessage("You turned flashes on!")
-                    return;
+                commandData = commandData.split(':')
+                if(commandData.length < 2 || commandData[1] === "") {
+                    if(commandData[0] == "on") {
+                        flash = true
+                        sys.saveVal('flash', true)
+                        this.sendBotMessage("You turned flashes on!")
+                        return;
+                    } else {
+                        flash = false
+                        sys.saveVal('flash', false)
+                        this.sendBotMessage("You turned flashes off!")
+                        return;
+                    }
+                }
+                var nfchannel = commandData[1]
+                if(commandData[0] == "off") {
+                    if(nfchannel.search(/, /g) !== -1 || nfchannel.search(/ ,/g) !== -1) {
+                        nfchannel = nfchannel.replace(/, /g, ",").replace(/ ,/g, ",")
+                    }
+                    nfchannel = nfchannel.split(",")
+                    fchannel = eliminateDuplicates(nfchannel.concat(fchannel))
+                    sys.saveVal('fchannel', fchannel.toString())
+                    this.sendBotMessage("You won't be flashed in " + commandData[1])
                 } else {
-                    flash = false
-                    sys.saveVal('flash', false)
-                    this.sendBotMessage("You turned flashes off!")
-                    return;
+                    commandData[1] = commandData[1].toLowerCase()
+                    for(x in fchannel) {
+                        if(fchannel[x].toLowerCase() === commandData[1]) {
+                            fchannel.splice(x, 1)
+                            sys.saveVal('fchannel', fchannel.toString())
+                            this.sendBotMessage("You will be flashed in " + commandData[1])
+                            return;
+                        }
+                    }
                 }
             }
             if(command == "friends") {
