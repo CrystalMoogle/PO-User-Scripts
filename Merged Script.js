@@ -560,7 +560,7 @@ poScript = ({
                 this.sendMessage(commandsymbol + "goto channel: Allows you to switch to that channel (joins if you're not in that channel)")
                 this.sendMessage(commandsymbol + "stalkwords: Allows you to view your current stalkwords")
                 this.sendMessage(commandsymbol + "[add/remove]stalkword word: Allows you to add/remove stalkwords")
-                this.sendMessage(commandsymbol + "flash on/off:channel Allows you to turn flashes on/off. Channel is an optional parameter to turn flashes off for one channel")
+                this.sendMessage(commandsymbol + "flash on/off:channel: Allows you to turn flashes on/off. Channel is an optional parameter to turn flashes off for one channel")
                 this.sendMessage(commandsymbol + "friends: Allows you to view your current friends")
                 this.sendMessage(commandsymbol + "[add/remove]friend friend: Allows you to add/remove friends")
                 this.sendMessage(commandsymbol + "friendflash on/off: Allows you turn friend flashes on/off")
