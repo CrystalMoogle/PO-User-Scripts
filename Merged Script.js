@@ -351,6 +351,18 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
         return;
     }
 
+    function ignoreCheck(name) { //checks if ignored, this is used since it's possible to bypass the autoignore function by logging in via an alt then switching names
+        for(i in ignore) {
+            if(name.toLowerCase() === ignore[i].toLowerCase()) {
+                client.ignore(client.id(name), true)
+            }
+        }
+        if(client.isIgnored(client.id(name))) {
+            return true
+        }
+        return false
+    }
+
     function sendHtmlMessage(message, channel) { //sends a html message to the user
         if(channel === undefined) {
             channel = client.currentChannel()
@@ -358,7 +370,7 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
         client.printChannelMessage(message, channel, true)
         return;
     }
-if(client.ownId() !== -1) { 
+if(client.ownId() !== -1) {
     init()
 }
 client.network().channelCommandReceived.connect(function (command, channel) {
@@ -411,7 +423,7 @@ client.network().playerLogin.connect(function () { //only call when the user has
     awayFunction()
     init()
 })
-Script_Version = "1.6.06" //version the script is currently on
+Script_Version = "1.6.07" //version the script is currently on
 poScript = ({
     clientStartUp: function () {
         sendMessage('Script Check: OK') //use this to send a message on update scripts
@@ -447,15 +459,15 @@ poScript = ({
         var chan = channel
         var bot = false
         if(message.indexOf('<timestamp/> *** <b>') !== -1) {
-            var ignore = getName(message, "me")
-            if(client.isIgnored(client.id(ignore))) {
+            var ignored = getName(message, "me")
+            if(ignoreCheck(ignored)) {
                 sys.stopEvent()
                 return;
             }
         }
         if(message.indexOf('<timestamp/><b><span style') !== -1) {
-            var ignore = getName(message, "rainbow")
-            if(client.isIgnored(client.id(ignore))) {
+            var ignored = getName(message, "rainbow")
+            if(ignoreCheck(ignored)) {
                 sys.stopEvent()
                 return;
             }
@@ -469,14 +481,12 @@ poScript = ({
             if(client.id(message.substring(0, pos)) == -1 || client.id(message.substring(0, pos)) === undefined) {
                 bot = true
             }
-            if(bot === false) {
-                var id = client.id(message.substring(0, pos))
-                if(client.isIgnored(id)) {
-                    sys.stopEvent()
-                    return;
-                }
-            }
             var playname = message.substring(0, pos)
+            if(ignoreCheck(playname)) {
+                sys.stopEvent()
+                return;
+            }
+            var id = client.id(playname)
             var playmessage = html_escape(message.substr(pos + 2))
             var colour = client.color(id)
             if(bot === true) {
@@ -523,7 +533,13 @@ poScript = ({
             sys.stopEvent()
         }
     },
-    afterPMReceived: function (id, message) { //called after a PM is sent
+    beforePMReceived: function (id, message) { // called before a PM is received
+        if(ignoreCheck(client.name(id))) {
+            sys.stopEvent()
+            return;
+        }
+    },
+    afterPMReceived: function (id, message) { //called after a PM is received
         if(playerswarn[id] === true) {
             return;
         }
