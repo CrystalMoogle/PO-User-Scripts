@@ -245,7 +245,7 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
             string = string.replace(regex, "")
             var pos = string.indexOf(': ');
             if(pos != -1) {
-                name = string.substring('> ', pos)
+                name = string.substring(0, pos)
                 if(name[0] == "+") { //auth symbol is + here rather than user defined, since the PO Server Scripts print "+" out automatically for auth
                     name = name.substr(1)
                 }
