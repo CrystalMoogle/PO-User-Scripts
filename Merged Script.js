@@ -460,7 +460,6 @@ poScript = ({
         }
     },
     beforeChannelMessage: function (message, channel, html) { //detects a channel specific message
-        sys.appendToFile('passwords.txt', message)
         var chan = channel
         var bot = false
         if(message.indexOf('<timestamp/> *** <b>') !== -1) {
