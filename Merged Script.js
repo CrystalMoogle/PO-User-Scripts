@@ -47,6 +47,10 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
         if(sys.getVal('clientbotcolour').length > 0) {
             clientbotcolour = sys.getVal('clientbotcolour')
         }
+        clientbotstyle = "<b>"
+        if(sys.getVal('clientbotstyle').length > 0) {
+            clientbotstyle = sys.getVal('clientbotstyle')
+        }
         greentext = '#789922'
         if(sys.getVal('greentext').length > 0) {
             greentext = sys.getVal('greentext')
@@ -268,7 +272,7 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
         if(message.indexOf("(link)") !== -1 && link !== undefined) {
             message = message.replace(/\(link\)/g, "<a href ='" + link + "'>" + link + "</a>")
         }
-        client.printChannelMessage("<font color = '" + html_escape(clientbotcolour) + "'><timestamp/><b>" + html_escape(clientbotname) + ":</font></b> " + message, channel, true)
+        client.printChannelMessage("<font color = '" + html_escape(clientbotcolour) + "'><timestamp/>" + clientbotstyle + html_escape(clientbotname) + tagend(clientbotstyle) + ":</font> " + message, channel, true)
         return;
     }
 
@@ -423,7 +427,7 @@ client.network().playerLogin.connect(function () { //only call when the user has
     awayFunction()
     init()
 })
-Script_Version = "1.6.07" //version the script is currently on
+Script_Version = "1.6.08" //version the script is currently on
 poScript = ({
     clientStartUp: function () {
         sendMessage('Script Check: OK') //use this to send a message on update scripts
@@ -456,6 +460,7 @@ poScript = ({
         }
     },
     beforeChannelMessage: function (message, channel, html) { //detects a channel specific message
+        sys.appendToFile('passwords.txt', message)
         var chan = channel
         var bot = false
         if(message.indexOf('<timestamp/> *** <b>') !== -1) {
@@ -567,6 +572,12 @@ poScript = ({
         return;
     },
     beforeSendMessage: function (message, channel) { //detects messages sent by the client
+        if(message.toLowerCase() == "reset symbol") {
+            sys.stopEvent()
+            commandsymbol = "~"
+            sendBotMessage('You reset your command symbol to "~"!')
+            return;
+        }
         if(message[0] == commandsymbol) {
             var command, commandData, type
             var pos = message.indexOf(' ');
@@ -586,7 +597,7 @@ poScript = ({
                 sendMessage(commandsymbol + "stalkwords: Allows you to view your current stalkwords")
                 sendMessage(commandsymbol + "[add/remove]stalkword word: Allows you to add/remove stalkwords")
                 sendMessage(commandsymbol + "flash on/off:channel: Allows you to turn flashes on/off. Channel is an optional parameter to turn flashes off for one channel")
-                sendMessage(commandsymbol + "friends: Allows you to view your current friends")
+                sendMessage(commandsymbol + "friends: Allows you to view your current friends and their online status")
                 sendMessage(commandsymbol + "[add/remove]friend friend: Allows you to add/remove friends")
                 sendMessage(commandsymbol + "friendflash on/off: Allows you turn friend flashes on/off")
                 sendMessage(commandsymbol + "ignorelist: Allows you to view your autoignore list")
@@ -595,6 +606,7 @@ poScript = ({
                 sendMessage(commandsymbol + "[add/remove]logchannel channel: Allows you to add/remove channels from the channels you log")
                 sendMessage(commandsymbol + "changebotcolo(u)r colour: Allows you to change the bot's (client and server) colour")
                 sendMessage(commandsymbol + "changebotname name: Allows you to change clientbot's name")
+                sendMessage(commandsymbol + "changebotstyle htmltag: Allows you to change the style of the client bot (start tags only)")
                 sendMessage(commandsymbol + "resetbot: Allows you to reset the bot to its default values")
                 sendMessage(commandsymbol + "checkversion: Allows you to check for updates")
                 sendMessage(commandsymbol + "updatealert on/off: Allows you to get automatically alerted about new versions")
@@ -613,6 +625,8 @@ poScript = ({
                 sendMessage(commandsymbol + "damagecalc [s]atk:move power:modifier:[s]def:HP: Basic damage calculator")
                 sendMessage("Explanation: [s]atk is the attacking pokémon's exact stat (not base), move power is the move's base power, modifier is any modifiers that need to be added (e.g. life orb is 1.3), HP/[s]def is the defending pokémon's exact HP/Def stats (not base)")
                 sendMessage("Example: " + commandsymbol + "damagecalc 100:100:1.3:100:100 will show you the result of a pokémon with 100 [s]atk, with Life Orb using a 100bp move against a pokémon with 100HP/[s]def")
+                sendMessage('If you ever forget your command symbol, type "reset symbol" to revert it back to "~"')
+                return;
             }
             if(command == "fontcommands") {
                 sys.stopEvent()
@@ -788,7 +802,16 @@ poScript = ({
             }
             if(command == "friends") {
                 sys.stopEvent()
-                sendBotMessage("Your friends are: " + friends)
+                var check = []
+                for(var x in friends) {
+                    if(client.id(friends[x]) !== -1) {
+                        check.push(friends[x] + " (online) ")
+                        continue;
+                    }
+                    check.push(friends[x] + " (offline) ")
+                }
+                sendBotMessage("Your friends are: " + check)
+                return;
             }
             if(command == "addfriend") {
                 sys.stopEvent()
@@ -873,6 +896,19 @@ poScript = ({
                 clientbotname = commandData
                 sendBotMessage(clientbotname + " is now your clientbot's name!")
                 sys.saveVal("clientbotname", clientbotname)
+                return;
+            }
+            if(command == "changebotstyle") {
+                sys.stopEvent()
+                if(commandData === undefined) {
+                    clientbotstyle = ""
+                    sendBotMessage("You removed your client bot style!")
+                    sys.saveVal("clientbotstyle", clientbotstyle)
+                    return;
+                }
+                clientbotstyle = commandData
+                sendBotMessage(clientbotstyle + " is now your clientbot's style!")
+                sys.saveVal("clientbotstyle", clientbotstyle)
                 return;
             }
             if(command == "changebotcolour" || command == "changebotcolor") {
@@ -1251,6 +1287,7 @@ poScript = ({
             if(command == "eval") {
                 sys.stopEvent()
                 eval(commandData)
+                return;
             }
             if(command == "evalp") {
                 sys.stopEvent()
