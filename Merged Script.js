@@ -576,6 +576,7 @@ poScript = ({
             sys.stopEvent()
             commandsymbol = "~"
             sendBotMessage('You reset your command symbol to "~"!')
+            sys.saveVal('commandsymbol', commandsymbol)
             return;
         }
         if(message[0] == commandsymbol) {
