@@ -272,7 +272,7 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
         if(message.indexOf("(link)") !== -1 && link !== undefined) {
             message = message.replace(/\(link\)/g, "<a href ='" + link + "'>" + link + "</a>")
         }
-        client.printChannelMessage("<font color = '" + html_escape(clientbotcolour) + "'><timestamp/>" + clientbotstyle + html_escape(clientbotname) + tagend(clientbotstyle) + ":</font> " + message, channel, true)
+        client.printChannelMessage("<font color = '" + html_escape(clientbotcolour) + "'><timestamp/>" + clientbotstyle + html_escape(clientbotname) + ":" + tagend(clientbotstyle) + "</font> " + message, channel, true)
         return;
     }
 
