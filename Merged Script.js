@@ -988,7 +988,7 @@ poScript = ({
                 }
                 if(type[0] === "type") {
                     if(modifier === undefined || modifier == "") {
-                        modifier = "Tahoma"
+                        modifier = ""
                         fonttype = modifier
                         sys.saveVal('fonttype', modifier)
                         sendBotMessage("You changed your font type to the default")
