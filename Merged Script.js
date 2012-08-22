@@ -959,8 +959,8 @@ poScript = ({
                 if(type[0] === "colour" || type[0] === "color") {
                     if(modifier === undefined || modifier == "") {
                         modifier = "#000000"
-                        fonttype = modifier
-                        sys.saveVal('fonttype', modifier)
+                        fontcolour = modifier
+                        sys.saveVal('fontcolour', modifier)
                         sendBotMessage("You changed your font colour to the default")
                         return;
                     }
@@ -972,8 +972,8 @@ poScript = ({
                 if(type[0] === "style") {
                     if(modifier === undefined || modifier == "") {
                         modifier = ""
-                        fonttype = modifier
-                        sys.saveVal('fonttype', modifier)
+                        fontstyle = modifier
+                        sys.saveVal('fontstyle', modifier)
                         sendBotMessage("You changed your font style to the default")
                         return
                     }
@@ -1002,8 +1002,8 @@ poScript = ({
                 if(type[0] === "size") {
                     if(modifier === undefined || modifier == "" || isNaN(parseInt(modifier))) {
                         modifier = 3
-                        fonttype = modifier
-                        sys.saveVal('fonttype', modifier)
+                        fontsize = modifier
+                        sys.saveVal('fontsize', modifier)
                         sendBotMessage("You changed your font size to the default")
                         return;
                     }
