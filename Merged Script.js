@@ -427,7 +427,7 @@ client.network().playerLogin.connect(function () { //only call when the user has
     awayFunction()
     init()
 })
-Script_Version = "1.6.08" //version the script is currently on
+Script_Version = "1.6.09" //version the script is currently on
 poScript = ({
     clientStartUp: function () {
         sendMessage('Script Check: OK') //use this to send a message on update scripts
@@ -959,7 +959,9 @@ poScript = ({
                 if(type[0] === "colour" || type[0] === "color") {
                     if(modifier === undefined || modifier == "") {
                         modifier = "#000000"
-                        sendBotMessage("You changed your font style to the default")
+                        fonttype = modifier
+                        sys.saveVal('fonttype', modifier)
+                        sendBotMessage("You changed your font colour to the default")
                         return;
                     }
                     fontcolour = modifier
@@ -970,6 +972,8 @@ poScript = ({
                 if(type[0] === "style") {
                     if(modifier === undefined || modifier == "") {
                         modifier = ""
+                        fonttype = modifier
+                        sys.saveVal('fonttype', modifier)
                         sendBotMessage("You changed your font style to the default")
                         return
                     }
@@ -985,7 +989,9 @@ poScript = ({
                 if(type[0] === "type") {
                     if(modifier === undefined || modifier == "") {
                         modifier = "Tahoma"
-                        sendBotMessage("You changed your font style to the default")
+                        fonttype = modifier
+                        sys.saveVal('fonttype', modifier)
+                        sendBotMessage("You changed your font type to the default")
                         return;
                     }
                     fonttype = modifier
@@ -996,7 +1002,9 @@ poScript = ({
                 if(type[0] === "size") {
                     if(modifier === undefined || modifier == "" || isNaN(parseInt(modifier))) {
                         modifier = 3
-                        sendBotMessage("You changed your font style to the default")
+                        fonttype = modifier
+                        sys.saveVal('fonttype', modifier)
+                        sendBotMessage("You changed your font size to the default")
                         return;
                     }
                     fontsize = modifier
