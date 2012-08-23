@@ -8,372 +8,372 @@
 //Make sure to check them to set everything :x
 //these things below shouldn't be touched unless you know what you're doing~
 var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Merged%20Script.js"; //where the script is stored
-    function init() { //defines all the variables that are going to be used in the script, uses default if no saved settings are found
-        if(sys.getVal('etext') === "true") {
-            etext = "true";
-        } else {
-            etext = "false";
-        };
-        if(sys.getVal('tgreentext') === "true") {
-            tgreentext = "true";
-        } else {
-            tgreentext = "false";
-        };
-        if(sys.getVal('flash') === "false") { //making sure flash is on always unless specified to not be
-            flash = false;
-        } else {
-            flash = true;
-        };
-        if(sys.getVal('autoresponse') === true) {
-            autoresponse = true;
-        } else {
-            autoresponse = false;
-        };
-        if(sys.getVal('friendsflash') === "true") {
-            friendsflash = true;
-        } else {
-            friendsflash = false;
-        };
-        if(sys.getVal('checkversion') === "true") {
-            checkversion = "true";
-        } else {
-            checkversion = "false";
-        };
-        clientbotname = "+ClientBot";
-        if(sys.getVal('clientbotname').length > 0) {
-            clientbotname = sys.getVal('clientbotname');
-        };
-        clientbotcolour = "#3DAA68";
-        if(sys.getVal('clientbotcolour').length > 0) {
-            clientbotcolour = sys.getVal('clientbotcolour');
-        };
-        clientbotstyle = "<b>";
-        if(sys.getVal('clientbotstyle').length > 0) {
-            clientbotstyle = sys.getVal('clientbotstyle');
-        };
-        greentext = '#789922';
-        if(sys.getVal('greentext').length > 0) {
-            greentext = sys.getVal('greentext');
-        };
-        fontcolour = "#000000";
-        if(sys.getVal('fontcolour').length > 0) {
-            fontcolour = sys.getVal('fontcolour');
-        };
-        fonttype = "";
-        if(sys.getVal('fonttype').length > 0) {
-            fonttype = sys.getVal('fonttype');
-        };
-        fontsize = 3;
-        if(sys.getVal('fontsize').length > 0) {
-            fontsize = sys.getVal('fontsize');
-        };
-        fontstyle = "";
-        if(sys.getVal('fontstyle').length > 0) {
-            fontstyle = sys.getVal('fontstyle');
-        };
-        commandsymbol = "~";
-        if(sys.getVal('commandsymbol').length > 0) {
-            commandsymbol = sys.getVal('commandsymbol');
-        };
-        hilight = "BACKGROUND-COLOR: #ffcc00";
-        if(sys.getVal('hilight').length > 0) {
-            hilight = sys.getVal('hilight');
-        };
-        armessage = sys.getVal('armessage');
-        arstart = sys.getVal('arstart');
-        arend = sys.getVal('arend');
-        artype = sys.getVal('artype');
-        stalkwords = [];
-        friends = [];
-        ignore = [];
-        logchannel = [];
-        fchannel = [];
-        if(sys.getVal('stalkwords') !== "") {
-            var nstalkwords = sys.getVal('stalkwords').split(",");
-            stalkwords = nstalkwords.concat(stalkwords);
-            stalkwords = eliminateDuplicates(stalkwords);
-        };
-        if(sys.getVal('friends') !== "") {
-            var nfriends = sys.getVal('friends').split(",");
-            friends = nfriends.concat(friends);
-            friends = eliminateDuplicates(friends);
-        };
-        if(sys.getVal('ignore') !== "") {
-            var nignore = sys.getVal('ignore').split(",");
-            ignore = nignore.concat(ignore);
-            ignore = eliminateDuplicates(ignore);
-        };
-        if(sys.getVal('logchannel') !== "") {
-            var nlogchannel = sys.getVal('logchannel').split(",");
-            logchannel = nlogchannel.concat(logchannel);
-            logchannel = eliminateDuplicates(logchannel);
-        };
-        if(sys.getVal('fchannel') !== "") {
-            var nfchannel = sys.getVal('fchannel').split(",");
-            fchannel = nfchannel.concat(fchannel);
-            fchannel = eliminateDuplicates(fchannel);
-        };
-        auth_symbol = new Array();
-        for(var x = 0; x < 5; x++) {
-            if(sys.getVal('auth: ' + x).length > 0) {
-                auth_symbol[x] = sys.getVal('auth: ' + x);
-                continue;
-            };
-            if(x == 0 || x == 4) {
-                auth_symbol[x] = "";
-                continue;
-            };
-            auth_symbol[x] = "+";
-        };
-        auth_style = new Array();
-        for(var x = 0; x < 5; x++) {
-            if(sys.getVal('auths: ' + x).length > 0) {
-                auth_style[x] = sys.getVal('auths: ' + x);
-                continue;
-            };
-            if(x == 0 || x == 4) {
-                auth_style[x] = "<b>";
-                continue;
-            };
-            auth_style[x] = "<i><b>";
-        };
-        playerswarn = [];
-        channelusers = [];
-        if(sys.isSafeScripts() !== true) {
-            checkScriptVersion();
-        };
+function init() { //defines all the variables that are going to be used in the script, uses default if no saved settings are found
+    if(sys.getVal('etext') === "true") {
+        etext = "true";
+    } else {
+        etext = "false";
     };
-
-    function checkScriptVersion(bool) { //checks the current script version with the one saved on Github, if the versions do not match, then it gives a warning
-        var checkscript, version;
-        var regex = /"([^"]*)"/g;
-        if(bool === undefined) {
-            bool = false;
-        };
-        if(checkversion === "false" && bool === false) {
-            return;
-        };
-        sys.webCall(script_url, function (resp) {
-            if(resp.length === 0) {
-                sendBotMessage("There was an error accessing the script, paste the contents of (link) into your PO folder and restart, or wait for a client update", undefined, "https://github.com/downloads/coyotte508/pokemon-online/ssl.zip");
-                return;
-            };
-            checkscript = resp.split('\n');
-            for(var x in checkscript) {
-                if(checkscript[x].substr(0, 14) == "Script_Version") {
-                    version = String(checkscript[x].match(regex));
-                };
-            };
-            if(version === undefined) {
-                sendBotMessage('There was an error with the version, please report to Crystal Moogle');
-                return;
-            }
-            version = version.replace(/"/g, "");
-            var type = {
-                "0": "Major Release (huge changes)",
-                "1": "Minor Release (new features)",
-                "2": "Bug fixes/Minor Update"
-            };
-            if(version !== Script_Version) {
-                var typeno;
-                nversion = version.split('.');
-                cversion = Script_Version.split('.');
-                for(var x in nversion) {
-                    if(nversion[x] !== cversion[x]) {
-                        typeno = x;
-                        break;
-                    };
-                };
-                if(typeno === undefined) { //this shouldn't ever happen though
-                    return;
-                };
-                sendBotMessage("A client script update is avaiable, type: " + type[typeno] + ". Use " + commandsymbol + "updatescripts. Use " + commandsymbol + "changelog " + version + " to see the changes", undefined, script_url); //TODO make sure the script actually is a new version, rather than a previous version
-                return;
-            }
-            if(bool === true) {
-                sendBotMessage("No update detected");
-            };
-        });
+    if(sys.getVal('tgreentext') === "true") {
+        tgreentext = "true";
+    } else {
+        tgreentext = "false";
     };
-
-    function eliminateDuplicates(arr) { //stolen from http://dreaminginjavascript.wordpress.com/2008/08/22/eliminating-duplicates/ eliminates any duplicates that are in an array
-        var i,
-        len = arr.length,
-            out = [],
-            obj = {};
-        for(i = 0; i < len; i++) {
-            obj[arr[i]] = 0;
-        };
-        for(i in obj) {
-            out.push(i);
-        };
-        return out;
+    if(sys.getVal('flash') === "false") { //making sure flash is on always unless specified to not be
+        flash = false;
+    } else {
+        flash = true;
     };
-
-    function saveToLog(message, channel) { //saves messages to a log file
-        var logging = false;
-        for(var x in logchannel) {
-            if(client.channelName(channel).toLowerCase() === logchannel[x].toLowerCase()) {
-                logging = true;
-                break;
-            };
-        };
-        if(logging === false) {
-            return;
-        };
-        var time = new Date();
-        var h = time.getHours();
-        var m = time.getMinutes();
-        var s = time.getSeconds();
-        var d = time.getDate();
-        var mo = parseInt(time.getMonth() + 1);
-        var y = time.getFullYear();
-        var date = d + "-" + mo + "-" + y;
-        m = checkTime(m);
-        s = checkTime(s);
-        var timestamp = h + ":" + m + ":" + s;
-        sys.appendToFile("Channel Logs/" + client.channelName(channel) + " " + date + ".txt", "(" + timestamp + ") " + message + "\n");
+    if(sys.getVal('autoresponse') === true) {
+        autoresponse = true;
+    } else {
+        autoresponse = false;
     };
-
-    function checkTime(i) { //adds a 0 in front of one digit minutes/seconds
-        if(i < 10) {
-            i = "0" + i;
-        };
-        return i;
+    if(sys.getVal('friendsflash') === "true") {
+        friendsflash = true;
+    } else {
+        friendsflash = false;
     };
-
-    function getName(string, type) { //gets the name from rainbow/me messages
-        var name = "";
-        if(type == "rainbow") {
-            var regex = /(<([^>]+)>)/ig;
-            string = string.replace(regex, "");
-            var pos = string.indexOf(': ');
-            if(pos != -1) {
-                name = string.substring(0, pos);
-                if(name[0] == "+") { //auth symbol is + here rather than user defined, since the PO Server Scripts print "+" out automatically for auth
-                    name = name.substr(1);
-                };
-            };
-        };
-        if(type == "me") {
-            name = string.substring(string.indexOf('<b>') + 3, string.indexOf('</b>')); //this is assuming it's used on PO Server Scripts, or any scripts that use the same /me system
-        };
-        return name;
+    if(sys.getVal('checkversion') === "true") {
+        checkversion = "true";
+    } else {
+        checkversion = "false";
     };
+    clientbotname = "+ClientBot";
+    if(sys.getVal('clientbotname').length > 0) {
+        clientbotname = sys.getVal('clientbotname');
+    };
+    clientbotcolour = "#3DAA68";
+    if(sys.getVal('clientbotcolour').length > 0) {
+        clientbotcolour = sys.getVal('clientbotcolour');
+    };
+    clientbotstyle = "<b>";
+    if(sys.getVal('clientbotstyle').length > 0) {
+        clientbotstyle = sys.getVal('clientbotstyle');
+    };
+    greentext = '#789922';
+    if(sys.getVal('greentext').length > 0) {
+        greentext = sys.getVal('greentext');
+    };
+    fontcolour = "#000000";
+    if(sys.getVal('fontcolour').length > 0) {
+        fontcolour = sys.getVal('fontcolour');
+    };
+    fonttype = "";
+    if(sys.getVal('fonttype').length > 0) {
+        fonttype = sys.getVal('fonttype');
+    };
+    fontsize = 3;
+    if(sys.getVal('fontsize').length > 0) {
+        fontsize = sys.getVal('fontsize');
+    };
+    fontstyle = "";
+    if(sys.getVal('fontstyle').length > 0) {
+        fontstyle = sys.getVal('fontstyle');
+    };
+    commandsymbol = "~";
+    if(sys.getVal('commandsymbol').length > 0) {
+        commandsymbol = sys.getVal('commandsymbol');
+    };
+    hilight = "BACKGROUND-COLOR: #ffcc00";
+    if(sys.getVal('hilight').length > 0) {
+        hilight = sys.getVal('hilight');
+    };
+    armessage = sys.getVal('armessage');
+    arstart = sys.getVal('arstart');
+    arend = sys.getVal('arend');
+    artype = sys.getVal('artype');
+    stalkwords = [];
+    friends = [];
+    ignore = [];
+    logchannel = [];
+    fchannel = [];
+    if(sys.getVal('stalkwords') !== "") {
+        var nstalkwords = sys.getVal('stalkwords').split(",");
+        stalkwords = nstalkwords.concat(stalkwords);
+        stalkwords = eliminateDuplicates(stalkwords);
+    };
+    if(sys.getVal('friends') !== "") {
+        var nfriends = sys.getVal('friends').split(",");
+        friends = nfriends.concat(friends);
+        friends = eliminateDuplicates(friends);
+    };
+    if(sys.getVal('ignore') !== "") {
+        var nignore = sys.getVal('ignore').split(",");
+        ignore = nignore.concat(ignore);
+        ignore = eliminateDuplicates(ignore);
+    };
+    if(sys.getVal('logchannel') !== "") {
+        var nlogchannel = sys.getVal('logchannel').split(",");
+        logchannel = nlogchannel.concat(logchannel);
+        logchannel = eliminateDuplicates(logchannel);
+    };
+    if(sys.getVal('fchannel') !== "") {
+        var nfchannel = sys.getVal('fchannel').split(",");
+        fchannel = nfchannel.concat(fchannel);
+        fchannel = eliminateDuplicates(fchannel);
+    };
+    auth_symbol = new Array();
+    for(var x = 0; x < 5; x++) {
+        if(sys.getVal('auth: ' + x).length > 0) {
+            auth_symbol[x] = sys.getVal('auth: ' + x);
+            continue;
+        };
+        if(x == 0 || x == 4) {
+            auth_symbol[x] = "";
+            continue;
+        };
+        auth_symbol[x] = "+";
+    };
+    auth_style = new Array();
+    for(var x = 0; x < 5; x++) {
+        if(sys.getVal('auths: ' + x).length > 0) {
+            auth_style[x] = sys.getVal('auths: ' + x);
+            continue;
+        };
+        if(x == 0 || x == 4) {
+            auth_style[x] = "<b>";
+            continue;
+        };
+        auth_style[x] = "<i><b>";
+    };
+    playerswarn = [];
+    channelusers = [];
+    if(sys.isSafeScripts() !== true) {
+        checkScriptVersion();
+    };
+};
 
-    function sendBotMessage(message, channel, link) { //sends a mesage with the bot name in front of it
-        if(channel === undefined) {
-            channel = client.currentChannel();
-        };
-        message = html_escape(message);
-        if(link == "<ping/>") {
-            message = message.replace(/&lt;ping\/&gt;/g, link);
-        };
-        if(message.indexOf("(link)") !== -1 && link !== undefined) {
-            message = message.replace(/\(link\)/g, "<a href ='" + link + "'>" + link + "</a>");
-        };
-        client.printChannelMessage("<font color = '" + html_escape(clientbotcolour) + "'><timestamp/>" + clientbotstyle + html_escape(clientbotname) + ":" + tagend(clientbotstyle) + "</font> " + message, channel, true);
+function checkScriptVersion(bool) { //checks the current script version with the one saved on Github, if the versions do not match, then it gives a warning
+    var checkscript, version;
+    var regex = /"([^"]*)"/g;
+    if(bool === undefined) {
+        bool = false;
+    };
+    if(checkversion === "false" && bool === false) {
         return;
     };
-
-    function html_escape(text) { //escapes any characters that won't appear correctly in HTMLmessages
-        var m = String(text);
-        if(m.length > 0) {
-            var amp = "&am" + "p;";
-            var lt = "&l" + "t;";
-            var gt = "&g" + "t;";
-            return m.replace(/&/g, amp).replace(/</g, lt).replace(/>/g, gt);
-        } else {
-            return "";
+    sys.webCall(script_url, function (resp) {
+        if(resp.length === 0) {
+            sendBotMessage("There was an error accessing the script, paste the contents of (link) into your PO folder and restart, or wait for a client update", undefined, "https://github.com/downloads/coyotte508/pokemon-online/ssl.zip");
+            return;
         };
-    };
-
-    function tagend(string) { //automatically creates an end tag from a html tagsent to it
-        newstring = string.replace(/</g, "</");
-        return newstring;
-    };
-
-    function awayFunction() { //makes the user go away if needed
-        if(sys.getVal("idle") === "true") {
-            client.goAway(true);
-        } else {
-            client.goAway(false);
+        checkscript = resp.split('\n');
+        for(var x in checkscript) {
+            if(checkscript[x].substr(0, 14) == "Script_Version") {
+                version = String(checkscript[x].match(regex));
+            };
         };
-    };
-
-    function htmlLinks(text) { //make sure to properly link html links
-        var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\(\)\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/\(\)%=~_|])/ig;
-        var found = text.match(exp);
-        var newtext;
-        var newfound;
-        for(var x in found) {
-            newfound = found[x].replace(/\//g, sys.md5('/'));
-            newfound = newfound.replace(/_/g, sys.md5('_'));
-            text = text.replace(found[x], newfound);
-            newtext = ("<a href ='" + newfound + "'>" + newfound + "</a>").replace(/&amp;/gi, "&");
-            text = text.replace(newfound, newtext);
-        };
-        if(etext == "true") {
-            text = enrichedText(text);
-        };
-        var expt = new RegExp(sys.md5('/'), "g");
-        if(text.search(expt) != -1) {
-            text = text.replace(expt, "/");
-        };
-        expt = new RegExp(sys.md5('_'), "g");
-        if(text.search(expt) != -1) {
-            text = text.replace(expt, "_");
-        };
-        return text;
-    };
-
-    function enrichedText(text) { //applies the enriched text, adapted from the PO 1.0.60 source
-        var expi = new RegExp("/(\\S+)/(?![^\\s<]*>)", "g");
-        text = text.replace(expi, "<i>$1</i>");
-        var expii = new RegExp("\\\\(\\S+)\\\\(?![^\\s<]*>)", "g");
-        text = text.replace(expii, "<i>$1</i>");
-        var expb = new RegExp("\\*(\\S+)\\*(?![^\\s<]*>)", "g");
-        text = text.replace(expb, "<b>$1</b>");
-        var expu = new RegExp("_(\\S+)_(?![^\\s<]*>)", "g");
-        text = text.replace(expu, "<u>$1</u>");
-        return text;
-    };
-
-    function isSafeScripts() { //checks if safe scripts is on and if it is it sends a message
-        if(sys.isSafeScripts()) {
-            sendBotMessage("You have safescripts on, you will not be able to update your scripts through the internet, though it should help against any harmful scripts, to turn it off, untick the box in the Script Window");
-            return true;
+        if(version === undefined) {
+            sendBotMessage('There was an error with the version, please report to Crystal Moogle');
+            return;
         }
-        return false;
-    };
-
-    function sendMessage(message, channel) { //sends a message to the user
-        if(channel === undefined) {
-            channel = client.currentChannel();
+        version = version.replace(/"/g, "");
+        var type = {
+            "0": "Major Release (huge changes)",
+            "1": "Minor Release (new features)",
+            "2": "Bug fixes/Minor Update"
         };
-        client.printChannelMessage(message, channel, false);
+        if(version !== Script_Version) {
+            var typeno;
+            nversion = version.split('.');
+            cversion = Script_Version.split('.');
+            for(var x in nversion) {
+                if(nversion[x] !== cversion[x]) {
+                    typeno = x;
+                    break;
+                };
+            };
+            if(typeno === undefined) { //this shouldn't ever happen though
+                return;
+            };
+            sendBotMessage("A client script update is avaiable, type: " + type[typeno] + ". Use " + commandsymbol + "updatescripts. Use " + commandsymbol + "changelog " + version + " to see the changes", undefined, script_url); //TODO make sure the script actually is a new version, rather than a previous version
+            return;
+        }
+        if(bool === true) {
+            sendBotMessage("No update detected");
+        };
+    });
+};
+
+function eliminateDuplicates(arr) { //stolen from http://dreaminginjavascript.wordpress.com/2008/08/22/eliminating-duplicates/ eliminates any duplicates that are in an array
+    var i,
+    len = arr.length,
+        out = [],
+        obj = {};
+    for(i = 0; i < len; i++) {
+        obj[arr[i]] = 0;
+    };
+    for(i in obj) {
+        out.push(i);
+    };
+    return out;
+};
+
+function saveToLog(message, channel) { //saves messages to a log file
+    var logging = false;
+    for(var x in logchannel) {
+        if(client.channelName(channel).toLowerCase() === logchannel[x].toLowerCase()) {
+            logging = true;
+            break;
+        };
+    };
+    if(logging === false) {
         return;
     };
+    var time = new Date();
+    var h = time.getHours();
+    var m = time.getMinutes();
+    var s = time.getSeconds();
+    var d = time.getDate();
+    var mo = parseInt(time.getMonth() + 1);
+    var y = time.getFullYear();
+    var date = d + "-" + mo + "-" + y;
+    m = checkTime(m);
+    s = checkTime(s);
+    var timestamp = h + ":" + m + ":" + s;
+    sys.appendToFile("Channel Logs/" + client.channelName(channel) + " " + date + ".txt", "(" + timestamp + ") " + message + "\n");
+};
 
-    function ignoreCheck(name) { //checks if ignored, this is used since it's possible to bypass the autoignore function by logging in via an alt then switching names
-        for(i in ignore) {
-            if(name.toLowerCase() === ignore[i].toLowerCase()) {
-                client.ignore(client.id(name), true);
+function checkTime(i) { //adds a 0 in front of one digit minutes/seconds
+    if(i < 10) {
+        i = "0" + i;
+    };
+    return i;
+};
+
+function getName(string, type) { //gets the name from rainbow/me messages
+    var name = "";
+    if(type == "rainbow") {
+        var regex = /(<([^>]+)>)/ig;
+        string = string.replace(regex, "");
+        var pos = string.indexOf(': ');
+        if(pos != -1) {
+            name = string.substring(0, pos);
+            if(name[0] == "+") { //auth symbol is + here rather than user defined, since the PO Server Scripts print "+" out automatically for auth
+                name = name.substr(1);
             };
         };
-        if(client.isIgnored(client.id(name))) {
-            return true;
-        };
-        return false;
     };
+    if(type == "me") {
+        name = string.substring(string.indexOf('<b>') + 3, string.indexOf('</b>')); //this is assuming it's used on PO Server Scripts, or any scripts that use the same /me system
+    };
+    return name;
+};
 
-    function sendHtmlMessage(message, channel) { //sends a html message to the user
-        if(channel === undefined) {
-            channel = client.currentChannel();
-        };
-        client.printChannelMessage(message, channel, true);
-        return;
+function sendBotMessage(message, channel, link) { //sends a mesage with the bot name in front of it
+    if(channel === undefined) {
+        channel = client.currentChannel();
     };
+    message = html_escape(message);
+    if(link == "<ping/>") {
+        message = message.replace(/&lt;ping\/&gt;/g, link);
+    };
+    if(message.indexOf("(link)") !== -1 && link !== undefined) {
+        message = message.replace(/\(link\)/g, "<a href ='" + link + "'>" + link + "</a>");
+    };
+    client.printChannelMessage("<font color = '" + html_escape(clientbotcolour) + "'><timestamp/>" + clientbotstyle + html_escape(clientbotname) + ":" + tagend(clientbotstyle) + "</font> " + message, channel, true);
+    return;
+};
+
+function html_escape(text) { //escapes any characters that won't appear correctly in HTMLmessages
+    var m = String(text);
+    if(m.length > 0) {
+        var amp = "&am" + "p;";
+        var lt = "&l" + "t;";
+        var gt = "&g" + "t;";
+        return m.replace(/&/g, amp).replace(/</g, lt).replace(/>/g, gt);
+    } else {
+        return "";
+    };
+};
+
+function tagend(string) { //automatically creates an end tag from a html tagsent to it
+    newstring = string.replace(/</g, "</");
+    return newstring;
+};
+
+function awayFunction() { //makes the user go away if needed
+    if(sys.getVal("idle") === "true") {
+        client.goAway(true);
+    } else {
+        client.goAway(false);
+    };
+};
+
+function htmlLinks(text) { //make sure to properly link html links
+    var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\(\)\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/\(\)%=~_|])/ig;
+    var found = text.match(exp);
+    var newtext;
+    var newfound;
+    for(var x in found) {
+        newfound = found[x].replace(/\//g, sys.md5('/'));
+        newfound = newfound.replace(/_/g, sys.md5('_'));
+        text = text.replace(found[x], newfound);
+        newtext = ("<a href ='" + newfound + "'>" + newfound + "</a>").replace(/&amp;/gi, "&");
+        text = text.replace(newfound, newtext);
+    };
+    if(etext == "true") {
+        text = enrichedText(text);
+    };
+    var expt = new RegExp(sys.md5('/'), "g");
+    if(text.search(expt) != -1) {
+        text = text.replace(expt, "/");
+    };
+    expt = new RegExp(sys.md5('_'), "g");
+    if(text.search(expt) != -1) {
+        text = text.replace(expt, "_");
+    };
+    return text;
+};
+
+function enrichedText(text) { //applies the enriched text, adapted from the PO 1.0.60 source
+    var expi = new RegExp("/(\\S+)/(?![^\\s<]*>)", "g");
+    text = text.replace(expi, "<i>$1</i>");
+    var expii = new RegExp("\\\\(\\S+)\\\\(?![^\\s<]*>)", "g");
+    text = text.replace(expii, "<i>$1</i>");
+    var expb = new RegExp("\\*(\\S+)\\*(?![^\\s<]*>)", "g");
+    text = text.replace(expb, "<b>$1</b>");
+    var expu = new RegExp("_(\\S+)_(?![^\\s<]*>)", "g");
+    text = text.replace(expu, "<u>$1</u>");
+    return text;
+};
+
+function isSafeScripts() { //checks if safe scripts is on and if it is it sends a message
+    if(sys.isSafeScripts()) {
+        sendBotMessage("You have safescripts on, you will not be able to update your scripts through the internet, though it should help against any harmful scripts, to turn it off, untick the box in the Script Window");
+        return true;
+    }
+    return false;
+};
+
+function sendMessage(message, channel) { //sends a message to the user
+    if(channel === undefined) {
+        channel = client.currentChannel();
+    };
+    client.printChannelMessage(message, channel, false);
+    return;
+};
+
+function ignoreCheck(name) { //checks if ignored, this is used since it's possible to bypass the autoignore function by logging in via an alt then switching names
+    for(i in ignore) {
+        if(name.toLowerCase() === ignore[i].toLowerCase()) {
+            client.ignore(client.id(name), true);
+        };
+    };
+    if(client.isIgnored(client.id(name))) {
+        return true;
+    };
+    return false;
+};
+
+function sendHtmlMessage(message, channel) { //sends a html message to the user
+    if(channel === undefined) {
+        channel = client.currentChannel();
+    };
+    client.printChannelMessage(message, channel, true);
+    return;
+};
 if(client.ownId() !== -1) {
     init();
 };
