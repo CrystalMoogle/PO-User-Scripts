@@ -167,7 +167,7 @@ function checkScriptVersion(bool) { //checks the current script version with the
         if(version === undefined) {
             sendBotMessage('There was an error with the version, please report to Crystal Moogle');
             return;
-        }
+        };
         version = version.replace(/"/g, "");
         var type = {
             "0": "Major Release (huge changes)",
@@ -189,7 +189,7 @@ function checkScriptVersion(bool) { //checks the current script version with the
             };
             sendBotMessage("A client script update is avaiable, type: " + type[typeno] + ". Use " + commandsymbol + "updatescripts. Use " + commandsymbol + "changelog " + version + " to see the changes", undefined, script_url); //TODO make sure the script actually is a new version, rather than a previous version
             return;
-        }
+        };
         if(bool === true) {
             sendBotMessage("No update detected");
         };
@@ -343,7 +343,7 @@ function isSafeScripts() { //checks if safe scripts is on and if it is it sends 
     if(sys.isSafeScripts()) {
         sendBotMessage("You have safescripts on, you will not be able to update your scripts through the internet, though it should help against any harmful scripts, to turn it off, untick the box in the Script Window");
         return true;
-    }
+    };
     return false;
 };
 
@@ -389,17 +389,17 @@ client.network().channelCommandReceived.connect(function (command, channel) {
     };
     if(logging !== true) {
         return;
-    }
+    };
     for(var x in playersonline) {
         if(client.channel(channel).hasPlayer(playersonline[x])) {
             tempusers.push(playersonline[x]);
         };
     };
-    tempchannelusers = tempusers.join(':')
+    tempchannelusers = tempusers.join(':');
     if(typeof channelusers[channel] === "undefined") {
         channelusers[channel] = tempchannelusers;
         return;
-    }
+    };
     if(command == 46) { //command for joining
         var a = channelusers[channel].split(':');
         var b = tempchannelusers.split(':');
@@ -410,7 +410,7 @@ client.network().channelCommandReceived.connect(function (command, channel) {
             };
         };
         channelusers[channel] = tempchannelusers;
-    }
+    };
     if(command == 47) { //command for leaving
         var a = channelusers[channel].split(':');
         var b = tempchannelusers.split(':');
@@ -421,12 +421,12 @@ client.network().channelCommandReceived.connect(function (command, channel) {
             };
         };
         channelusers[channel] = tempchannelusers;
-    }
-})
+    };
+});
 client.network().playerLogin.connect(function () { //only call when the user has logged in to prevent any crashes
     awayFunction();
     init();
-})
+});
 Script_Version = "1.6.09"; //version the script is currently on
 poScript = ({
     clientStartUp: function () {
@@ -442,7 +442,7 @@ poScript = ({
     onPlayerReceived: function (id) { //detects when a player is visible to the client (mostly logins, but may also happen upon joining a new channel)
         if(typeof playersonline === "undefined") {
             playersonline = [];
-        }
+        };
         playersonline.push(id);
         var flashvar = "";
         if(friendsflash === true) {
@@ -485,7 +485,7 @@ poScript = ({
             if(client.id(message.substring(0, pos)) == -1 || client.id(message.substring(0, pos)) === undefined) {
                 bot = true;
             };
-            var playname = message.substring(0, pos)
+            var playname = message.substring(0, pos);
             if(ignoreCheck(playname)) {
                 sys.stopEvent();
                 return;
@@ -522,7 +522,7 @@ poScript = ({
                 playmessage = "<font color = '" + greentext + "'>" + playmessage + "</font>";
             } else {
                 playmessage = "<font color = '" + fontcolour + "'>" + playmessage;
-            }
+            };
             var auth = client.auth(id);
             if(auth > 4) {
                 auth = 4;
@@ -567,7 +567,7 @@ poScript = ({
             client.network().sendPM(id, armessage);
             playerswarn[id] = true;
             return;
-        }
+        };
         return;
     },
     beforeSendMessage: function (message, channel) { //detects messages sent by the client
@@ -656,7 +656,7 @@ poScript = ({
                     return;
                 };
                 sendBotMessage("Please use on/off");
-            }
+            };
             if(command == "greentext") {
                 sys.stopEvent();
                 if(commandData == "on") {
@@ -688,7 +688,7 @@ poScript = ({
                     return;
                 };
                 sendBotMessage("Please use on/off");
-            }
+            };
             if(command == "checkversion") {
                 sys.stopEvent();
                 if(isSafeScripts()) {
@@ -784,12 +784,12 @@ poScript = ({
                     if(nfchannel.search(/, /g) !== -1 || nfchannel.search(/ ,/g) !== -1) {
                         nfchannel = nfchannel.replace(/, /g, ",").replace(/ ,/g, ",");
                     };
-                    nfchannel = nfchannel.split(",")
+                    nfchannel = nfchannel.split(",");
                     fchannel = eliminateDuplicates(nfchannel.concat(fchannel));
                     sys.saveVal('fchannel', fchannel.toString());
                     sendBotMessage("You won't be flashed in " + commandData[1]);
                 } else {
-                    commandData[1] = commandData[1].toLowerCase()
+                    commandData[1] = commandData[1].toLowerCase();
                     for(var x in fchannel) {
                         if(fchannel[x].toLowerCase() === commandData[1]) {
                             fchannel.splice(x, 1);
@@ -814,8 +814,8 @@ poScript = ({
                 return;
             };
             if(command == "addfriend") {
-                sys.stopEvent()
-                var nfriends = commandData
+                sys.stopEvent();
+                var nfriends = commandData;
                 if(nfriends.search(/, /g) !== -1 || nfriends.search(/ ,/g) !== -1) {
                     nfriends = nfriends.replace(/, /g, ",").replace(/ ,/g, ",");
                 };
@@ -881,7 +881,7 @@ poScript = ({
                         sys.saveVal('ignore', ignore.toString());
                         if(client.id(commandData) != -1) {
                             client.ignore(client.id(commandData), false);
-                        }
+                        };
                         sendBotMessage("You removed " + commandData + " from your ignorelist!");
                         return;
                     };
@@ -945,7 +945,7 @@ poScript = ({
                 if(commandData == undefined) {
                     return;
                 };
-                var type = commandData.split(":")
+                var type = commandData.split(":");
                 if(type.length < 1) {
                     sendBotMessage('Usage is ' + commandsymbol + 'font type:modifier');
                     return;
@@ -1253,14 +1253,14 @@ poScript = ({
                 };
                 sendBotMessage('This is not a valid type!');
                 return;
-            }
+            };
             if(command == "artime") {
                 sys.stopEvent();
                 var time = commandData.split(':');
                 if(time.length !== 2) {
                     sendBotMessage('Usage of this command is: ' + commandsymbol + 'artime starthour:endhour');
                     return;
-                }
+                };
                 if(isNaN(time[0]) || isNaN(time[1]) || time[0] < 0 || time[0] > 24 || time[1] < 0 || time[1] > 24 || time[0] == "" || time[1] == "") {
                     sendBotMessage('Make sure both parameters are numbers and are between 0 and 24');
                     return;
