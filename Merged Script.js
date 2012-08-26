@@ -301,33 +301,53 @@ function awayFunction() { //makes the user go away if needed
     };
 };
 
-function htmlLinks(text) { //make sure to properly link html links
-    var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\(\)\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/\(\)%=~_|])/ig;
+function stalkWordCheck(string, playname, bot, channel) {//adds flashes to names/stalkwords
+    var ownName = html_escape(client.ownName());
+    if(string.toLowerCase().indexOf(ownName.toLowerCase()) != -1 && playname !== ownName && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
+        var name = new RegExp("\\b" + ownName + "\\b", "i");
+        newstring = string.replace(name, "<span style='" + hilight + "'>" + client.ownName() + "</span>");
+        if(newstring !== string) {
+            string = newstring.replace(newstring, "<i> " + newstring + "</i><ping/>");
+        };
+    };
+    for(var x in stalkwords) {
+        var stalk = new RegExp("\\b" + stalkwords[x] + "\\b", "i");
+        var stalks = string.match(stalk);
+        if(string.toLowerCase().search(stalk) != -1 && playname !== client.ownName() && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
+            newstring = string.replace(stalk, "<span style='" + hilight + "'>" + stalks + "</span>");
+            if(newstring !== string) {
+                string = newstring.replace(newstring, "<i> " + newstring + "</i><ping/>");
+            };
+        };
+    };
+    return string
+};
+
+function htmllinks(text) { //makes sure links get linked!
+    var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\(\)\[\]\/%?=~_|!:,.;']*[-A-Z0-9+&@#\/\(\)\[\]%=~_|'])/ig;
     var found = text.match(exp);
     var newtext;
     var newfound;
     for(var x in found) {
-        newfound = found[x].replace(/\//g, sys.md5('/'));
-        newfound = newfound.replace(/_/g, sys.md5('_'));
-        text = text.replace(found[x], newfound);
+        newfound = encodeURIComponent(found[x])
         newtext = ("<a href ='" + newfound + "'>" + newfound + "</a>").replace(/&amp;/gi, "&");
-        text = text.replace(newfound, newtext);
+        text = text.replace(found[x], newtext);
     };
-    if(etext == "true") {
-        text = enrichedText(text);
-    };
-    var expt = new RegExp(sys.md5('/'), "g");
-    if(text.search(expt) != -1) {
-        text = text.replace(expt, "/");
-    };
-    expt = new RegExp(sys.md5('_'), "g");
-    if(text.search(expt) != -1) {
-        text = text.replace(expt, "_");
-    };
+    return text
+};
+
+function addExtras(text, playname, bot, channel) { //adds stalkwords/links/enriched text etc
+    text = htmllinks(text);
+    text = enrichedText(text);
+    text = stalkWordCheck(text, playname, bot, channel);
+    text = decodeURIComponent(text);
     return text;
 };
 
 function enrichedText(text) { //applies the enriched text, adapted from the PO 1.0.60 source
+    if(etext == false) {
+        return text;
+    };
     var expi = new RegExp("/(\\S+)/(?![^\\s<]*>)", "g");
     text = text.replace(expi, "<i>$1</i>");
     var expii = new RegExp("\\\\(\\S+)\\\\(?![^\\s<]*>)", "g");
@@ -427,7 +447,7 @@ client.network().playerLogin.connect(function () { //only call when the user has
     awayFunction();
     init();
 });
-Script_Version = "1.6.09"; //version the script is currently on
+Script_Version = "1.6.10"; //version the script is currently on
 poScript = ({
     clientStartUp: function () {
         sendMessage('Script Check: OK'); //use this to send a message on update scripts
@@ -500,24 +520,6 @@ poScript = ({
                 var clist = ['#5811b1', '#399bcd', '#0474bb', '#f8760d', '#a00c9e', '#0d762b', '#5f4c00', '#9a4f6d', '#d0990f', '#1b1390', '#028678', '#0324b1'];
                 colour = clist[client.id(playname) % clist.length];
             };
-            var ownName = html_escape(client.ownName());
-            if(playmessage.toLowerCase().indexOf(ownName.toLowerCase()) != -1 && playname !== ownName && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
-                var name = new RegExp("\\b" + ownName + "\\b", "i");
-                newplaymessage = playmessage.replace(name, "<span style='" + hilight + "'>" + client.ownName() + "</span>");
-                if(newplaymessage !== playmessage) {
-                    playmessage = newplaymessage.replace(newplaymessage, "<i> " + newplaymessage + "</i><ping/>");
-                };
-            };
-            for(var x in stalkwords) {
-                var stalk = new RegExp("\\b" + stalkwords[x] + "\\b", "i");
-                var stalks = playmessage.match(stalk);
-                if(playmessage.toLowerCase().search(stalk) != -1 && playname !== client.ownName() && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
-                    newplaymessage = playmessage.replace(stalk, "<span style='" + hilight + "'>" + stalks + "</span>");
-                    if(newplaymessage !== playmessage) {
-                        playmessage = newplaymessage.replace(newplaymessage, "<i> " + newplaymessage + "</i><ping/>");
-                    };
-                };
-            };
             if(playmessage.substr(0, 4) == "&gt;" && tgreentext === "true") {
                 playmessage = "<font color = '" + greentext + "'>" + playmessage + "</font>";
             } else {
@@ -528,7 +530,7 @@ poScript = ({
                 auth = 4;
             };
             playmessage = client.channel(chan).addChannelLinks(playmessage);
-            playmessage = htmlLinks(playmessage);
+            playmessage = addExtras(playmessage, playname, bot, channel);
             var symbol = auth_symbol[auth];
             if(bot === true) {
                 symbol = "";
@@ -805,10 +807,10 @@ poScript = ({
                 var check = [];
                 for(var x in friends) {
                     if(client.id(friends[x]) !== -1) {
-                        check.push(friends[x] + " (online) ");
+                        check.push(friends[x] + " (online)");
                         continue;
                     };
-                    check.push(friends[x] + " (offline) ");
+                    check.push(friends[x] + " (offline)");
                 };
                 sendBotMessage("Your friends are: " + check);
                 return;
