@@ -309,6 +309,8 @@ function stalkWordCheck(string, playname, bot, channel) { //adds flashes to name
         if(newstring !== string) {
             string = newstring.replace(newstring, "<i> " + newstring + "</i><ping/>");
         };
+        var regex = new RegExp(client.ownName(), "gi")
+        string = string.replace(regex, client.ownName())
     };
     for(var x in stalkwords) {
         var stalk = new RegExp("\\b" + stalkwords[x] + "\\b", "i");
@@ -318,7 +320,9 @@ function stalkWordCheck(string, playname, bot, channel) { //adds flashes to name
             if(newstring !== string) {
                 string = newstring.replace(newstring, "<i> " + newstring + "</i><ping/>");
             };
-        };
+        }
+        var regex = new RegExp(sys.md5(stalkwords[x]), "gi")
+        string = string.replace(regex, stalkwords[x])
     };
     return string
 };
@@ -330,6 +334,11 @@ function htmllinks(text) { //makes sure links get linked!
     var newfound;
     for(var x in found) {
         newfound = found[x].replace(/\//g, sys.md5('/')).replace(/_/g, sys.md5('_'))
+        for(var y in stalkwords) {
+            var regex = new RegExp(stalkwords[y], "gi")
+            var regex1 = new RegExp(client.ownName(), "gi")
+            newfound = newfound.replace(regex, sys.md5(stalkwords[y])).replace(regex1, sys.md5(client.ownName()))
+        }
         newtext = ("<a href ='" + newfound + "'>" + newfound + "</a>").replace(/&amp;/gi, "&");
         text = text.replace(found[x], newtext);
     };
@@ -535,7 +544,7 @@ poScript = ({
                 colour = clist[client.id(playname) % clist.length];
             }
             var auth = client.auth(id);
-            if(auth > 4) {
+            if(auth > 4 || auth < 0) {
                 auth = 4;
             };
             playmessage = addExtras(playmessage, playname, bot, channel);
