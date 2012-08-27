@@ -301,7 +301,7 @@ function awayFunction() { //makes the user go away if needed
     };
 };
 
-function stalkWordCheck(string, playname, bot, channel) {//adds flashes to names/stalkwords
+function stalkWordCheck(string, playname, bot, channel) { //adds flashes to names/stalkwords
     var ownName = html_escape(client.ownName());
     if(string.toLowerCase().indexOf(ownName.toLowerCase()) != -1 && playname !== ownName && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
         var name = new RegExp("\\b" + ownName + "\\b", "i");
@@ -329,14 +329,13 @@ function htmllinks(text) { //makes sure links get linked!
     var newtext;
     var newfound;
     for(var x in found) {
-        newfound = encodeURIComponent(found[x])
-        newtext = ("<a href ='" + newfound + "'>" + newfound + "</a>").replace(/&amp;/gi, "&");
+        newtext = ("<a href ='" + found[x] + "'>" + found[x] + "</a>").replace(/&amp;/gi, "&");
         text = text.replace(found[x], newtext);
     };
-    return text
+    return encodeURIComponent(text)
 };
 
-function addExtras(text, playname, bot, channel) { //adds stalkwords/links/enriched text etc
+function addExtras(text, playname, bot, channel) { //adds stalkwords/links/enriched text etc   
     text = htmllinks(text);
     text = enrichedText(text);
     text = stalkWordCheck(text, playname, bot, channel);
@@ -348,9 +347,9 @@ function enrichedText(text) { //applies the enriched text, adapted from the PO 1
     if(etext == false) {
         return text;
     };
-    var expi = new RegExp("/(\\S+)/(?![^\\s<]*>)", "g");
+    var expi = new RegExp("%2F(\\S+)%2F(?![^\\s<]*>)", "g");
     text = text.replace(expi, "<i>$1</i>");
-    var expii = new RegExp("\\\\(\\S+)\\\\(?![^\\s<]*>)", "g");
+    var expii = new RegExp("%5C(\\S+)%5C(?![^\\s<]*>)", "g");
     text = text.replace(expii, "<i>$1</i>");
     var expb = new RegExp("\\*(\\S+)\\*(?![^\\s<]*>)", "g");
     text = text.replace(expb, "<b>$1</b>");
@@ -447,7 +446,7 @@ client.network().playerLogin.connect(function () { //only call when the user has
     awayFunction();
     init();
 });
-Script_Version = "1.6.10"; //version the script is currently on
+Script_Version = "1.6.11"; //version the script is currently on
 poScript = ({
     clientStartUp: function () {
         sendMessage('Script Check: OK'); //use this to send a message on update scripts
