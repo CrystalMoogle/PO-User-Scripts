@@ -329,7 +329,8 @@ function htmllinks(text) { //makes sure links get linked!
     var newtext;
     var newfound;
     for(var x in found) {
-        newtext = ("<a href ='" + found[x] + "'>" + found[x] + "</a>").replace(/&amp;/gi, "&");
+        newfound = found[x].replace(/\//g, sys.md5('/'))
+        newtext = ("<a href ='" + newfound + "'>" + newfound + "</a>").replace(/&amp;/gi, "&");
         text = text.replace(found[x], newtext);
     };
     return encodeURIComponent(text).replace(/%20/g, " ")
@@ -341,6 +342,8 @@ function addExtras(text, playname, bot, channel) { //adds stalkwords/links/enric
     text = decodeURIComponent(text);
     text = client.channel(channel).addChannelLinks(text);
     text = stalkWordCheck(text, playname, bot, channel);
+    var md5 = new RegExp(sys.md5('/'), "g")
+    text = text.replace(md5, '/')
     return text;
 };
 
