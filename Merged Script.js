@@ -304,6 +304,7 @@ function awayFunction() { //makes the user go away if needed
 function stalkWordCheck(string, playname, bot, channel) { //adds flashes to names/stalkwords
     var ownName = html_escape(client.ownName());
     if(string.toLowerCase().indexOf(ownName.toLowerCase()) != -1 && playname !== ownName && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
+        print('test')
         var name = new RegExp("\\b" + ownName + "\\b", "i");
         newstring = string.replace(name, "<span style='" + hilight + "'>" + client.ownName() + "</span>");
         if(newstring !== string) {
@@ -332,14 +333,15 @@ function htmllinks(text) { //makes sure links get linked!
         newtext = ("<a href ='" + found[x] + "'>" + found[x] + "</a>").replace(/&amp;/gi, "&");
         text = text.replace(found[x], newtext);
     };
-    return encodeURIComponent(text)
+    return encodeURIComponent(text).replace(/%20/g, " ")
 };
 
 function addExtras(text, playname, bot, channel) { //adds stalkwords/links/enriched text etc   
     text = htmllinks(text);
     text = enrichedText(text);
-    text = stalkWordCheck(text, playname, bot, channel);
     text = decodeURIComponent(text);
+    text = client.channel(channel).addChannelLinks(text);
+    text = stalkWordCheck(text, playname, bot, channel);
     return text;
 };
 
@@ -528,7 +530,6 @@ poScript = ({
             if(auth > 4) {
                 auth = 4;
             };
-            playmessage = client.channel(chan).addChannelLinks(playmessage);
             playmessage = addExtras(playmessage, playname, bot, channel);
             var symbol = auth_symbol[auth];
             if(bot === true) {
