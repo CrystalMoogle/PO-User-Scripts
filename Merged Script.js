@@ -329,7 +329,7 @@ function htmllinks(text) { //makes sure links get linked!
     var newtext;
     var newfound;
     for(var x in found) {
-        newfound = found[x].replace(/\//g, sys.md5('/'))
+        newfound = found[x].replace(/\//g, sys.md5('/')).replace(/_/g, sys.md5('_'))
         newtext = ("<a href ='" + newfound + "'>" + newfound + "</a>").replace(/&amp;/gi, "&");
         text = text.replace(found[x], newtext);
     };
@@ -343,7 +343,8 @@ function addExtras(text, playname, bot, channel) { //adds stalkwords/links/enric
     text = client.channel(channel).addChannelLinks(text);
     text = stalkWordCheck(text, playname, bot, channel);
     var md5 = new RegExp(sys.md5('/'), "g")
-    text = text.replace(md5, '/')
+    var md51 = new RegExp(sys.md5('_'), "g")
+    text = text.replace(md5, '/').replace(md51, "_")
     return text;
 };
 
