@@ -341,6 +341,7 @@ function addExtras(text, playname, bot, channel) { //adds stalkwords/links/enric
     text = enrichedText(text);
     text = decodeURIComponent(text);
     text = client.channel(channel).addChannelLinks(text);
+    text = greenText(text)
     text = stalkWordCheck(text, playname, bot, channel);
     var md5 = new RegExp(sys.md5('/'), "g")
     var md51 = new RegExp(sys.md5('_'), "g")
@@ -362,6 +363,15 @@ function enrichedText(text) { //applies the enriched text, adapted from the PO 1
     text = text.replace(expu, "<u>$1</u>");
     return text;
 };
+
+function greenText(text) { //applies greentext
+    if(text.substr(0, 4) == "&gt;" && tgreentext === "true") {
+        text = "<font color = '" + greentext + "'>" + text + "</font>";
+    } else {
+        text = "<font color = '" + fontcolour + "'>" + text;
+    };
+    return text
+}
 
 function isSafeScripts() { //checks if safe scripts is on and if it is it sends a message
     if(sys.isSafeScripts()) {
@@ -523,12 +533,7 @@ poScript = ({
             if(colour === "#000000") {
                 var clist = ['#5811b1', '#399bcd', '#0474bb', '#f8760d', '#a00c9e', '#0d762b', '#5f4c00', '#9a4f6d', '#d0990f', '#1b1390', '#028678', '#0324b1'];
                 colour = clist[client.id(playname) % clist.length];
-            };
-            if(playmessage.substr(0, 4) == "&gt;" && tgreentext === "true") {
-                playmessage = "<font color = '" + greentext + "'>" + playmessage + "</font>";
-            } else {
-                playmessage = "<font color = '" + fontcolour + "'>" + playmessage;
-            };
+            }
             var auth = client.auth(id);
             if(auth > 4) {
                 auth = 4;
