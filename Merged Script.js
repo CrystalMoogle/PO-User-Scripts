@@ -304,7 +304,6 @@ function awayFunction() { //makes the user go away if needed
 function stalkWordCheck(string, playname, bot, channel) { //adds flashes to names/stalkwords
     var ownName = html_escape(client.ownName());
     if(string.toLowerCase().indexOf(ownName.toLowerCase()) != -1 && playname !== ownName && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
-        print('test')
         var name = new RegExp("\\b" + ownName + "\\b", "i");
         newstring = string.replace(name, "<span style='" + hilight + "'>" + client.ownName() + "</span>");
         if(newstring !== string) {
