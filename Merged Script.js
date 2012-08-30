@@ -242,11 +242,16 @@ function checkTime(i) { //adds a 0 in front of one digit minutes/seconds
     return i;
 };
 
+function stripHTML(string) {
+    var regex = /(<([^>]+)>)/ig;
+    string = string.replace(regex, "");
+    return string
+}
+
 function getName(string, type) { //gets the name from rainbow/me messages
     var name = "";
     if(type == "rainbow") {
-        var regex = /(<([^>]+)>)/ig;
-        string = string.replace(regex, "");
+        stripHTML(string)
         var pos = string.indexOf(': ');
         if(pos != -1) {
             name = string.substring(0, pos);
@@ -470,7 +475,7 @@ client.network().playerLogin.connect(function () { //only call when the user has
     awayFunction();
     init();
 });
-Script_Version = "1.6.11"; //version the script is currently on
+Script_Version = "1.6.12"; //version the script is currently on
 poScript = ({
     clientStartUp: function () {
         sendMessage('Script Check: OK'); //use this to send a message on update scripts
@@ -493,7 +498,7 @@ poScript = ({
         };
         for(var x in friends) {
             if(client.name(id).toLowerCase() === friends[x].toLowerCase() && flash === true) {
-                sendBotMessage("User " + client.name(id) + " has logged in" + flashvar + "", client.currentChannel(), "<ping/>");
+                sendHtmlMessage("<font color = '" + html_escape(clientbotcolour) + "'><timestamp/>" + clientbotstyle + html_escape(clientbotname) + ":" + tagend(clientbotstyle) + "</font> User <a href='po:pm/" + id + "'>" + client.name(id) + "</a> has logged in" + flashvar + "", client.currentChannel());
             };
         };
         for(var x in ignore) {
@@ -511,6 +516,7 @@ poScript = ({
                 sys.stopEvent();
                 return;
             };
+            saveToLog(stripHTML(message), channel)
         };
         if(message.indexOf('<timestamp/><b><span style') !== -1) {
             var ignored = getName(message, "rainbow");
@@ -518,6 +524,7 @@ poScript = ({
                 sys.stopEvent();
                 return;
             };
+            saveToLog(stripHTML(message), channel)
         };
         if(html == true) {
             return;
@@ -539,10 +546,6 @@ poScript = ({
             if(bot === true) {
                 colour = clientbotcolour;
             };
-            if(colour === "#000000") {
-                var clist = ['#5811b1', '#399bcd', '#0474bb', '#f8760d', '#a00c9e', '#0d762b', '#5f4c00', '#9a4f6d', '#d0990f', '#1b1390', '#028678', '#0324b1'];
-                colour = clist[client.id(playname) % clist.length];
-            }
             var auth = client.auth(id);
             if(auth > 4 || auth < 0) {
                 auth = 4;
@@ -613,6 +616,7 @@ poScript = ({
                 sendMessage(commandsymbol + "greentext on/off: Allows you to turn greentext on/off");
                 sendMessage(commandsymbol + "idle on/off: Allows you to turn auto-idle on/off");
                 sendMessage(commandsymbol + "goto channel: Allows you to switch to that channel (joins if you're not in that channel)");
+                sendMessage(commandsymbol + "reconnect: Allows you to reconnect to the server (Does not work if kicked/IP changes)")
                 sendMessage(commandsymbol + "stalkwords: Allows you to view your current stalkwords");
                 sendMessage(commandsymbol + "[add/remove]stalkword word: Allows you to add/remove stalkwords");
                 sendMessage(commandsymbol + "flash on/off:channel: Allows you to turn flashes on/off. Channel is an optional parameter to turn flashes off for one channel");
@@ -754,6 +758,11 @@ poScript = ({
                 };
                 sendBotMessage("That is not a channel!");
             };
+            if(command == "reconnect") {
+                sys.stopEvent()
+                client.reconnect()
+                return;
+            }
             if(command == "stalkwords") {
                 sys.stopEvent();
                 sendBotMessage("Your stalkwords are: " + stalkwords);
@@ -824,12 +833,12 @@ poScript = ({
                 var check = [];
                 for(var x in friends) {
                     if(client.id(friends[x]) !== -1) {
-                        check.push(friends[x] + " (online)");
+                        check.push("<a href='po:pm/" + client.id(friends[x]) + "'>" + friends[x] + "</a> <font color='green'>(online)</font>");
                         continue;
                     };
-                    check.push(friends[x] + " (offline)");
+                    check.push(friends[x] + " <font color='red'>(offline)</font>");
                 };
-                sendBotMessage("Your friends are: " + check);
+                sendHtmlMessage("<font color = '" + html_escape(clientbotcolour) + "'><timestamp/>" + clientbotstyle + html_escape(clientbotname) + ":" + tagend(clientbotstyle) + "</font> Your friends are: " + check);
                 return;
             };
             if(command == "addfriend") {
