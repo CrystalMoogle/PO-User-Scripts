@@ -251,7 +251,7 @@ function stripHTML(string) {
 function getName(string, type) { //gets the name from rainbow/me messages
     var name = "";
     if(type == "rainbow") {
-        stripHTML(string)
+        string = stripHTML(string)
         var pos = string.indexOf(': ');
         if(pos != -1) {
             name = string.substring(0, pos);
