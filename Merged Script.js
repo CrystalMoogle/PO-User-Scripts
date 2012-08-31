@@ -245,13 +245,13 @@ function checkTime(i) { //adds a 0 in front of one digit minutes/seconds
 function stripHTML(string) {
     var regex = /(<([^>]+)>)/ig;
     string = string.replace(regex, "");
-    return string
-}
+    return string;
+};
 
 function getName(string, type) { //gets the name from rainbow/me messages
     var name = "";
     if(type == "rainbow") {
-        string = stripHTML(string)
+        string = stripHTML(string);
         var pos = string.indexOf(': ');
         if(pos != -1) {
             name = string.substring(0, pos);
@@ -314,7 +314,7 @@ function stalkWordCheck(string, playname, bot, channel) { //adds flashes to name
         if(newstring !== string) {
             string = newstring.replace(newstring, "<i> " + newstring + "</i><ping/>");
         };
-        var regex = new RegExp(client.ownName(), "gi")
+        var regex = new RegExp(sys.md5(client.ownName()), "gi")
         string = string.replace(regex, client.ownName())
     };
     for(var x in stalkwords) {
@@ -475,7 +475,7 @@ client.network().playerLogin.connect(function () { //only call when the user has
     awayFunction();
     init();
 });
-Script_Version = "1.6.12"; //version the script is currently on
+Script_Version = "1.6.13"; //version the script is currently on
 poScript = ({
     clientStartUp: function () {
         sendMessage('Script Check: OK'); //use this to send a message on update scripts
@@ -516,7 +516,7 @@ poScript = ({
                 sys.stopEvent();
                 return;
             };
-            saveToLog(stripHTML(message), channel)
+            saveToLog(stripHTML(message), channel);
         };
         if(message.indexOf('<timestamp/><b><span style') !== -1) {
             var ignored = getName(message, "rainbow");
@@ -524,7 +524,7 @@ poScript = ({
                 sys.stopEvent();
                 return;
             };
-            saveToLog(stripHTML(message), channel)
+            saveToLog(stripHTML(message), channel);
         };
         if(html == true) {
             return;
@@ -759,10 +759,10 @@ poScript = ({
                 sendBotMessage("That is not a channel!");
             };
             if(command == "reconnect") {
-                sys.stopEvent()
-                client.reconnect()
+                sys.stopEvent();
+                client.reconnect();
                 return;
-            }
+            };
             if(command == "stalkwords") {
                 sys.stopEvent();
                 sendBotMessage("Your stalkwords are: " + stalkwords);
