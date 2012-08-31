@@ -314,9 +314,9 @@ function stalkWordCheck(string, playname, bot, channel) { //adds flashes to name
         if(newstring !== string) {
             string = newstring.replace(newstring, "<i> " + newstring + "</i><ping/>");
         };
-        var regex = new RegExp(sys.md5(client.ownName()), "gi")
-        string = string.replace(regex, client.ownName())
     };
+    var regex = new RegExp(sys.md5(client.ownName()), "gi")
+    string = string.replace(regex, client.ownName())
     for(var x in stalkwords) {
         var stalk = new RegExp("\\b" + stalkwords[x] + "\\b", "i");
         var stalks = string.match(stalk);
@@ -326,7 +326,7 @@ function stalkWordCheck(string, playname, bot, channel) { //adds flashes to name
                 string = newstring.replace(newstring, "<i> " + newstring + "</i><ping/>");
             };
         }
-        var regex = new RegExp(sys.md5(stalkwords[x]), "gi")
+        regex = new RegExp(sys.md5(stalkwords[x]), "gi")
         string = string.replace(regex, stalkwords[x])
     };
     return string
