@@ -487,7 +487,7 @@ function sendMessage(message, channel) { //sends a message to the user
 
 function ignoreCheck(name) { //checks if ignored, this is used since it's possible to bypass the autoignore function by logging in via an alt then switching names
     for(i in ignore) {
-        if(name.toLowerCase() === ignore[x].toLowerCase()) {
+        if(name.toLowerCase() === ignore[i].toLowerCase()) {
             client.ignore(client.id(name), true);
         };
     };
