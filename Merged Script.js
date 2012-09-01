@@ -475,7 +475,7 @@ client.network().playerLogin.connect(function () { //only call when the user has
     awayFunction();
     init();
 });
-Script_Version = "1.6.13"; //version the script is currently on
+Script_Version = "1.6.14"; //version the script is currently on
 poScript = ({
     clientStartUp: function () {
         sendMessage('Script Check: OK'); //use this to send a message on update scripts
@@ -614,6 +614,7 @@ poScript = ({
                 sendMessage("*** Client Commands ***");
                 sendMessage(commandsymbol + "etext on/off: Allows you to turn Enriched text on/off");
                 sendMessage(commandsymbol + "greentext on/off: Allows you to turn greentext on/off");
+                sendMessage(commandsymbol + "greentextcolo(u)r colour: Allows you to change your greentext colour");
                 sendMessage(commandsymbol + "idle on/off: Allows you to turn auto-idle on/off");
                 sendMessage(commandsymbol + "goto channel: Allows you to switch to that channel (joins if you're not in that channel)");
                 sendMessage(commandsymbol + "reconnect: Allows you to reconnect to the server (Does not work if kicked/IP changes)");
