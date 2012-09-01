@@ -315,8 +315,8 @@ function stalkWordCheck(string, playname, bot, channel) { //adds flashes to name
             string = newstring.replace(newstring, "<i> " + newstring + "</i><ping/>");
         };
     };
-    var regex = new RegExp(sys.md5(client.ownName()), "gi")
-    string = string.replace(regex, client.ownName())
+    var regex = new RegExp(sys.md5(client.ownName()), "gi");
+    string = string.replace(regex, client.ownName());
     for(var x in stalkwords) {
         var stalk = new RegExp("\\b" + stalkwords[x] + "\\b", "i");
         var stalks = string.match(stalk);
@@ -325,11 +325,11 @@ function stalkWordCheck(string, playname, bot, channel) { //adds flashes to name
             if(newstring !== string) {
                 string = newstring.replace(newstring, "<i> " + newstring + "</i><ping/>");
             };
-        }
-        regex = new RegExp(sys.md5(stalkwords[x]), "gi")
-        string = string.replace(regex, stalkwords[x])
+        };
+        regex = new RegExp(sys.md5(stalkwords[x]), "gi");
+        string = string.replace(regex, stalkwords[x]);
     };
-    return string
+    return string;
 };
 
 function htmllinks(text) { //makes sure links get linked!
@@ -338,16 +338,16 @@ function htmllinks(text) { //makes sure links get linked!
     var newtext;
     var newfound;
     for(var x in found) {
-        newfound = found[x].replace(/\//g, sys.md5('/')).replace(/_/g, sys.md5('_'))
+        newfound = found[x].replace(/\//g, sys.md5('/')).replace(/_/g, sys.md5('_'));
         for(var y in stalkwords) {
-            var regex = new RegExp(stalkwords[y], "gi")
-            var regex1 = new RegExp(client.ownName(), "gi")
-            newfound = newfound.replace(regex, sys.md5(stalkwords[y])).replace(regex1, sys.md5(client.ownName()))
-        }
+            var regex = new RegExp(stalkwords[y], "gi");
+            var regex1 = new RegExp(client.ownName(), "gi");
+            newfound = newfound.replace(regex, sys.md5(stalkwords[y])).replace(regex1, sys.md5(client.ownName()));
+        };
         newtext = ("<a href ='" + newfound + "'>" + newfound + "</a>").replace(/&amp;/gi, "&");
         text = text.replace(found[x], newtext);
     };
-    return encodeURIComponent(text).replace(/%20/g, " ")
+    return encodeURIComponent(text).replace(/%20/g, " ");
 };
 
 function addExtras(text, playname, bot, channel) { //adds stalkwords/links/enriched text etc   
@@ -355,11 +355,11 @@ function addExtras(text, playname, bot, channel) { //adds stalkwords/links/enric
     text = enrichedText(text);
     text = decodeURIComponent(text);
     text = client.channel(channel).addChannelLinks(text);
-    text = greenText(text)
+    text = greenText(text);
     text = stalkWordCheck(text, playname, bot, channel);
-    var md5 = new RegExp(sys.md5('/'), "g")
-    var md51 = new RegExp(sys.md5('_'), "g")
-    text = text.replace(md5, '/').replace(md51, "_")
+    var md5 = new RegExp(sys.md5('/'), "g");
+    var md51 = new RegExp(sys.md5('_'), "g");
+    text = text.replace(md5, '/').replace(md51, "_");
     return text;
 };
 
@@ -384,8 +384,8 @@ function greenText(text) { //applies greentext
     } else {
         text = "<font color = '" + fontcolour + "'>" + text;
     };
-    return text
-}
+    return text;
+};
 
 function isSafeScripts() { //checks if safe scripts is on and if it is it sends a message
     if(sys.isSafeScripts()) {
@@ -616,7 +616,7 @@ poScript = ({
                 sendMessage(commandsymbol + "greentext on/off: Allows you to turn greentext on/off");
                 sendMessage(commandsymbol + "idle on/off: Allows you to turn auto-idle on/off");
                 sendMessage(commandsymbol + "goto channel: Allows you to switch to that channel (joins if you're not in that channel)");
-                sendMessage(commandsymbol + "reconnect: Allows you to reconnect to the server (Does not work if kicked/IP changes)")
+                sendMessage(commandsymbol + "reconnect: Allows you to reconnect to the server (Does not work if kicked/IP changes)");
                 sendMessage(commandsymbol + "stalkwords: Allows you to view your current stalkwords");
                 sendMessage(commandsymbol + "[add/remove]stalkword word: Allows you to add/remove stalkwords");
                 sendMessage(commandsymbol + "flash on/off:channel: Allows you to turn flashes on/off. Channel is an optional parameter to turn flashes off for one channel");
@@ -951,7 +951,10 @@ poScript = ({
             };
             if(command == "greentextcolor" || command == "greentextcolour") {
                 sys.stopEvent();
-                if(commandData == undefined) {
+                if(commandData == undefined||commandData == "") {
+                    greentext = '#789922';
+                    sendBotMessage(greentext + " is now your greentext colour!");
+                    sys.saveVal("greentext", greentext);
                     return;
                 };
                 greentext = commandData;
