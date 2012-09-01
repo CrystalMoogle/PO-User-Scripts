@@ -196,6 +196,88 @@ function checkScriptVersion(bool) { //checks the current script version with the
     });
 };
 
+function nameCheck(string) { //adapted from the PO Source Code
+    if(string.length > 20) {
+        return false;
+    };
+    if(string.lengh == 0) {
+        return false;
+    };
+    if(isPunct(string[0]) !== true && isAlnum(string[0]) !== true) {
+        return false;
+    };
+    var spaced = false;
+    var punct = false;
+    for(var x = 0; x < string.length; x++) {
+        if(string[x] == '\n' || string[x] == '%' || string[x] == '*' || string[x] == '<' || string[x] == ':' || string[x] == '(' || string[x] == ')' || string[x] == ';') {
+            return false;
+        };
+        if(isPunct(string[x])) {
+            if(punct == true) {
+                //Error: two punctuations are not separated by a letter/number
+                return false;
+            };
+            punct = true;
+            spaced = false;
+        } else if(string[x] == ' ') {
+            if(spaced == true) {
+                //Error: two spaces are following
+                return false;
+            };
+            spaced = true;
+        } else if(isAlnum(string[x])) {
+            //we allow another punct & space
+            punct = false;
+            spaced = false;
+        };
+    };
+    if(string.length == 1 && isPunct(string[0])) {
+        return "fixup";
+    };
+    if(isPunct(string[string.length - 1]) !== true && isAlnum(string[string.length - 1]) !== true) {
+        return "fixup";
+    };
+    return true;
+};
+
+function fixup(input) {
+    if(input.length > 0 && input[input.length - 1] == ' ') {
+        return input.substr(0, input.length - 1);
+    };
+};
+// Test for punctuation characters
+function isPunct(i) {
+    return(isGraph(i) && !(isAlnum(i)));
+};
+// Test for printable characters (only good up to char 127)
+function isGraph(i) {
+    myCharCode = i.charCodeAt(0);
+    if((myCharCode > 32) && (myCharCode < 127)) {
+        return true;
+    };
+    return false;
+};
+// Test for letters and digits
+function isAlnum(i) {
+    return(isDigit(i) || isAlpha(i));
+};
+// Test for digits
+function isDigit(i) {
+    myCharCode = i.charCodeAt(0);
+    if((myCharCode > 47) && (myCharCode < 58)) {
+        return true;
+    };
+    return false;
+};
+// Test for letters (only good up to char 127)
+function isAlpha(i) {
+    myCharCode = i.charCodeAt(0);
+    if(((myCharCode > 64) && (myCharCode < 91)) || ((myCharCode > 96) && (myCharCode < 123))) {
+        return true;
+    };
+    return false;
+};
+
 function eliminateDuplicates(arr) { //stolen from http://dreaminginjavascript.wordpress.com/2008/08/22/eliminating-duplicates/ eliminates any duplicates that are in an array
     var i,
     len = arr.length,
@@ -405,7 +487,7 @@ function sendMessage(message, channel) { //sends a message to the user
 
 function ignoreCheck(name) { //checks if ignored, this is used since it's possible to bypass the autoignore function by logging in via an alt then switching names
     for(i in ignore) {
-        if(name.toLowerCase() === ignore[i].toLowerCase()) {
+        if(name.toLowerCase() === ignore[x].toLowerCase()) {
             client.ignore(client.id(name), true);
         };
     };
@@ -475,7 +557,7 @@ client.network().playerLogin.connect(function () { //only call when the user has
     awayFunction();
     init();
 });
-Script_Version = "1.6.14"; //version the script is currently on
+Script_Version = "1.6.15"; //version the script is currently on
 poScript = ({
     clientStartUp: function () {
         sendMessage('Script Check: OK'); //use this to send a message on update scripts
@@ -618,6 +700,7 @@ poScript = ({
                 sendMessage(commandsymbol + "idle on/off: Allows you to turn auto-idle on/off");
                 sendMessage(commandsymbol + "goto channel: Allows you to switch to that channel (joins if you're not in that channel)");
                 sendMessage(commandsymbol + "reconnect: Allows you to reconnect to the server (Does not work if kicked/IP changes)");
+                sendMessage(commandsymbol + "changename: Allows you to change your name");
                 sendMessage(commandsymbol + "stalkwords: Allows you to view your current stalkwords");
                 sendMessage(commandsymbol + "[add/remove]stalkword word: Allows you to add/remove stalkwords");
                 sendMessage(commandsymbol + "flash on/off:channel: Allows you to turn flashes on/off. Channel is an optional parameter to turn flashes off for one channel");
@@ -952,7 +1035,7 @@ poScript = ({
             };
             if(command == "greentextcolor" || command == "greentextcolour") {
                 sys.stopEvent();
-                if(commandData == undefined||commandData == "") {
+                if(commandData == undefined || commandData == "") {
                     greentext = '#789922';
                     sendBotMessage(greentext + " is now your greentext colour!");
                     sys.saveVal("greentext", greentext);
@@ -1044,6 +1127,27 @@ poScript = ({
                     sendBotMessage("You changed your font size to: " + modifier);
                     return;
                 };
+            };
+            if(command == "changename") {
+                sys.stopEvent();
+                var valid = nameCheck(commandData);
+                if(valid === "fixup") {
+                    commandData = fixup(commandData);
+                    valid = nameCheck(commandData);
+                };
+                if(valid === false) {
+                    sendBotMessage("Invalid Name"); //TODO: Specify what's exactly wrong with the name
+                    return;
+                };
+                try {
+                    client.changeName(commandData);
+                    sendBotMessage("You changed your name to " + commandData);
+                } catch(e) {
+                    if(e == "TypeError: Result of expression 'client.changeName' [undefined] is not a function.") {
+                        sendBotMessage("You need to update your client to Version 2.0.06 or above to use this command");
+                    };
+                };
+                return;
             };
             if(command == "changelog") {
                 sys.stopEvent();
