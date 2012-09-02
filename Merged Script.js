@@ -381,6 +381,9 @@ function tagend(string) { //automatically creates an end tag from a html tagsent
 };
 
 function awayFunction() { //makes the user go away if needed
+    if(client.ownId() === -1){ //this shouldn't happen due to Network.playerLogin but people have been complaining of crashes so gonna see if this helps
+        return;
+    }
     if(sys.getVal("idle") === "true") {
         client.goAway(true);
     } else {
