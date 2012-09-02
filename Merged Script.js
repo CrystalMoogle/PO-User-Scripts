@@ -10,9 +10,9 @@
 var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Merged%20Script.js"; //where the script is stored
 function init() { //defines all the variables that are going to be used in the script, uses default if no saved settings are found
     if(sys.getVal('etext') === "true") {
-        etext = "true";
+        etext = true;
     } else {
-        etext = "false";
+        etext = false;
     };
     if(sys.getVal('tgreentext') === "true") {
         tgreentext = "true";
@@ -507,194 +507,8 @@ function sendHtmlMessage(message, channel) { //sends a html message to the user
     client.printChannelMessage(message, channel, true);
     return;
 };
-if(client.ownId() !== -1) {
-    init();
-};
-client.network().channelCommandReceived.connect(function (command, channel) {
-    var tempchannelusers;
-    var tempusers = [];
-    var logging = false;
-    for(z in logchannel) {
-        if(logchannel[z].toLowerCase() == client.channelName(channel).toLowerCase()) {
-            logging = true;
-            break;
-        };
-    };
-    if(logging !== true) {
-        return;
-    };
-    for(var x in playersonline) {
-        if(client.channel(channel).hasPlayer(playersonline[x])) {
-            tempusers.push(playersonline[x]);
-        };
-    };
-    tempchannelusers = tempusers.join(':');
-    if(typeof channelusers[channel] === "undefined") {
-        channelusers[channel] = tempchannelusers;
-        return;
-    };
-    if(command == 46) { //command for joining
-        var a = channelusers[channel].split(':');
-        var b = tempchannelusers.split(':');
-        for(var y in b) {
-            if(a[y] !== b[y]) {
-                saveToLog(client.name(b[y]) + " joined the channel", channel);
-                break;
-            };
-        };
-        channelusers[channel] = tempchannelusers;
-    };
-    if(command == 47) { //command for leaving
-        var a = channelusers[channel].split(':');
-        var b = tempchannelusers.split(':');
-        for(var y in a) {
-            if(a[y] !== b[y]) {
-                saveToLog(client.name(a[y]) + " left the channel", channel);
-                break;
-            };
-        };
-        channelusers[channel] = tempchannelusers;
-    };
-});
-client.network().playerLogin.connect(function () { //only call when the user has logged in to prevent any crashes
-    awayFunction();
-    init();
-});
-Script_Version = "1.6.15"; //version the script is currently on
-poScript = ({
-    clientStartUp: function () {
-        sendMessage('Script Check: OK'); //use this to send a message on update scripts
-    },
-    onPlayerRemoved: function (id) { //detects when  a player is no longer visible to the client (mostly log outs, but may happen from leaving all channels)
-        for(var x in playersonline); {
-            if(playersonline[x] === id); {
-                playersonline.splice(x, 1);
-            };
-        };
-    },
-    onPlayerReceived: function (id) { //detects when a player is visible to the client (mostly logins, but may also happen upon joining a new channel)
-        if(typeof playersonline === "undefined") {
-            playersonline = [];
-        };
-        playersonline.push(id);
-        var flashvar = "";
-        if(friendsflash === true) {
-            flashvar = "<ping/>";
-        };
-        for(var x in friends) {
-            if(client.name(id).toLowerCase() === friends[x].toLowerCase() && flash === true) {
-                sendHtmlMessage("<font color = '" + html_escape(clientbotcolour) + "'><timestamp/>" + clientbotstyle + html_escape(clientbotname) + ":" + tagend(clientbotstyle) + "</font> User <a href='po:pm/" + id + "'>" + client.name(id) + "</a> has logged in" + flashvar + "", client.currentChannel());
-            };
-        };
-        for(var x in ignore) {
-            if(client.name(id).toLowerCase() === ignore[x].toLowerCase()) {
-                client.ignore(id, true);
-            };
-        };
-    },
-    beforeChannelMessage: function (message, channel, html) { //detects a channel specific message
-        var chan = channel;
-        var bot = false;
-        if(message.indexOf('<timestamp/> *** <b>') !== -1) {
-            var ignored = getName(message, "me");
-            if(ignoreCheck(ignored)) {
-                sys.stopEvent();
-                return;
-            };
-            saveToLog(stripHTML(message), channel);
-        };
-        if(message.indexOf('<timestamp/><b><span style') !== -1) {
-            var ignored = getName(message, "rainbow");
-            if(ignoreCheck(ignored)) {
-                sys.stopEvent();
-                return;
-            };
-            saveToLog(stripHTML(message), channel);
-        };
-        if(html == true) {
-            return;
-        };
-        saveToLog(message, channel);
-        var pos = message.indexOf(': ');
-        if(pos != -1) {
-            if(client.id(message.substring(0, pos)) == -1 || client.id(message.substring(0, pos)) === undefined) {
-                bot = true;
-            };
-            var playname = message.substring(0, pos);
-            if(ignoreCheck(playname)) {
-                sys.stopEvent();
-                return;
-            };
-            var id = client.id(playname);
-            var playmessage = html_escape(message.substr(pos + 2));
-            var colour = client.color(id);
-            if(bot === true) {
-                colour = clientbotcolour;
-            };
-            var auth = client.auth(id);
-            if(auth > 4 || auth < 0) {
-                auth = 4;
-            };
-            playmessage = addExtras(playmessage, playname, bot, channel);
-            var symbol = auth_symbol[auth];
-            if(bot === true) {
-                symbol = "";
-            };
-            client.printChannelMessage("<font face ='" + fonttype + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/> " + symbol + auth_style[auth] + playname + ": </font>" + tagend(auth_style[auth]) + fontstyle + playmessage + tagend(fontstyle), chan, true);
-            sys.stopEvent();
-        };
-    },
-    beforePMReceived: function (id, message) { // called before a PM is received
-        if(ignoreCheck(client.name(id))) {
-            sys.stopEvent();
-            return;
-        };
-    },
-    afterPMReceived: function (id, message) { //called after a PM is received
-        if(playerswarn[id] === true) {
-            return;
-        };
-        var time = new Date();
-        var h = time.getHours();
-        if(artype === "time") {
-            if(arstart < arend) {
-                if(h >= arstart && h < arend) {
-                    client.network().sendPM(id, armessage);
-                    playerswarn[id] = true;
-                    return;
-                };
-            };
-            if(h >= arend && h < arstart) {
-                client.network().sendPM(id, armessage);
-                playerswarn[id] = true;
-                return;
-            };
-        };
-        if(autoresponse === true) {
-            client.network().sendPM(id, armessage);
-            playerswarn[id] = true;
-            return;
-        };
-        return;
-    },
-    beforeSendMessage: function (message, channel) { //detects messages sent by the client
-        if(message.toLowerCase() == "reset symbol") {
-            sys.stopEvent();
-            commandsymbol = "~";
-            sendBotMessage('You reset your command symbol to "~"!');
-            sys.saveVal('commandsymbol', commandsymbol);
-            return;
-        };
-        if(message[0] == commandsymbol) {
-            var command, commandData, type;
-            var pos = message.indexOf(' ');
-            if(pos != -1) {
-                command = message.substring(1, pos).toLowerCase();
-                commandData = message.substr(pos + 1);
-            } else {
-                command = message.substr(1).toLowerCase();
-            };
-            if(command == "commandlist" || command == "commandslist") {
+function commandHandler(command,commandData,channel){
+if(command == "commandlist" || command == "commandslist") {
                 sys.stopEvent();
                 sendMessage("*** Client Commands ***");
                 sendMessage(commandsymbol + "etext on/off: Allows you to turn Enriched text on/off");
@@ -754,13 +568,13 @@ poScript = ({
             if(command == "etext") {
                 sys.stopEvent();
                 if(commandData == "on") {
-                    etext = "true";
+                    etext = true;
                     sys.saveVal('etext', true);
                     sendBotMessage("You turned Enriched text on!");
                     return;
                 };
                 if(commandData == "off") {
-                    etext = "false";
+                    etext = false;
                     sys.saveVal('etext', false);
                     sendBotMessage("You turned Enriched text off!");
                     return;
@@ -1448,5 +1262,198 @@ poScript = ({
                 return;
             };
         };
+if(client.ownId() !== -1) {
+    init();
+};
+client.network().channelCommandReceived.connect(function (command, channel) {
+    var tempchannelusers;
+    var tempusers = [];
+    var logging = false;
+    for(z in logchannel) {
+        if(logchannel[z].toLowerCase() == client.channelName(channel).toLowerCase()) {
+            logging = true;
+            break;
+        };
+    };
+    if(logging !== true) {
+        return;
+    };
+    for(var x in playersonline) {
+        if(client.channel(channel).hasPlayer(playersonline[x])) {
+            tempusers.push(playersonline[x]);
+        };
+    };
+    tempchannelusers = tempusers.join(':');
+    if(typeof channelusers[channel] === "undefined") {
+        channelusers[channel] = tempchannelusers;
+        return;
+    };
+    if(command == 46) { //command for joining
+        var a = channelusers[channel].split(':');
+        var b = tempchannelusers.split(':');
+        for(var y in b) {
+            if(a[y] !== b[y]) {
+                saveToLog(client.name(b[y]) + " joined the channel", channel);
+                break;
+            };
+        };
+        channelusers[channel] = tempchannelusers;
+    };
+    if(command == 47) { //command for leaving
+        var a = channelusers[channel].split(':');
+        var b = tempchannelusers.split(':');
+        for(var y in a) {
+            if(a[y] !== b[y]) {
+                saveToLog(client.name(a[y]) + " left the channel", channel);
+                break;
+            };
+        };
+        channelusers[channel] = tempchannelusers;
+    };
+});
+client.network().playerLogin.connect(function () { //only call when the user has logged in to prevent any crashes
+    awayFunction();
+    init();
+});
+Script_Version = "1.6.16"; //version the script is currently on
+poScript = ({
+    clientStartUp: function () {
+        sendMessage('Script Check: OK'); //use this to send a message on update scripts
+    },
+    onPlayerRemoved: function (id) { //detects when  a player is no longer visible to the client (mostly log outs, but may happen from leaving all channels)
+        for(var x in playersonline); {
+            if(playersonline[x] === id); {
+                playersonline.splice(x, 1);
+            };
+        };
+    },
+    onPlayerReceived: function (id) { //detects when a player is visible to the client (mostly logins, but may also happen upon joining a new channel)
+        if(typeof playersonline === "undefined") {
+            playersonline = [];
+        };
+        playersonline.push(id);
+        var flashvar = "";
+        if(friendsflash === true) {
+            flashvar = "<ping/>";
+        };
+        for(var x in friends) {
+            if(client.name(id).toLowerCase() === friends[x].toLowerCase() && flash === true) {
+                sendHtmlMessage("<font color = '" + html_escape(clientbotcolour) + "'><timestamp/>" + clientbotstyle + html_escape(clientbotname) + ":" + tagend(clientbotstyle) + "</font> User <a href='po:pm/" + id + "'>" + client.name(id) + "</a> has logged in" + flashvar + "", client.currentChannel());
+            };
+        };
+        for(var x in ignore) {
+            if(client.name(id).toLowerCase() === ignore[x].toLowerCase()) {
+                client.ignore(id, true);
+            };
+        };
+    },
+    beforeChannelMessage: function (message, channel, html) { //detects a channel specific message
+        var chan = channel;
+        var bot = false;
+        if(message.indexOf('<timestamp/> *** <b>') !== -1) {
+            var ignored = getName(message, "me");
+            if(ignoreCheck(ignored)) {
+                sys.stopEvent();
+                return;
+            };
+            saveToLog(stripHTML(message), channel);
+        };
+        if(message.indexOf('<timestamp/><b><span style') !== -1) {
+            var ignored = getName(message, "rainbow");
+            if(ignoreCheck(ignored)) {
+                sys.stopEvent();
+                return;
+            };
+            saveToLog(stripHTML(message), channel);
+        };
+        if(html == true) {
+            return;
+        };
+        saveToLog(message, channel);
+        var pos = message.indexOf(': ');
+        if(pos != -1) {
+            if(client.id(message.substring(0, pos)) == -1 || client.id(message.substring(0, pos)) === undefined) {
+                bot = true;
+            };
+            var playname = message.substring(0, pos);
+            if(ignoreCheck(playname)) {
+                sys.stopEvent();
+                return;
+            };
+            var id = client.id(playname);
+            var playmessage = html_escape(message.substr(pos + 2));
+            var colour = client.color(id);
+            if(bot === true) {
+                colour = clientbotcolour;
+            };
+            var auth = client.auth(id);
+            if(auth > 4 || auth < 0) {
+                auth = 4;
+            };
+            playmessage = addExtras(playmessage, playname, bot, channel);
+            var symbol = auth_symbol[auth];
+            if(bot === true) {
+                symbol = "";
+            };
+            client.printChannelMessage("<font face ='" + fonttype + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/> " + symbol + auth_style[auth] + playname + ": </font>" + tagend(auth_style[auth]) + fontstyle + playmessage + tagend(fontstyle), chan, true);
+            sys.stopEvent();
+        };
+    },
+    beforePMReceived: function (id, message) { // called before a PM is received
+        if(ignoreCheck(client.name(id))) {
+            sys.stopEvent();
+            return;
+        };
+    },
+    afterPMReceived: function (id, message) { //called after a PM is received
+        if(playerswarn[id] === true) {
+            return;
+        };
+        var time = new Date();
+        var h = time.getHours();
+        if(artype === "time") {
+            if(arstart < arend) {
+                if(h >= arstart && h < arend) {
+                    client.network().sendPM(id, armessage);
+                    playerswarn[id] = true;
+                    return;
+                };
+            };
+            if(h >= arend && h < arstart) {
+                client.network().sendPM(id, armessage);
+                playerswarn[id] = true;
+                return;
+            };
+        };
+        if(autoresponse === true) {
+            client.network().sendPM(id, armessage);
+            playerswarn[id] = true;
+            return;
+        };
+        return;
+    },
+    beforeSendMessage: function (message, channel) { //detects messages sent by the client
+        if(message.toLowerCase() == "reset symbol") {
+            sys.stopEvent();
+            commandsymbol = "~";
+            sendBotMessage('You reset your command symbol to "~"!');
+            sys.saveVal('commandsymbol', commandsymbol);
+            return;
+        };
+        if(message[0] == commandsymbol) {
+            var command, commandData, type;
+            var pos = message.indexOf(' ');
+            if(pos != -1) {
+                command = message.substring(1, pos).toLowerCase();
+                commandData = message.substr(pos + 1);
+            } else {
+                command = message.substr(1).toLowerCase();
+            };
+            try{
+                commandHandler(command,commandData,channel)
+            }catch(e){
+                sendBotMessage('ERROR: '+e)
+            }
+        }
     },
 })
