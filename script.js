@@ -524,6 +524,7 @@ function commandHandler(command, commandData, channel) {
         sendMessage(commandsymbol + "idle on/off: Allows you to turn auto-idle on/off");
         sendMessage(commandsymbol + "goto channel: Allows you to switch to that channel (joins if you're not in that channel)");
         sendMessage(commandsymbol + "reconnect: Allows you to reconnect to the server (Does not work if kicked/IP changes)");
+        sendMessage(commandsymbol + "pm name: Allows you to start a PM with a user");
         sendMessage(commandsymbol + "changename: Allows you to change your name");
         sendMessage(commandsymbol + "stalkwords: Allows you to view your current stalkwords");
         sendMessage(commandsymbol + "[add/remove]stalkword word: Allows you to add/remove stalkwords");
@@ -670,6 +671,15 @@ function commandHandler(command, commandData, channel) {
     if(command === "reconnect") {
         sys.stopEvent();
         client.reconnect();
+        return;
+    }
+    if(command === "pm"){
+        sys.stopEvent();
+        var id = client.id(commandData);
+        if(id === client.ownId()){
+            return;
+        }
+        client.startPM('id');
         return;
     }
     if(command === "stalkwords") {
@@ -1326,7 +1336,7 @@ client.network().playerLogin.connect(function () { //only call when the user has
     awayFunction();
     init();
 });
-Script_Version = "1.6.16"; //version the script is currently on
+Script_Version = "1.6.17"; //version the script is currently on
 poScript = ({
     clientStartUp: function () {
         sendMessage('Script Check: OK'); //use this to send a message on update scripts
