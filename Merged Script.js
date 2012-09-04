@@ -308,7 +308,7 @@ function saveToLog(message, channel) { //saves messages to a log file
     var m = time.getMinutes();
     var s = time.getSeconds();
     var d = time.getDate();
-    var mo = parseInt(time.getMonth() + 1,10);
+    var mo = parseInt(time.getMonth() + 1, 10);
     var y = time.getFullYear();
     var date = d + "-" + mo + "-" + y;
     m = checkTime(m);
@@ -934,7 +934,7 @@ function commandHandler(command, commandData, channel) {
             return;
         }
         if(type[0] === "size") {
-            if(modifier === undefined || modifier === "" || isNaN(parseInt(modifier,10))) {
+            if(modifier === undefined || modifier === "" || isNaN(parseInt(modifier, 10))) {
                 modifier = 3;
                 fontsize = modifier;
                 sys.saveVal('fontsize', modifier);
@@ -1045,7 +1045,7 @@ function commandHandler(command, commandData, channel) {
             sendBotMessage("Command usage is: \"" + commandsymbol + "changesymbols number:symbol\"");
             return;
         }
-        if(isNaN(parseInt(auth,10))) {
+        if(isNaN(parseInt(auth, 10))) {
             sendBotMessage("The first parameter must be a number!");
             return;
         }
@@ -1074,7 +1074,7 @@ function commandHandler(command, commandData, channel) {
             sendBotMessage("Command usage is: \"" + commandstyle + "changestyles number:html\"");
             return;
         }
-        if(isNaN(parseInt(auth,10))) {
+        if(isNaN(parseInt(auth, 10))) {
             sendBotMessage("The first parameter must be a number!");
             return;
         }
