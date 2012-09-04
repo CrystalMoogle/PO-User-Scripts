@@ -679,7 +679,7 @@ function commandHandler(command, commandData, channel) {
         if(id === client.ownId()){
             return;
         }
-        client.startPM('id');
+        client.startPM(id);
         return;
     }
     if(command === "stalkwords") {
