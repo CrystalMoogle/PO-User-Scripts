@@ -8,6 +8,9 @@
 //Make sure to check them to set everything :x
 //these things below shouldn't be touched unless you know what you're doing~
 var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Merged%20Script.js"; //where the script is stored
+var global = this;
+var poScript, Script_Version, etext, tgreentext, flash, autoresponse, friendsflash, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style, playerswarn, channelusers, playersonline;
+
 function init() { //defines all the variables that are going to be used in the script, uses default if no saved settings are found
     if(sys.getVal('etext') === "true") {
         etext = true;
@@ -176,8 +179,8 @@ function checkScriptVersion(bool) { //checks the current script version with the
         };
         if(version !== Script_Version) {
             var typeno;
-            nversion = version.split('.');
-            cversion = Script_Version.split('.');
+            var nversion = version.split('.');
+            var cversion = Script_Version.split('.');
             for(var x in nversion) {
                 if(nversion[x] !== cversion[x]) {
                     typeno = x;
@@ -251,7 +254,7 @@ function isPunct(i) {
 }
 // Test for printable characters (only good up to char 127)
 function isGraph(i) {
-    myCharCode = i.charCodeAt(0);
+    var myCharCode = i.charCodeAt(0);
     if((myCharCode > 32) && (myCharCode < 127)) {
         return true;
     }
@@ -263,7 +266,7 @@ function isAlnum(i) {
 }
 // Test for digits
 function isDigit(i) {
-    myCharCode = i.charCodeAt(0);
+    var myCharCode = i.charCodeAt(0);
     if((myCharCode > 47) && (myCharCode < 58)) {
         return true;
     }
@@ -271,7 +274,7 @@ function isDigit(i) {
 }
 // Test for letters (only good up to char 127)
 function isAlpha(i) {
-    myCharCode = i.charCodeAt(0);
+    var myCharCode = i.charCodeAt(0);
     if(((myCharCode > 64) && (myCharCode < 91)) || ((myCharCode > 96) && (myCharCode < 123))) {
         return true;
     }
@@ -376,7 +379,7 @@ function html_escape(text) { //escapes any characters that won't appear correctl
 }
 
 function tagend(string) { //automatically creates an end tag from a html tagsent to it
-    newstring = string.replace(/</g, "</");
+    var newstring = string.replace(/</g, "</");
     return newstring;
 }
 
@@ -393,6 +396,7 @@ function awayFunction() { //makes the user go away if needed
 
 function stalkWordCheck(string, playname, bot, channel) { //adds flashes to names/stalkwords
     var ownName = html_escape(client.ownName());
+    var newstring = "";
     if(string.toLowerCase().indexOf(ownName.toLowerCase()) !== -1 && playname !== ownName && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
         var name = new RegExp("\\b" + ownName + "\\b", "i");
         newstring = string.replace(name, "<span style='" + hilight + "'>" + client.ownName() + "</span>");
@@ -435,7 +439,7 @@ function htmllinks(text) { //makes sure links get linked!
     return encodeURIComponent(text).replace(/%20/g, " ");
 }
 
-function addExtras(text, playname, bot, channel) { //adds stalkwords/links/enriched text etc   
+function addExtras(text, playname, bot, channel) { //adds stalkwords/links/enriched text etc
     text = htmllinks(text);
     text = enrichedText(text);
     text = decodeURIComponent(text);
@@ -1071,7 +1075,7 @@ function commandHandler(command, commandData, channel) {
         var auth = styles[0];
         var style = styles[1];
         if(styles.length > 2 || styles.length < 2) {
-            sendBotMessage("Command usage is: \"" + commandstyle + "changestyles number:html\"");
+            sendBotMessage("Command usage is: \"" + commandsymbol + "changestyles number:html\"");
             return;
         }
         if(isNaN(parseInt(auth, 10))) {
