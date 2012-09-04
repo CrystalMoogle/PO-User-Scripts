@@ -1457,5 +1457,5 @@ poScript = ({
                 sendBotMessage('ERROR: ' + e); //TODO: Add proper error checks
             }
         }
-    }
+    }a
 });
