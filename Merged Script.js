@@ -13,7 +13,6 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Me
 var global = this;
 var poScript, Script_Version, etext, tgreentext, flash, autoresponse, friendsflash, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style;
 
-
 function init() { //defines all the variables that are going to be used in the script, uses default if no saved settings are found
     if(sys.getVal('etext') === "true") {
         etext = true;
