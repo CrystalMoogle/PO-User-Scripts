@@ -9,7 +9,7 @@
 //these things below shouldn't be touched unless you know what you're doing~
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global sys,client, playerswarn:true, channelusers:true, playersonline:true*/
-var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Merged%20Script.js"; //where the script is stored
+var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/script.js"; //where the script is stored
 var global = this;
 var poScript, Script_Version, etext, tgreentext, flash, autoresponse, friendsflash, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style;
 
