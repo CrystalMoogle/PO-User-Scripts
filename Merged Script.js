@@ -7,9 +7,12 @@
 //Config settings has been moved to ~commandslist
 //Make sure to check them to set everything :x
 //these things below shouldn't be touched unless you know what you're doing~
+/*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
+/*global sys,client, playerswarn:true, channelusers:true, playersonline:true*/
 var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/Merged%20Script.js"; //where the script is stored
 var global = this;
 var poScript, Script_Version, etext, tgreentext, flash, autoresponse, friendsflash, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style;
+
 
 function init() { //defines all the variables that are going to be used in the script, uses default if no saved settings are found
     if(sys.getVal('etext') === "true") {
@@ -422,7 +425,7 @@ function stalkWordCheck(string, playname, bot, channel) { //adds flashes to name
 }
 
 function htmllinks(text) { //makes sure links get linked!
-    var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\(\)\[\]\/%?=~_|!:,.;']*[-A-Z0-9+&@#\/\(\)\[\]%=~_|'])/ig;
+    var exp = /(\b(https?|ftp|file):\/\/[\-A-Z0-9+&@#\(\)\[\]\/%?=~_|!:,.;']*[\-A-Z0-9+&@#\/\(\)\[\]%=~_|'])/ig;
     var found = text.match(exp);
     var newtext;
     var newfound;
@@ -1447,7 +1450,7 @@ poScript = ({
             return;
         }
         if(message[0] === commandsymbol) {
-            var command, commandData, type;
+            var command, commandData;
             var pos = message.indexOf(' ');
             if(pos !== -1) {
                 command = message.substring(1, pos).toLowerCase();
