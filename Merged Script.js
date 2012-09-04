@@ -1286,6 +1286,9 @@ client.network().channelCommandReceived.connect(function (command, channel) {
     if(logging !== true) {
         return;
     }
+    if(typeof playersonline === "undefined"){
+        return;
+    }
     for(var x in playersonline) {
         if(client.channel(channel).hasPlayer(playersonline[x])) {
             tempusers.push(playersonline[x]);
@@ -1329,6 +1332,9 @@ poScript = ({
         sendMessage('Script Check: OK'); //use this to send a message on update scripts
     },
     onPlayerRemoved: function (id) { //detects when  a player is no longer visible to the client (mostly log outs, but may happen from leaving all channels)
+        if(typeof playersonline === "undefined") {
+            return;
+        }
         for(var x in playersonline) {
             if(playersonline[x] === id) {
                 playersonline.splice(x, 1);
