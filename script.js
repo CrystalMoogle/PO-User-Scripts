@@ -978,7 +978,7 @@ function commandHandler(command, commandData, channel) {
             client.changeName(commandData);
             sendBotMessage("You changed your name to " + commandData);
         } catch(e) {
-            if(e === "TypeError: Result of expression 'client.changeName' [undefined] is not a function.") {
+            if(e.toString() === "TypeError: Result of expression 'client.changeName' [undefined] is not a function.") {
                 sendBotMessage("You need to update your client to Version 2.0.06 or above to use this command");
             }
         }
