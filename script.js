@@ -146,6 +146,12 @@ function init() { //defines all the variables that are going to be used in the s
     channelusers = [];
     if(sys.isSafeScripts() !== true) {
         checkScriptVersion();
+        if(sys.getFileContent('steamAPIkey.txt') === undefined) {
+            sys.writeToFile('steamAPIkey.txt', "");
+        }
+        if(sys.getFileContent('steamID.txt') === undefined) {
+            sys.writeToFile('steamID.txt', "");
+        }
     }
 }
 
@@ -327,6 +333,13 @@ function checkTime(i) { //adds a 0 in front of one digit minutes/seconds
         i = "0" + i;
     }
     return i;
+}
+
+function say(message, channel) {
+    if(channel === undefined) {
+        channel = client.currentChannel();
+    }
+    client.network().sendChanMessage(channel, message);
 }
 
 function stripHTML(string) {
@@ -673,10 +686,10 @@ function commandHandler(command, commandData, channel) {
         client.reconnect();
         return;
     }
-    if(command === "pm"){
+    if(command === "pm") {
         sys.stopEvent();
         var id = client.id(commandData);
-        if(id === client.ownId()){
+        if(id === client.ownId()) {
             return;
         }
         client.startPM(id);
@@ -1296,7 +1309,7 @@ client.network().channelCommandReceived.connect(function (command, channel) {
     if(logging !== true) {
         return;
     }
-    if(typeof playersonline === "undefined"){
+    if(typeof playersonline === "undefined") {
         return;
     }
     for(var x in playersonline) {
@@ -1340,6 +1353,28 @@ Script_Version = "1.6.17"; //version the script is currently on
 poScript = ({
     clientStartUp: function () {
         sendMessage('Script Check: OK'); //use this to send a message on update scripts
+    },
+    stepEvent: function () {
+        if(sys.isSafeScripts() === true || sys.getFileContent('steamAPIkey.txt') === "" || sys.getFileContent('steamID.txt') === "") {
+            return;
+        }
+        var key = sys.getFileContent('steamAPIkey.txt');
+        var id = sys.getFileContent('steamID.txt');
+        var url = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' + key + '&steamids=' + id;
+        sys.webCall(url, function (resp) {
+            var json = JSON.parse(resp).response.players[0];
+            for(var x in json) {
+                if(x === "gameextrainfo") {
+                    if(sys.getFileContent('text.txt') == "true") {
+                        return;
+                    }
+                    say("Now Playing: " + json[x] + " (steam)", client.channelId('Indigo Plateau'));
+                    sys.writeToFile('text.txt', "true");
+                    return;
+                }
+            }
+            sys.writeToFile('text.txt', "false");
+        });
     },
     onPlayerRemoved: function (id) { //detects when  a player is no longer visible to the client (mostly log outs, but may happen from leaving all channels)
         if(typeof playersonline === "undefined") {
