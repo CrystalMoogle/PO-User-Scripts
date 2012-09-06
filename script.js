@@ -1365,15 +1365,15 @@ poScript = ({
             var json = JSON.parse(resp).response.players[0];
             for(var x in json) {
                 if(x === "gameextrainfo") {
-                    if(sys.getFileContent('text.txt') == "true") {
+                    if(sys.getFileContent('steamboo.txt') == "true") {
                         return;
                     }
                     say("Now Playing: " + json[x] + " (steam)", client.channelId('Indigo Plateau'));
-                    sys.writeToFile('text.txt', "true");
+                    sys.writeToFile('steamboo.txt', "true");
                     return;
                 }
             }
-            sys.writeToFile('text.txt', "false");
+            sys.writeToFile('steamboo.txt', "false");
         });
     },
     onPlayerRemoved: function (id) { //detects when  a player is no longer visible to the client (mostly log outs, but may happen from leaving all channels)
