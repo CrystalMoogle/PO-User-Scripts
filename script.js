@@ -146,12 +146,8 @@ function init() { //defines all the variables that are going to be used in the s
     channelusers = [];
     if(sys.isSafeScripts() !== true) {
         checkScriptVersion();
-        if(sys.getFileContent('steamAPIkey.txt') === undefined) {
-            sys.writeToFile('steamAPIkey.txt', "");
-        }
-        if(sys.getFileContent('steamID.txt') === undefined) {
-            sys.writeToFile('steamID.txt', "");
-        }
+        sys.appendToFile('steamAPIkey.txt', "");
+        sys.appendToFile('steamID.txt', "");
     }
 }
 
