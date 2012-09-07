@@ -11,7 +11,7 @@
 /*global sys,client, playerswarn:true, channelusers:true, playersonline:true*/
 var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/script.js"; //where the script is stored
 var global = this;
-var poScript, Script_Version, etext, tgreentext, flash, autoresponse, friendsflash, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style;
+var poScript, Script_Version, etext, tgreentext, flash, autoresponse, friendsflash, logjoins, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style;
 
 function init() { //defines all the variables that are going to be used in the script, uses default if no saved settings are found
     if(sys.getVal('etext') === "true") {
@@ -43,6 +43,11 @@ function init() { //defines all the variables that are going to be used in the s
         checkversion = "true";
     } else {
         checkversion = "false";
+    }
+    if(sys.getVal('logjoins') === "true") {
+        logjoins = true;
+    } else {
+        logjoins = false;
     }
     clientbotname = "+ClientBot";
     if(sys.getVal('clientbotname').length > 0) {
@@ -1175,6 +1180,20 @@ function commandHandler(command, commandData, channel) {
         sendBotMessage("Highlight colour set to: " + hilight);
         return;
     }
+    if(command === "logjoins") {
+        sys.stopEvent();
+        if(commandData === "on") {
+            logjoins = true;
+            sys.saveVal('logjoins', true);
+            sendBotMessage("You turned logging joins on!");
+            return;
+        } else {
+            logjoins = false;
+            sys.saveVal('logjoins', false);
+            sendBotMessage("You turned logging joins off!");
+        }
+        return;
+    }
     if(command === "logchannels") {
         sys.stopEvent();
         sendBotMessage("You are logging: " + logchannel);
@@ -1305,6 +1324,9 @@ client.network().channelCommandReceived.connect(function (command, channel) {
     if(logging !== true) {
         return;
     }
+    if(logjoins !== true){
+        return;
+    }
     if(typeof playersonline === "undefined") {
         return;
     }
@@ -1376,6 +1398,9 @@ poScript = ({
         if(typeof playersonline === "undefined") {
             return;
         }
+        if(logjoins !== true){
+            return;
+        }
         for(var x in playersonline) {
             if(playersonline[x] === id) {
                 playersonline.splice(x, 1);
@@ -1385,6 +1410,9 @@ poScript = ({
     onPlayerReceived: function (id) { //detects when a player is visible to the client (mostly logins, but may also happen upon joining a new channel)
         if(typeof playersonline === "undefined") {
             playersonline = [];
+        }
+        if(logjoins !== true){
+            return;
         }
         playersonline.push(id);
         var flashvar = "";
