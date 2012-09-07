@@ -1398,8 +1398,8 @@ poScript = ({
         if(typeof playersonline === "undefined") {
             return;
         }
-        if(logjoins !== true){
-            return;
+        if(logjoins === true){
+            playersonline.push(id);
         }
         for(var x in playersonline) {
             if(playersonline[x] === id) {
@@ -1411,10 +1411,9 @@ poScript = ({
         if(typeof playersonline === "undefined") {
             playersonline = [];
         }
-        if(logjoins !== true){
-            return;
+        if(logjoins === true){
+            playersonline.push(id);
         }
-        playersonline.push(id);
         var flashvar = "";
         if(friendsflash === true) {
             flashvar = "<ping/>";
