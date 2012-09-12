@@ -1399,11 +1399,10 @@ poScript = ({
             return;
         }
         if(logjoins === true){
-            playersonline.push(id);
-        }
-        for(var x in playersonline) {
-            if(playersonline[x] === id) {
-                playersonline.splice(x, 1);
+            for(var x in playersonline) {
+                if(playersonline[x] === id) {
+                    playersonline.splice(x, 1);
+                }
             }
         }
     },
