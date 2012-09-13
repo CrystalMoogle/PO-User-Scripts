@@ -315,6 +315,9 @@ function saveToLog(message, channel) { //saves messages to a log file
     if(logging === false) {
         return;
     }
+    if(typeof (sys.filesForDirectory('Channel Logs')) === "undefined") { //in case somehow it ends up in a different folder, or the folder gets removed
+        return;
+    }
     var time = new Date();
     var h = time.getHours();
     var m = time.getMinutes();
