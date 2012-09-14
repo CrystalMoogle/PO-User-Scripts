@@ -1315,6 +1315,9 @@ if(client.ownId() !== -1) {
     init();
 }
 client.network().channelCommandReceived.connect(function (command, channel) {
+    if(logjoins !== true){
+        return;
+    }
     var tempchannelusers;
     var tempusers = [];
     var logging = false;
@@ -1325,9 +1328,6 @@ client.network().channelCommandReceived.connect(function (command, channel) {
         }
     }
     if(logging !== true) {
-        return;
-    }
-    if(logjoins !== true){
         return;
     }
     if(typeof playersonline === "undefined") {
