@@ -1393,6 +1393,11 @@ poScript = ({
                     sys.writeToFile('steamboo.txt', "true");
                     return;
                 }
+                if(json.personastate === 3 || json.personastate === 4){
+                    autoresponse = true;
+                }else{
+                    autoresponse = false;
+                }
             }
             sys.writeToFile('steamboo.txt', "false");
         });
