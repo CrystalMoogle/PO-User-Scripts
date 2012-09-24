@@ -11,82 +11,82 @@
 /*global sys,client, playerswarn:true, channelusers:true, playersonline:true*/
 var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/script.js"; //where the script is stored
 var global = this;
-var poScript, Script_Version, etext, tgreentext, flash, autoresponse, friendsflash, logjoins, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style;
+var poScript, Script_Version, repoFolder, etext, tgreentext, flash, autoresponse, friendsflash, logjoins, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style;
 
 function init() { //defines all the variables that are going to be used in the script, uses default if no saved settings are found
-    if(sys.getVal('etext') === "true") {
+    if (sys.getVal('etext') === "true") {
         etext = true;
     } else {
         etext = false;
     }
-    if(sys.getVal('tgreentext') === "true") {
+    if (sys.getVal('tgreentext') === "true") {
         tgreentext = "true";
     } else {
         tgreentext = "false";
     }
-    if(sys.getVal('flash') === "false") { //making sure flash is on always unless specified to not be
+    if (sys.getVal('flash') === "false") { //making sure flash is on always unless specified to not be
         flash = false;
     } else {
         flash = true;
     }
-    if(sys.getVal('autoresponse') === true) {
+    if (sys.getVal('autoresponse') === true) {
         autoresponse = true;
     } else {
         autoresponse = false;
     }
-    if(sys.getVal('friendsflash') === "true") {
+    if (sys.getVal('friendsflash') === "true") {
         friendsflash = true;
     } else {
         friendsflash = false;
     }
-    if(sys.getVal('checkversion') === "true") {
+    if (sys.getVal('checkversion') === "true") {
         checkversion = "true";
     } else {
         checkversion = "false";
     }
-    if(sys.getVal('logjoins') === "true") {
+    if (sys.getVal('logjoins') === "true") {
         logjoins = true;
     } else {
         logjoins = false;
     }
     clientbotname = "+ClientBot";
-    if(sys.getVal('clientbotname').length > 0) {
+    if (sys.getVal('clientbotname').length > 0) {
         clientbotname = sys.getVal('clientbotname');
     }
     clientbotcolour = "#3DAA68";
-    if(sys.getVal('clientbotcolour').length > 0) {
+    if (sys.getVal('clientbotcolour').length > 0) {
         clientbotcolour = sys.getVal('clientbotcolour');
     }
     clientbotstyle = "<b>";
-    if(sys.getVal('clientbotstyle').length > 0) {
+    if (sys.getVal('clientbotstyle').length > 0) {
         clientbotstyle = sys.getVal('clientbotstyle');
     }
     greentext = '#789922';
-    if(sys.getVal('greentext').length > 0) {
+    if (sys.getVal('greentext').length > 0) {
         greentext = sys.getVal('greentext');
     }
     fontcolour = "#000000";
-    if(sys.getVal('fontcolour').length > 0) {
+    if (sys.getVal('fontcolour').length > 0) {
         fontcolour = sys.getVal('fontcolour');
     }
     fonttype = "";
-    if(sys.getVal('fonttype').length > 0) {
+    if (sys.getVal('fonttype').length > 0) {
         fonttype = sys.getVal('fonttype');
     }
     fontsize = 3;
-    if(sys.getVal('fontsize').length > 0) {
+    if (sys.getVal('fontsize').length > 0) {
         fontsize = sys.getVal('fontsize');
     }
     fontstyle = "";
-    if(sys.getVal('fontstyle').length > 0) {
+    if (sys.getVal('fontstyle').length > 0) {
         fontstyle = sys.getVal('fontstyle');
     }
     commandsymbol = "~";
-    if(sys.getVal('commandsymbol').length > 0) {
+    if (sys.getVal('commandsymbol').length > 0) {
         commandsymbol = sys.getVal('commandsymbol');
     }
     hilight = "BACKGROUND-COLOR: #ffcc00";
-    if(sys.getVal('hilight').length > 0) {
+    if (sys.getVal('hilight').length > 0) {
         hilight = sys.getVal('hilight');
     }
     armessage = sys.getVal('armessage');
@@ -98,50 +98,50 @@ function init() { //defines all the variables that are going to be used in the s
     ignore = [];
     logchannel = [];
     fchannel = [];
-    if(sys.getVal('stalkwords') !== "") {
+    if (sys.getVal('stalkwords') !== "") {
         var nstalkwords = sys.getVal('stalkwords').split(",");
         stalkwords = nstalkwords.concat(stalkwords);
         stalkwords = eliminateDuplicates(stalkwords);
     }
-    if(sys.getVal('friends') !== "") {
+    if (sys.getVal('friends') !== "") {
         var nfriends = sys.getVal('friends').split(",");
         friends = nfriends.concat(friends);
         friends = eliminateDuplicates(friends);
     }
-    if(sys.getVal('ignore') !== "") {
+    if (sys.getVal('ignore') !== "") {
         var nignore = sys.getVal('ignore').split(",");
         ignore = nignore.concat(ignore);
         ignore = eliminateDuplicates(ignore);
     }
-    if(sys.getVal('logchannel') !== "") {
+    if (sys.getVal('logchannel') !== "") {
         var nlogchannel = sys.getVal('logchannel').split(",");
         logchannel = nlogchannel.concat(logchannel);
         logchannel = eliminateDuplicates(logchannel);
     }
-    if(sys.getVal('fchannel') !== "") {
+    if (sys.getVal('fchannel') !== "") {
         var nfchannel = sys.getVal('fchannel').split(",");
         fchannel = nfchannel.concat(fchannel);
         fchannel = eliminateDuplicates(fchannel);
     }
     auth_symbol = [];
-    for(var x = 0; x < 5; x++) {
-        if(sys.getVal('auth: ' + x).length > 0) {
+    for (var x = 0; x < 5; x++) {
+        if (sys.getVal('auth: ' + x).length > 0) {
             auth_symbol[x] = sys.getVal('auth: ' + x);
             continue;
         }
-        if(x === 0 || x === 4) {
+        if (x === 0 || x === 4) {
             auth_symbol[x] = "";
             continue;
         }
         auth_symbol[x] = "+";
     }
     auth_style = [];
-    for(var x = 0; x < 5; x++) {
-        if(sys.getVal('auths: ' + x).length > 0) {
+    for (var x = 0; x < 5; x++) {
+        if (sys.getVal('auths: ' + x).length > 0) {
             auth_style[x] = sys.getVal('auths: ' + x);
             continue;
         }
-        if(x === 0 || x === 4) {
+        if (x === 0 || x === 4) {
             auth_style[x] = "<b>";
             continue;
         }
@@ -149,34 +149,36 @@ function init() { //defines all the variables that are going to be used in the s
     }
     playerswarn = [];
     channelusers = [];
-    if(sys.isSafeScripts() !== true) {
+    if (sys.isSafeScripts() !== true) {
         checkScriptVersion();
         sys.appendToFile('steamAPIkey.txt', "");
         sys.appendToFile('steamID.txt', "");
+        sys.appendToFile('.location', "");
+        repoFolder = sys.getFileContent('.location');
     }
 }
 
 function checkScriptVersion(bool) { //checks the current script version with the one saved on Github, if the versions do not match, then it gives a warning
     var checkscript, version;
     var regex = /"([^"]*)"/g;
-    if(bool === undefined) {
+    if (bool === undefined) {
         bool = false;
     }
-    if(checkversion === "false" && bool === false) {
+    if (checkversion === "false" && bool === false) {
         return;
     }
     sys.webCall(script_url, function (resp) {
-        if(resp.length === 0) {
+        if (resp.length === 0) {
             sendBotMessage("There was an error accessing the script, paste the contents of (link) into your PO folder and restart, or wait for a client update", undefined, "https://github.com/downloads/coyotte508/pokemon-online/ssl.zip");
             return;
         }
         checkscript = resp.split('\n');
-        for(var x in checkscript) {
-            if(checkscript[x].substr(0, 14) === "Script_Version") {
+        for (var x in checkscript) {
+            if (checkscript[x].substr(0, 14) === "Script_Version") {
                 version = String(checkscript[x].match(regex));
             }
         }
-        if(version === undefined) {
+        if (version === undefined) {
             sendBotMessage('There was an error with the version, please report to Crystal Moogle');
             return;
         }
@@ -186,97 +188,97 @@ function checkScriptVersion(bool) { //checks the current script version with the
             "1": "Minor Release (new features)",
             "2": "Bug fixes/Minor Update"
         };
-        if(version !== Script_Version) {
+        if (version !== Script_Version) {
             var typeno;
             var nversion = version.split('.');
             var cversion = Script_Version.split('.');
-            for(var x in nversion) {
-                if(nversion[x] !== cversion[x]) {
+            for (var x in nversion) {
+                if (nversion[x] !== cversion[x]) {
                     typeno = x;
                     break;
                 }
             }
-            if(typeno === undefined) { //this shouldn't ever happen though
+            if (typeno === undefined) { //this shouldn't ever happen though
                 return;
             }
             sendBotMessage("A client script update is avaiable, type: " + type[typeno] + ". Use " + commandsymbol + "updatescripts. Use " + commandsymbol + "changelog " + version + " to see the changes", undefined, script_url); //TODO make sure the script actually is a new version, rather than a previous version
             return;
         }
-        if(bool === true) {
+        if (bool === true) {
             sendBotMessage("No update detected");
         }
     });
 }
 
 function nameCheck(string) { //adapted from the PO Source Code
-    if(string.length > 20) {
+    if (string.length > 20) {
         return false;
     }
-    if(string.lengh === 0) {
+    if (string.lengh === 0) {
         return false;
     }
-    if(isPunct(string[0]) !== true && isAlnum(string[0]) !== true) {
+    if (isPunct(string[0]) !== true && isAlnum(string[0]) !== true) {
         return false;
     }
     var spaced = false;
     var punct = false;
-    for(var x = 0; x < string.length; x++) {
-        if(string[x] === '\n' || string[x] === '%' || string[x] === '*' || string[x] === '<' || string[x] === ':' || string[x] === '(' || string[x] === ')' || string[x] === ';') {
+    for (var x = 0; x < string.length; x++) {
+        if (string[x] === '\n' || string[x] === '%' || string[x] === '*' || string[x] === '<' || string[x] === ':' || string[x] === '(' || string[x] === ')' || string[x] === ';') {
             return false;
         }
-        if(isPunct(string[x])) {
-            if(punct === true) {
+        if (isPunct(string[x])) {
+            if (punct === true) {
                 //Error: two punctuations are not separated by a letter/number
                 return false;
             }
             punct = true;
             spaced = false;
-        } else if(string[x] === ' ') {
-            if(spaced === true) {
+        } else if (string[x] === ' ') {
+            if (spaced === true) {
                 //Error: two spaces are following
                 return false;
             }
             spaced = true;
-        } else if(isAlnum(string[x])) {
+        } else if (isAlnum(string[x])) {
             //we allow another punct & space
             punct = false;
             spaced = false;
         }
     }
-    if(string.length === 1 && isPunct(string[0])) {
+    if (string.length === 1 && isPunct(string[0])) {
         return "fixup";
     }
-    if(isPunct(string[string.length - 1]) !== true && isAlnum(string[string.length - 1]) !== true) {
+    if (isPunct(string[string.length - 1]) !== true && isAlnum(string[string.length - 1]) !== true) {
         return "fixup";
     }
     return true;
 }
 
 function fixup(input) {
-    if(input.length > 0 && input[input.length - 1] === ' ') {
+    if (input.length > 0 && input[input.length - 1] === ' ') {
         return input.substr(0, input.length - 1);
     }
 }
 // Test for punctuation characters
 function isPunct(i) {
-    return(isGraph(i) && !(isAlnum(i)));
+    return (isGraph(i) && !(isAlnum(i)));
 }
 // Test for printable characters (only good up to char 127)
 function isGraph(i) {
     var myCharCode = i.charCodeAt(0);
-    if((myCharCode > 32) && (myCharCode < 127)) {
+    if ((myCharCode > 32) && (myCharCode < 127)) {
         return true;
     }
     return false;
 }
 // Test for letters and digits
 function isAlnum(i) {
-    return(isDigit(i) || isAlpha(i));
+    return (isDigit(i) || isAlpha(i));
 }
 // Test for digits
 function isDigit(i) {
     var myCharCode = i.charCodeAt(0);
-    if((myCharCode > 47) && (myCharCode < 58)) {
+    if ((myCharCode > 47) && (myCharCode < 58)) {
         return true;
     }
     return false;
@@ -284,7 +286,7 @@ function isDigit(i) {
 // Test for letters (only good up to char 127)
 function isAlpha(i) {
     var myCharCode = i.charCodeAt(0);
-    if(((myCharCode > 64) && (myCharCode < 91)) || ((myCharCode > 96) && (myCharCode < 123))) {
+    if (((myCharCode > 64) && (myCharCode < 91)) || ((myCharCode > 96) && (myCharCode < 123))) {
         return true;
     }
     return false;
@@ -295,10 +297,10 @@ function eliminateDuplicates(arr) { //stolen from http://dreaminginjavascript.wo
     len = arr.length,
         out = [],
         obj = {};
-    for(i = 0; i < len; i++) {
+    for (i = 0; i < len; i++) {
         obj[arr[i]] = 0;
     }
-    for(i in obj) {
+    for (i in obj) {
         out.push(i);
     }
     return out;
@@ -306,16 +308,16 @@ function eliminateDuplicates(arr) { //stolen from http://dreaminginjavascript.wo
 
 function saveToLog(message, channel) { //saves messages to a log file
     var logging = false;
-    for(var x in logchannel) {
-        if(client.channelName(channel).toLowerCase() === logchannel[x].toLowerCase()) {
+    for (var x in logchannel) {
+        if (client.channelName(channel).toLowerCase() === logchannel[x].toLowerCase()) {
             logging = true;
             break;
         }
     }
-    if(logging === false) {
+    if (logging === false) {
         return;
     }
-    if(typeof (sys.filesForDirectory('Channel Logs')) === "undefined") { //in case somehow it ends up in a different folder, or the folder gets removed
+    if (typeof (sys.filesForDirectory('Channel Logs')) === "undefined") { //in case somehow it ends up in a different folder, or the folder gets removed
         return;
     }
     var time = new Date();
@@ -333,14 +335,14 @@ function saveToLog(message, channel) { //saves messages to a log file
 }
 
 function checkTime(i) { //adds a 0 in front of one digit minutes/seconds
-    if(i < 10) {
+    if (i < 10) {
         i = "0" + i;
     }
     return i;
 }
 
 function say(message, channel) {
-    if(channel === undefined) {
+    if (channel === undefined) {
         channel = client.currentChannel();
     }
     client.network().sendChanMessage(channel, message);
@@ -354,31 +356,31 @@ function stripHTML(string) {
 
 function getName(string, type) { //gets the name from rainbow/me messages
     var name = "";
-    if(type === "rainbow") {
+    if (type === "rainbow") {
         string = stripHTML(string);
         var pos = string.indexOf(': ');
-        if(pos !== -1) {
+        if (pos !== -1) {
             name = string.substring(0, pos);
-            if(name[0] === "+") { //auth symbol is + here rather than user defined, since the PO Server Scripts print "+" out automatically for auth
+            if (name[0] === "+") { //auth symbol is + here rather than user defined, since the PO Server Scripts print "+" out automatically for auth
                 name = name.substr(1);
             }
         }
     }
-    if(type === "me") {
+    if (type === "me") {
         name = string.substring(string.indexOf('<b>') + 3, string.indexOf('</b>')); //this is assuming it's used on PO Server Scripts, or any scripts that use the same /me system
     }
     return name;
 }
 
 function sendBotMessage(message, channel, link) { //sends a mesage with the bot name in front of it
-    if(channel === undefined) {
+    if (channel === undefined) {
         channel = client.currentChannel();
     }
     message = html_escape(message);
-    if(link === "<ping/>") {
+    if (link === "<ping/>") {
         message = message.replace(/&lt;ping\/&gt;/g, link);
     }
-    if(message.indexOf("(link)") !== -1 && link !== undefined) {
+    if (message.indexOf("(link)") !== -1 && link !== undefined) {
         message = message.replace(/\(link\)/g, "<a href ='" + link + "'>" + link + "</a>");
     }
     client.printChannelMessage("<font color = '" + html_escape(clientbotcolour) + "'><timestamp/>" + clientbotstyle + html_escape(clientbotname) + ":" + tagend(clientbotstyle) + "</font> " + message, channel, true);
@@ -387,7 +389,7 @@ function sendBotMessage(message, channel, link) { //sends a mesage with the bot 
 
 function html_escape(text) { //escapes any characters that won't appear correctly in HTMLmessages
     var m = String(text);
-    if(m.length > 0) {
+    if (m.length > 0) {
         var amp = "&am" + "p;";
         var lt = "&l" + "t;";
         var gt = "&g" + "t;";
@@ -403,10 +405,10 @@ function tagend(string) { //automatically creates an end tag from a html tagsent
 }
 
 function awayFunction() { //makes the user go away if needed
-    if(client.ownId() === -1) { //this shouldn't happen due to Network.playerLogin but people have been complaining of crashes so gonna see if this helps
+    if (client.ownId() === -1) { //this shouldn't happen due to Network.playerLogin but people have been complaining of crashes so gonna see if this helps
         return;
     }
-    if(sys.getVal("idle") === "true") {
+    if (sys.getVal("idle") === "true") {
         client.goAway(true);
     } else {
         client.goAway(false);
@@ -416,21 +418,21 @@ function awayFunction() { //makes the user go away if needed
 function stalkWordCheck(string, playname, bot, channel) { //adds flashes to names/stalkwords
     var ownName = html_escape(client.ownName());
     var newstring = "";
-    if(string.toLowerCase().indexOf(ownName.toLowerCase()) !== -1 && playname !== ownName && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
+    if (string.toLowerCase().indexOf(ownName.toLowerCase()) !== -1 && playname !== ownName && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
         var name = new RegExp("\\b" + ownName + "\\b", "i");
         newstring = string.replace(name, "<span style='" + hilight + "'>" + client.ownName() + "</span>");
-        if(newstring !== string) {
+        if (newstring !== string) {
             string = newstring.replace(newstring, "<i> " + newstring + "</i><ping/>");
         }
     }
     var regex = new RegExp(sys.md5(client.ownName()), "gi");
     string = string.replace(regex, client.ownName());
-    for(var x in stalkwords) {
+    for (var x in stalkwords) {
         var stalk = new RegExp("\\b" + stalkwords[x] + "\\b", "i");
         var stalks = string.match(stalk);
-        if(string.toLowerCase().search(stalk) !== -1 && playname !== client.ownName() && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
+        if (string.toLowerCase().search(stalk) !== -1 && playname !== client.ownName() && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
             newstring = string.replace(stalk, "<span style='" + hilight + "'>" + stalks + "</span>");
-            if(newstring !== string) {
+            if (newstring !== string) {
                 string = newstring.replace(newstring, "<i> " + newstring + "</i><ping/>");
             }
         }
@@ -445,9 +447,9 @@ function htmllinks(text) { //makes sure links get linked!
     var found = text.match(exp);
     var newtext;
     var newfound;
-    for(var x in found) {
+    for (var x in found) {
         newfound = found[x].replace(/\//g, sys.md5('/')).replace(/_/g, sys.md5('_'));
-        for(var y in stalkwords) {
+        for (var y in stalkwords) {
             var regex = new RegExp(stalkwords[y], "gi");
             var regex1 = new RegExp(client.ownName(), "gi");
             newfound = newfound.replace(regex, sys.md5(stalkwords[y])).replace(regex1, sys.md5(client.ownName()));
@@ -472,7 +474,7 @@ function addExtras(text, playname, bot, channel) { //adds stalkwords/links/enric
 }
 
 function enrichedText(text) { //applies the enriched text, adapted from the PO 1.0.60 source
-    if(etext === false) {
+    if (etext === false) {
         return text;
     }
     var expi = new RegExp("%2F(\\S+)%2F(?![^\\s<]*>)", "g");
@@ -487,7 +489,7 @@ function enrichedText(text) { //applies the enriched text, adapted from the PO 1
 }
 
 function greenText(text) { //applies greentext
-    if(text.substr(0, 4) === "&gt;" && tgreentext === "true") {
+    if (text.substr(0, 4) === "&gt;" && tgreentext === "true") {
         text = "<font color = '" + greentext + "'>" + text + "</font>";
     } else {
         text = "<font color = '" + fontcolour + "'>" + text;
@@ -496,7 +498,7 @@ function greenText(text) { //applies greentext
 }
 
 function isSafeScripts() { //checks if safe scripts is on and if it is it sends a message
-    if(sys.isSafeScripts()) {
+    if (sys.isSafeScripts()) {
         sendBotMessage("You have safescripts on, you will not be able to update your scripts through the internet, though it should help against any harmful scripts, to turn it off, untick the box in the Script Window");
         return true;
     }
@@ -504,7 +506,7 @@ function isSafeScripts() { //checks if safe scripts is on and if it is it sends 
 }
 
 function sendMessage(message, channel) { //sends a message to the user
-    if(channel === undefined) {
+    if (channel === undefined) {
         channel = client.currentChannel();
     }
     client.printChannelMessage(message, channel, false);
@@ -512,27 +514,41 @@ function sendMessage(message, channel) { //sends a message to the user
 }
 
 function ignoreCheck(name) { //checks if ignored, this is used since it's possible to bypass the autoignore function by logging in via an alt then switching names
-    for(var i in ignore) {
-        if(name.toLowerCase() === ignore[i].toLowerCase()) {
+    for (var i in ignore) {
+        if (name.toLowerCase() === ignore[i].toLowerCase()) {
             client.ignore(client.id(name), true);
         }
     }
-    if(client.isIgnored(client.id(name))) {
+    if (client.isIgnored(client.id(name))) {
         return true;
     }
     return false;
 }
 
 function sendHtmlMessage(message, channel) { //sends a html message to the user
-    if(channel === undefined) {
+    if (channel === undefined) {
         channel = client.currentChannel();
     }
     client.printChannelMessage(message, channel, true);
     return;
 }
 
+function handleSystemCommand(string) {
+    //TODO make the repoFolder change upon use of "cd"
+    if (repoFolder === undefined) {
+        return;
+    }
+    sys.system('cd ' + repoFolder + ' & ' + string + ' > ' + repoFolder + '/output.txt');
+    var output = sys.getFileContent(repoFolder + '/output.txt').split('\n');
+    for (var x in output) {
+        if (output[x].length > 0) {
+            sendMessage(output[x]);
+        }
+    }
+}
+
 function commandHandler(command, commandData, channel) {
-    if(command === "commandlist" || command === "commandslist") { //handles all the commands
+    if (command === "commandlist" || command === "commandslist") { //handles all the commands
         sys.stopEvent();
         sendMessage("*** Client Commands ***");
         sendMessage(commandsymbol + "etext on/off: Allows you to turn Enriched text on/off");
@@ -578,7 +594,7 @@ function commandHandler(command, commandData, channel) {
         sendBotMessage('If you ever forget your command symbol, type reset symbol to revert it back to "~"');
         return;
     }
-    if(command === "fontcommands") {
+    if (command === "fontcommands") {
         sys.stopEvent();
         sendMessage("*** Font Command Details ***");
         sendMessage("Command: " + commandsymbol + "font type:modifier");
@@ -591,15 +607,15 @@ function commandHandler(command, commandData, channel) {
         sendMessage("Example: " + commandsymbol + "font color:red, will make all text red");
         return;
     }
-    if(command === "etext") {
+    if (command === "etext") {
         sys.stopEvent();
-        if(commandData === "on") {
+        if (commandData === "on") {
             etext = true;
             sys.saveVal('etext', true);
             sendBotMessage("You turned Enriched text on!");
             return;
         }
-        if(commandData === "off") {
+        if (commandData === "off") {
             etext = false;
             sys.saveVal('etext', false);
             sendBotMessage("You turned Enriched text off!");
@@ -607,15 +623,15 @@ function commandHandler(command, commandData, channel) {
         }
         sendBotMessage("Please use on/off");
     }
-    if(command === "greentext") {
+    if (command === "greentext") {
         sys.stopEvent();
-        if(commandData === "on") {
+        if (commandData === "on") {
             tgreentext = "true";
             sys.saveVal('tgreentext', true);
             sendBotMessage("You turned greentext on!");
             return;
         }
-        if(commandData === "off") {
+        if (commandData === "off") {
             tgreentext = "false";
             sys.saveVal('tgreentext', false);
             sendBotMessage("You turned greentext off!");
@@ -623,15 +639,15 @@ function commandHandler(command, commandData, channel) {
         }
         sendBotMessage("Please use on/off");
     }
-    if(command === "idle") {
+    if (command === "idle") {
         sys.stopEvent();
-        if(commandData === "on") {
+        if (commandData === "on") {
             client.goAway(true);
             sys.saveVal('idle', true);
             sendBotMessage("You turned auto-idling on!");
             return;
         }
-        if(commandData === "off") {
+        if (commandData === "off") {
             client.goAway(false);
             sys.saveVal('idle', false);
             sendBotMessage("You turned auto-idling off!");
@@ -639,28 +655,28 @@ function commandHandler(command, commandData, channel) {
         }
         sendBotMessage("Please use on/off");
     }
-    if(command === "checkversion") {
+    if (command === "checkversion") {
         sys.stopEvent();
-        if(isSafeScripts()) {
+        if (isSafeScripts()) {
             return;
         }
         sendBotMessage("Checking script version please wait. (Current Version: " + Script_Version + ")");
         checkScriptVersion(true);
         return;
     }
-    if(command === "updatealert") {
+    if (command === "updatealert") {
         sys.stopEvent();
-        if(isSafeScripts()) {
+        if (isSafeScripts()) {
             return;
         }
-        if(commandData === "on") {
+        if (commandData === "on") {
             checkversion = true;
             sys.saveVal('checkversion', true);
             sendBotMessage("You now get alerted about new versions");
             checkScriptVersion();
             return;
         }
-        if(commandData === "off") {
+        if (commandData === "off") {
             checkversion = false;
             sys.saveVal('checkversion', false);
             sendBotMessage("You no longer get alerted about new versions");
@@ -668,14 +684,14 @@ function commandHandler(command, commandData, channel) {
         }
         sendBotMessage("Please use on/off");
     }
-    if(command === "goto") {
+    if (command === "goto") {
         sys.stopEvent();
         var channela = commandData.toLowerCase();
         var channels = client.channelNames();
-        for(var x in channels) {
-            if(channela === channels[x].toLowerCase()) {
+        for (var x in channels) {
+            if (channela === channels[x].toLowerCase()) {
                 channela = channels[x];
-                if(!client.hasChannel(client.channelId(channela))) {
+                if (!client.hasChannel(client.channelId(channela))) {
                     client.join(channela);
                     return;
                 }
@@ -685,28 +701,28 @@ function commandHandler(command, commandData, channel) {
         }
         sendBotMessage("That is not a channel!");
     }
-    if(command === "reconnect") {
+    if (command === "reconnect") {
         sys.stopEvent();
         client.reconnect();
         return;
     }
-    if(command === "pm") {
+    if (command === "pm") {
         sys.stopEvent();
         var id = client.id(commandData);
-        if(id === client.ownId()) {
+        if (id === client.ownId()) {
             return;
         }
         client.startPM(id);
         return;
     }
-    if(command === "stalkwords") {
+    if (command === "stalkwords") {
         sys.stopEvent();
         sendBotMessage("Your stalkwords are: " + stalkwords);
     }
-    if(command === "addstalkword") {
+    if (command === "addstalkword") {
         sys.stopEvent();
         var nstalkwords = commandData;
-        if(nstalkwords.search(/, /g) !== -1 || nstalkwords.search(/ ,/g) !== -1) {
+        if (nstalkwords.search(/, /g) !== -1 || nstalkwords.search(/ ,/g) !== -1) {
             nstalkwords = nstalkwords.replace(/, /g, ",").replace(/ ,/g, ",");
         }
         nstalkwords = nstalkwords.split(",");
@@ -714,11 +730,11 @@ function commandHandler(command, commandData, channel) {
         sys.saveVal('stalkwords', stalkwords.toString());
         sendBotMessage("You added " + commandData + " to your stalkwords!");
     }
-    if(command === "removestalkword") {
+    if (command === "removestalkword") {
         sys.stopEvent();
         commandData = commandData.toLowerCase();
-        for(var x in stalkwords) {
-            if(stalkwords[x].toLowerCase() === commandData) {
+        for (var x in stalkwords) {
+            if (stalkwords[x].toLowerCase() === commandData) {
                 stalkwords.splice(x, 1);
                 sys.saveVal('stalkwords', stalkwords.toString());
                 sendBotMessage("You removed " + commandData + " from your stalkwords!");
@@ -727,11 +743,11 @@ function commandHandler(command, commandData, channel) {
         }
         sendBotMessage("" + commandData + " is not a stalkword!");
     }
-    if(command === "flash" || command === "flashes") {
+    if (command === "flash" || command === "flashes") {
         sys.stopEvent();
         commandData = commandData.split(':');
-        if(commandData.length < 2 || commandData[1] === "") {
-            if(commandData[0] === "on") {
+        if (commandData.length < 2 || commandData[1] === "") {
+            if (commandData[0] === "on") {
                 flash = true;
                 sys.saveVal('flash', true);
                 sendBotMessage("You turned flashes on!");
@@ -744,8 +760,8 @@ function commandHandler(command, commandData, channel) {
             }
         }
         var nfchannel = commandData[1];
-        if(commandData[0] === "off") {
-            if(nfchannel.search(/, /g) !== -1 || nfchannel.search(/ ,/g) !== -1) {
+        if (commandData[0] === "off") {
+            if (nfchannel.search(/, /g) !== -1 || nfchannel.search(/ ,/g) !== -1) {
                 nfchannel = nfchannel.replace(/, /g, ",").replace(/ ,/g, ",");
             }
             nfchannel = nfchannel.split(",");
@@ -754,8 +770,8 @@ function commandHandler(command, commandData, channel) {
             sendBotMessage("You won't be flashed in " + commandData[1]);
         } else {
             commandData[1] = commandData[1].toLowerCase();
-            for(var x in fchannel) {
-                if(fchannel[x].toLowerCase() === commandData[1]) {
+            for (var x in fchannel) {
+                if (fchannel[x].toLowerCase() === commandData[1]) {
                     fchannel.splice(x, 1);
                     sys.saveVal('fchannel', fchannel.toString());
                     sendBotMessage("You will be flashed in " + commandData[1]);
@@ -764,11 +780,11 @@ function commandHandler(command, commandData, channel) {
             }
         }
     }
-    if(command === "friends") {
+    if (command === "friends") {
         sys.stopEvent();
         var check = [];
-        for(var x in friends) {
-            if(client.id(friends[x]) !== -1) {
+        for (var x in friends) {
+            if (client.id(friends[x]) !== -1) {
                 check.push("<a href='po:pm/" + client.id(friends[x]) + "'>" + friends[x] + "</a> <font color='green'>(online)</font>");
                 continue;
             }
@@ -777,10 +793,10 @@ function commandHandler(command, commandData, channel) {
         sendHtmlMessage("<font color = '" + html_escape(clientbotcolour) + "'><timestamp/>" + clientbotstyle + html_escape(clientbotname) + ":" + tagend(clientbotstyle) + "</font> Your friends are: " + check);
         return;
     }
-    if(command === "addfriend") {
+    if (command === "addfriend") {
         sys.stopEvent();
         var nfriends = commandData;
-        if(nfriends.search(/, /g) !== -1 || nfriends.search(/ ,/g) !== -1) {
+        if (nfriends.search(/, /g) !== -1 || nfriends.search(/ ,/g) !== -1) {
             nfriends = nfriends.replace(/, /g, ",").replace(/ ,/g, ",");
         }
         nfriends = nfriends.split(",");
@@ -788,11 +804,11 @@ function commandHandler(command, commandData, channel) {
         sys.saveVal('friends', friends.toString());
         sendBotMessage("You added " + commandData + " to your friends!");
     }
-    if(command === "removefriend") {
+    if (command === "removefriend") {
         sys.stopEvent();
         commandData = commandData.toLowerCase();
-        for(var x in friends) {
-            if(friends[x].toLowerCase() === commandData) {
+        for (var x in friends) {
+            if (friends[x].toLowerCase() === commandData) {
                 friends.splice(x, 1);
                 sys.saveVal('friends', friends.toString());
                 sendBotMessage("You removed " + commandData + " from your friends!");
@@ -801,9 +817,9 @@ function commandHandler(command, commandData, channel) {
         }
         sendBotMessage(commandData + " is not a friend!");
     }
-    if(command === "friendflash" || command === "friendsflash") {
+    if (command === "friendflash" || command === "friendsflash") {
         sys.stopEvent();
-        if(commandData === "on") {
+        if (commandData === "on") {
             friendsflash = true;
             sys.saveVal('friendsflash', true);
             sendBotMessage("You turned friend flashes on!");
@@ -815,35 +831,35 @@ function commandHandler(command, commandData, channel) {
         }
         return;
     }
-    if(command === "ignorelist") {
+    if (command === "ignorelist") {
         sys.stopEvent();
         sendBotMessage("Your ignorelist is: " + ignore);
     }
-    if(command === "addignore") {
+    if (command === "addignore") {
         sys.stopEvent();
-        if(commandData === client.ownName()) {
+        if (commandData === client.ownName()) {
             return;
         }
         var nignore = commandData;
-        if(nignore.search(/, /g) !== -1 || nignore.search(/ ,/g) !== -1) {
+        if (nignore.search(/, /g) !== -1 || nignore.search(/ ,/g) !== -1) {
             nignore = nignore.replace(/, /g, ",").replace(/ ,/g, ",");
         }
         nignore = nignore.split(",");
         ignore = eliminateDuplicates(nignore.concat(ignore));
         sys.saveVal('ignore', ignore.toString());
-        if(client.id(commandData) !== -1) {
+        if (client.id(commandData) !== -1) {
             client.ignore(client.id(commandData), true);
         }
         sendBotMessage("You added " + commandData + " to your ignorelist!");
     }
-    if(command === "removeignore") {
+    if (command === "removeignore") {
         sys.stopEvent();
         commandData = commandData.toLowerCase();
-        for(var x in ignore) {
-            if(ignore[x].toLowerCase() === commandData) {
+        for (var x in ignore) {
+            if (ignore[x].toLowerCase() === commandData) {
                 ignore.splice(x, 1);
                 sys.saveVal('ignore', ignore.toString());
-                if(client.id(commandData) !== -1) {
+                if (client.id(commandData) !== -1) {
                     client.ignore(client.id(commandData), false);
                 }
                 sendBotMessage("You removed " + commandData + " from your ignorelist!");
@@ -852,9 +868,9 @@ function commandHandler(command, commandData, channel) {
         }
         sendBotMessage(commandData + " is not on the ignorelist!");
     }
-    if(command === "changebotname") {
+    if (command === "changebotname") {
         sys.stopEvent();
-        if(commandData === undefined) {
+        if (commandData === undefined) {
             return;
         }
         clientbotname = commandData;
@@ -862,9 +878,9 @@ function commandHandler(command, commandData, channel) {
         sys.saveVal("clientbotname", clientbotname);
         return;
     }
-    if(command === "changebotstyle") {
+    if (command === "changebotstyle") {
         sys.stopEvent();
-        if(commandData === undefined) {
+        if (commandData === undefined) {
             clientbotstyle = "";
             sendBotMessage("You removed your client bot style!");
             sys.saveVal("clientbotstyle", clientbotstyle);
@@ -875,9 +891,9 @@ function commandHandler(command, commandData, channel) {
         sys.saveVal("clientbotstyle", clientbotstyle);
         return;
     }
-    if(command === "changebotcolour" || command === "changebotcolor") {
+    if (command === "changebotcolour" || command === "changebotcolor") {
         sys.stopEvent();
-        if(commandData === undefined) {
+        if (commandData === undefined) {
             return;
         }
         clientbotcolour = commandData;
@@ -885,9 +901,9 @@ function commandHandler(command, commandData, channel) {
         sys.saveVal("clientbotcolour", clientbotcolour);
         return;
     }
-    if(command === "greentextcolor" || command === "greentextcolour") {
+    if (command === "greentextcolor" || command === "greentextcolour") {
         sys.stopEvent();
-        if(commandData === undefined || commandData === "") {
+        if (commandData === undefined || commandData === "") {
             greentext = '#789922';
             sendBotMessage(greentext + " is now your greentext colour!");
             sys.saveVal("greentext", greentext);
@@ -898,7 +914,7 @@ function commandHandler(command, commandData, channel) {
         sys.saveVal("greentext", greentext);
         return;
     }
-    if(command === "resetbot") {
+    if (command === "resetbot") {
         sys.stopEvent();
         clientbotcolour = "#3DAA68";
         clientbotname = "+ClientBot";
@@ -907,24 +923,24 @@ function commandHandler(command, commandData, channel) {
         sendBotMessage("You reset your bot to default values");
         return;
     }
-    if(command === "font") {
+    if (command === "font") {
         sys.stopEvent();
-        if(commandData === undefined) {
+        if (commandData === undefined) {
             return;
         }
         var type = commandData.split(":");
-        if(type.length < 1) {
+        if (type.length < 1) {
             sendBotMessage('Usage is ' + commandsymbol + 'font type:modifier');
             return;
         }
         var modifier = type[1];
         var types = ["colour", "color", "style", "type", "size"];
-        if(types.indexOf(type[0]) === -1) {
+        if (types.indexOf(type[0]) === -1) {
             sendBotMessage('Invalid type, valid types are: colo(u)r, style, type, size');
             return;
         }
-        if(type[0] === "colour" || type[0] === "color") {
-            if(modifier === undefined || modifier === "") {
+        if (type[0] === "colour" || type[0] === "color") {
+            if (modifier === undefined || modifier === "") {
                 modifier = "#000000";
                 fontcolour = modifier;
                 sys.saveVal('fontcolour', modifier);
@@ -936,15 +952,15 @@ function commandHandler(command, commandData, channel) {
             sendBotMessage("You changed your font colour to: " + modifier);
             return;
         }
-        if(type[0] === "style") {
-            if(modifier === undefined || modifier === "") {
+        if (type[0] === "style") {
+            if (modifier === undefined || modifier === "") {
                 modifier = "";
                 fontstyle = modifier;
                 sys.saveVal('fontstyle', modifier);
                 sendBotMessage("You changed your font style to the default");
                 return;
             }
-            if(modifier.indexOf('</') !== -1) {
+            if (modifier.indexOf('</') !== -1) {
                 sendBotMessage("End tags are not needed, please only use start ones");
                 return;
             }
@@ -953,8 +969,8 @@ function commandHandler(command, commandData, channel) {
             sendBotMessage("You changed your font style to: " + modifier);
             return;
         }
-        if(type[0] === "type") {
-            if(modifier === undefined || modifier === "") {
+        if (type[0] === "type") {
+            if (modifier === undefined || modifier === "") {
                 modifier = "";
                 fonttype = modifier;
                 sys.saveVal('fonttype', modifier);
@@ -966,8 +982,8 @@ function commandHandler(command, commandData, channel) {
             sendBotMessage("You changed your font to: " + modifier);
             return;
         }
-        if(type[0] === "size") {
-            if(modifier === undefined || modifier === "" || isNaN(parseInt(modifier, 10))) {
+        if (type[0] === "size") {
+            if (modifier === undefined || modifier === "" || isNaN(parseInt(modifier, 10))) {
                 modifier = 3;
                 fontsize = modifier;
                 sys.saveVal('fontsize', modifier);
@@ -980,87 +996,87 @@ function commandHandler(command, commandData, channel) {
             return;
         }
     }
-    if(command === "changename") {
+    if (command === "changename") {
         sys.stopEvent();
         var valid = nameCheck(commandData);
-        if(valid === "fixup") {
+        if (valid === "fixup") {
             commandData = fixup(commandData);
             valid = nameCheck(commandData);
         }
-        if(valid === false) {
+        if (valid === false) {
             sendBotMessage("Invalid Name"); //TODO: Specify what's exactly wrong with the name
             return;
         }
         try {
             client.changeName(commandData);
             sendBotMessage("You changed your name to " + commandData);
-        } catch(e) {
-            if(e.toString() === "TypeError: Result of expression 'client.changeName' [undefined] is not a function.") {
+        } catch (e) {
+            if (e.toString() === "TypeError: Result of expression 'client.changeName' [undefined] is not a function.") {
                 sendBotMessage("You need to update your client to Version 2.0.06 or above to use this command");
             }
         }
         return;
     }
-    if(command === "changelog") {
+    if (command === "changelog") {
         sys.stopEvent();
-        if(isSafeScripts()) {
+        if (isSafeScripts()) {
             return;
         }
         var changelog = sys.synchronousWebCall("https://raw.github.com/gist/3189629/ChangeLog.json");
-        if(changelog.length < 1) {
+        if (changelog.length < 1) {
             sendBotMessage("Error retrieving file");
             return;
         }
         changelog = JSON.parse(changelog);
-        if(changelog.versions[commandData] === undefined) {
+        if (changelog.versions[commandData] === undefined) {
             sendBotMessage("Version does not exist! Use " + commandsymbol + "versions to check versions");
             return;
         }
         var details = changelog.versions[commandData].split('\n');
         sendBotMessage("Details for version: " + commandData);
-        for(var x in details) {
+        for (var x in details) {
             sendBotMessage(details[x]);
         }
         return;
     }
-    if(command === "versions") {
+    if (command === "versions") {
         sys.stopEvent();
         var version = [];
-        if(isSafeScripts()) {
+        if (isSafeScripts()) {
             return;
         }
         var changelog = sys.synchronousWebCall("https://raw.github.com/gist/3189629/ChangeLog.json");
-        if(changelog.length < 1) {
+        if (changelog.length < 1) {
             sendBotMessage("Error retrieving file");
             return;
         }
         changelog = JSON.parse(changelog);
-        for(var x in changelog.versions) {
+        for (var x in changelog.versions) {
             version.push(" " + x);
         }
         sendBotMessage('Versions of this script are: ' + version);
         return;
     }
-    if(command === "updatescripts") {
+    if (command === "updatescripts") {
         sys.stopEvent();
-        if(isSafeScripts()) {
+        if (isSafeScripts()) {
             return;
         }
         sendBotMessage("Fetching scripts...");
         var updateURL = script_url;
-        if(commandData !== undefined && (commandData.substring(0, 7) === 'http://' || commandData.substring(0, 8) === 'https://')) {
+        if (commandData !== undefined && (commandData.substring(0, 7) === 'http://' || commandData.substring(0, 8) === 'https://')) {
             updateURL = commandData;
         }
         var channel_local = channel;
         var changeScript = function (resp) {
-            if(resp === "") {
+            if (resp === "") {
                 sendBotMessage("There was an error accessing the script, paste the contents of (link) into your PO folder and restart, or wait for a client update", undefined, "https://github.com/downloads/coyotte508/pokemon-online/ssl.zip");
                 return;
             }
             try {
                 sys.changeScript(resp, true);
                 sys.writeToFile(sys.scriptsFolder + "scripts.js", resp);
-            } catch(err) {
+            } catch (err) {
                 sys.changeScript(sys.getFileContent(sys.scriptsFolder + 'scripts.js'));
                 sendBotMessage('Updating failed, loaded old scripts!');
             }
@@ -1069,100 +1085,100 @@ function commandHandler(command, commandData, channel) {
         sys.webCall(updateURL, changeScript);
         return;
     }
-    if(command === "authsymbol" || command === "authsymbols") {
+    if (command === "authsymbol" || command === "authsymbols") {
         sys.stopEvent();
         var symbols = commandData.split(":");
         var auth = symbols[0];
         var symbol = symbols[1];
-        if(symbols.length > 2 || symbols.length < 1) {
+        if (symbols.length > 2 || symbols.length < 1) {
             sendBotMessage("Command usage is: \"" + commandsymbol + "changesymbols number:symbol\"");
             return;
         }
-        if(isNaN(parseInt(auth, 10))) {
+        if (isNaN(parseInt(auth, 10))) {
             sendBotMessage("The first parameter must be a number!");
             return;
         }
-        if(auth < 0 || auth > 4) {
+        if (auth < 0 || auth > 4) {
             sendBotMessage("Auth must be between 0 and 4");
             return;
         }
-        if(symbol === undefined) {
+        if (symbol === undefined) {
             symbol = "";
         }
         auth_symbol[auth] = symbol;
         sys.saveVal("auth: " + auth, symbol);
-        if(symbol === "") {
+        if (symbol === "") {
             sendBotMessage("Auth " + auth + " now has no symbol");
             return;
         }
         sendBotMessage("Auth symbol for auth " + auth + " is " + symbol);
         return;
     }
-    if(command === "authstyle") {
+    if (command === "authstyle") {
         sys.stopEvent();
         var styles = commandData.split(":");
         var auth = styles[0];
         var style = styles[1];
-        if(styles.length > 2 || styles.length < 2) {
+        if (styles.length > 2 || styles.length < 2) {
             sendBotMessage("Command usage is: \"" + commandsymbol + "changestyles number:html\"");
             return;
         }
-        if(isNaN(parseInt(auth, 10))) {
+        if (isNaN(parseInt(auth, 10))) {
             sendBotMessage("The first parameter must be a number!");
             return;
         }
-        if(auth < 0 || auth > 4) {
+        if (auth < 0 || auth > 4) {
             sendBotMessage("Auth must be between 0 and 4");
             return;
         }
-        if(style.indexOf('</') !== -1) {
+        if (style.indexOf('</') !== -1) {
             sendBotMessage("End tags are not needed, please only use start ones");
             return;
         }
-        if(style === undefined) {
+        if (style === undefined) {
             style = "";
         }
         auth_style[auth] = style;
         sys.saveVal("auths: " + auth, style);
-        if(style === "") {
+        if (style === "") {
             sendBotMessage("Auth " + auth + " now has no style");
             return;
         }
         sendBotMessage("Auth style for auth " + auth + " is " + style);
         return;
     }
-    if(command === "damagecalc") {
+    if (command === "damagecalc") {
         sys.stopEvent();
         var paras = commandData.split(':');
-        if(paras.length !== 5) {
+        if (paras.length !== 5) {
             sendBotMessage("Format is [s]atk:movepower:boosts:[s]def:hp");
             return;
         }
-        for(var x in paras) {
+        for (var x in paras) {
             paras[x] = parseFloat(paras[x]);
-            if(isNaN(paras[x])) {
+            if (isNaN(paras[x])) {
                 sendBotMessage('Parameters must be all numbers!');
                 return;
             }
         }
-        if(paras[2] === 0) {
+        if (paras[2] === 0) {
             paras[2] = 1;
         }
         var calc = (84 * paras[0] * paras[1] * paras[2]) / (paras[3] * paras[4]);
         sendBotMessage(paras[1] + "BP move coming from " + paras[0] + "[s]atk with a " + paras[2] + " modifier on " + paras[4] + "HP and " + paras[3] + "[s]def, does approxmiately " + calc + " damage");
         return;
     }
-    if(command === "commandsymbol") {
+    if (command === "commandsymbol") {
         sys.stopEvent();
         var symbol = commandData;
-        if(symbol === undefined) {
+        if (symbol === undefined) {
             return;
         }
-        if(symbol.length !== 1) {
+        if (symbol.length !== 1) {
             sendBotMessage("Must be 1 character long");
             return;
         }
-        if(symbol === "!" || symbol === "/") {
+        if (symbol === "!" || symbol === "/") {
             sendBotMessage("Warning: This symbol is the same one used for most server scripts, you can still use it for client scripts, but it may interfere with server ones");
         }
         commandsymbol = symbol;
@@ -1170,9 +1186,9 @@ function commandHandler(command, commandData, channel) {
         sendBotMessage("Command symbol is set to: " + symbol);
         return;
     }
-    if(command === "highlight" || command === "flashcolour") {
+    if (command === "highlight" || command === "flashcolour") {
         sys.stopEvent();
-        if(commandData === undefined) {
+        if (commandData === undefined) {
             hilight = "BACKGROUND-COLOR: #ffcc00";
             sys.saveVal('hilight', hilight);
             sendBotMessage("Highlight colour set to the default");
@@ -1183,9 +1199,9 @@ function commandHandler(command, commandData, channel) {
         sendBotMessage("Highlight colour set to: " + hilight);
         return;
     }
-    if(command === "logjoins") {
+    if (command === "logjoins") {
         sys.stopEvent();
-        if(commandData === "on") {
+        if (commandData === "on") {
             logjoins = true;
             sys.saveVal('logjoins', true);
             sendBotMessage("You turned logging joins on!");
@@ -1197,21 +1213,21 @@ function commandHandler(command, commandData, channel) {
         }
         return;
     }
-    if(command === "logchannels") {
+    if (command === "logchannels") {
         sys.stopEvent();
         sendBotMessage("You are logging: " + logchannel);
     }
-    if(command === "addlogchannel") {
+    if (command === "addlogchannel") {
         sys.stopEvent();
-        if(isSafeScripts()) {
+        if (isSafeScripts()) {
             return;
         }
-        if(typeof (sys.filesForDirectory('Channel Logs')) === "undefined") {
+        if (typeof (sys.filesForDirectory('Channel Logs')) === "undefined") {
             sendBotMessage("Please make a folder in your PO folder called \"Channel Logs\"");
             return;
         }
         var nlogchannel = commandData;
-        if(nlogchannel.search(/, /g) !== -1 || nlogchannel.search(/ ,/g) !== -1) {
+        if (nlogchannel.search(/, /g) !== -1 || nlogchannel.search(/ ,/g) !== -1) {
             nlogchannel = nlogchannel.replace(/, /g, ",").replace(/ ,/g, ",");
         }
         nlogchannel = nlogchannel.split(",");
@@ -1219,11 +1235,11 @@ function commandHandler(command, commandData, channel) {
         sys.saveVal('logchannel', logchannel.toString());
         sendBotMessage("You added " + commandData + " to your log channels!");
     }
-    if(command === "removelogchannel") {
+    if (command === "removelogchannel") {
         sys.stopEvent();
         commandData = commandData.toLowerCase();
-        for(var x in logchannel) {
-            if(logchannel[x].toLowerCase() === commandData) {
+        for (var x in logchannel) {
+            if (logchannel[x].toLowerCase() === commandData) {
                 logchannel.splice(x, 1);
                 sys.saveVal('logchannel', logchannel.toString());
                 sendBotMessage("You removed " + commandData + " from your log channels!");
@@ -1232,22 +1248,22 @@ function commandHandler(command, commandData, channel) {
         }
         sendBotMessage(commandData + " is not a log channel!");
     }
-    if(command === "armessage") {
+    if (command === "armessage") {
         sys.stopEvent();
         armessage = commandData;
         sys.saveVal('armessage', armessage);
         sendBotMessage('You set your auto-respond message to: ' + armessage);
         return;
     }
-    if(command === "artype") {
+    if (command === "artype") {
         sys.stopEvent();
-        if(commandData === "command") {
+        if (commandData === "command") {
             artype = "command";
             sys.saveVal('artype', artype);
             sendBotMessage('Your auto-respond message will be activated by command');
             return;
         }
-        if(commandData === "time") {
+        if (commandData === "time") {
             artype = "time";
             sys.saveVal('artype', artype);
             sendBotMessage('Your auto-respond message will be activated by time');
@@ -1256,14 +1272,14 @@ function commandHandler(command, commandData, channel) {
         sendBotMessage('This is not a valid type!');
         return;
     }
-    if(command === "artime") {
+    if (command === "artime") {
         sys.stopEvent();
         var time = commandData.split(':');
-        if(time.length !== 2) {
+        if (time.length !== 2) {
             sendBotMessage('Usage of this command is: ' + commandsymbol + 'artime starthour:endhour');
             return;
         }
-        if(isNaN(time[0]) || isNaN(time[1]) || time[0] < 0 || time[0] > 24 || time[1] < 0 || time[1] > 24 || time[0] === "" || time[1] === "") {
+        if (isNaN(time[0]) || isNaN(time[1]) || time[0] < 0 || time[0] > 24 || time[1] < 0 || time[1] > 24 || time[0] === "" || time[1] === "") {
             sendBotMessage('Make sure both parameters are numbers and are between 0 and 24');
             return;
         }
@@ -1274,9 +1290,9 @@ function commandHandler(command, commandData, channel) {
         sendBotMessage('You auto response message will activate between ' + arstart + ':00 and ' + arend + ':00');
         return;
     }
-    if(command === "aron") {
+    if (command === "aron") {
         sys.stopEvent();
-        if(artype !== "command") {
+        if (artype !== "command") {
             return;
         }
         autoresponse = true;
@@ -1284,9 +1300,9 @@ function commandHandler(command, commandData, channel) {
         sendBotMessage('You turned your auto response on');
         return;
     }
-    if(command === "aroff") {
+    if (command === "aroff") {
         sys.stopEvent();
-        if(artype !== "command") {
+        if (artype !== "command") {
             return;
         }
         autoresponse = false;
@@ -1294,71 +1310,71 @@ function commandHandler(command, commandData, channel) {
         sendBotMessage('You turned your auto response off');
         return;
     }
-    if(command === "eval") {
+    if (command === "eval") {
         sys.stopEvent();
         eval(commandData);
         return;
     }
-    if(command === "evalp") {
+    if (command === "evalp") {
         sys.stopEvent();
         var bindChannel = channel;
         try {
             var res = eval(commandData);
             sendMessage("Got from eval: " + res, bindChannel);
-        } catch(err) {
+        } catch (err) {
             sendMessage("Error in eval: " + err, bindChannel);
         }
         return;
     }
 }
-if(client.ownId() !== -1) {
+if (client.ownId() !== -1) {
     init();
 }
 client.network().channelCommandReceived.connect(function (command, channel) {
-    if(logjoins !== true){
+    if (logjoins !== true) {
         return;
     }
     var tempchannelusers;
     var tempusers = [];
     var logging = false;
-    for(var z in logchannel) {
-        if(logchannel[z].toLowerCase() === client.channelName(channel).toLowerCase()) {
+    for (var z in logchannel) {
+        if (logchannel[z].toLowerCase() === client.channelName(channel).toLowerCase()) {
             logging = true;
             break;
         }
     }
-    if(logging !== true) {
+    if (logging !== true) {
         return;
     }
-    if(typeof playersonline === "undefined") {
+    if (typeof playersonline === "undefined") {
         return;
     }
-    for(var x in playersonline) {
-        if(client.channel(channel).hasPlayer(playersonline[x])) {
+    for (var x in playersonline) {
+        if (client.channel(channel).hasPlayer(playersonline[x])) {
             tempusers.push(playersonline[x]);
         }
     }
     tempchannelusers = tempusers.join(':');
-    if(typeof channelusers[channel] === "undefined") {
+    if (typeof channelusers[channel] === "undefined") {
         channelusers[channel] = tempchannelusers;
         return;
     }
-    if(command === 46) { //command for joining
+    if (command === 46) { //command for joining
         var a = channelusers[channel].split(':');
         var b = tempchannelusers.split(':');
-        for(var y in b) {
-            if(a[y] !== b[y]) {
+        for (var y in b) {
+            if (a[y] !== b[y]) {
                 saveToLog(client.name(b[y]) + " joined the channel", channel);
                 break;
             }
         }
         channelusers[channel] = tempchannelusers;
     }
-    if(command === 47) { //command for leaving
+    if (command === 47) { //command for leaving
         var a = channelusers[channel].split(':');
         var b = tempchannelusers.split(':');
-        for(var y in a) {
-            if(a[y] !== b[y]) {
+        for (var y in a) {
+            if (a[y] !== b[y]) {
                 saveToLog(client.name(a[y]) + " left the channel", channel);
                 break;
             }
@@ -1376,7 +1392,7 @@ poScript = ({
         sendMessage('Script Check: OK'); //use this to send a message on update scripts
     },
     stepEvent: function () {
-        if(sys.isSafeScripts() === true || sys.getFileContent('steamAPIkey.txt') === "" || sys.getFileContent('steamID.txt') === "") {
+        if (sys.isSafeScripts() === true || sys.getFileContent('steamAPIkey.txt') === "" || sys.getFileContent('steamID.txt') === "") {
             return;
         }
         var key = sys.getFileContent('steamAPIkey.txt');
@@ -1384,18 +1400,19 @@ poScript = ({
         var url = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' + key + '&steamids=' + id;
         sys.webCall(url, function (resp) {
             var json = JSON.parse(resp).response.players[0];
-            for(var x in json) {
-                if(x === "gameextrainfo") {
-                    if(sys.getFileContent('steamboo.txt') == "true") {
+            for (var x in json) {
+                if (x === "gameextrainfo") {
+                    if (sys.getFileContent('steamboo.txt') == "true") {
                         return;
                     }
                     say("Now Playing: " + json[x] + " (steam)", client.channelId('Indigo Plateau'));
                     sys.writeToFile('steamboo.txt', "true");
                     return;
                 }
-                if(json.personastate === 3 || json.personastate === 4){
+                if (json.personastate === 3 || json.personastate === 4) {
                     autoresponse = true;
-                }else{
+                    sys.appendToFile('testingstatus.txt', json.personastate == 3 ? "Away\n" : "Snooze\n");
+                } else {
                     autoresponse = false;
                 }
             }
@@ -1403,35 +1420,35 @@ poScript = ({
         });
     },
     onPlayerRemoved: function (id) { //detects when  a player is no longer visible to the client (mostly log outs, but may happen from leaving all channels)
-        if(typeof playersonline === "undefined") {
+        if (typeof playersonline === "undefined") {
             return;
         }
-        if(logjoins === true){
-            for(var x in playersonline) {
-                if(playersonline[x] === id) {
+        if (logjoins === true) {
+            for (var x in playersonline) {
+                if (playersonline[x] === id) {
                     playersonline.splice(x, 1);
                 }
             }
         }
     },
     onPlayerReceived: function (id) { //detects when a player is visible to the client (mostly logins, but may also happen upon joining a new channel)
-        if(typeof playersonline === "undefined") {
+        if (typeof playersonline === "undefined") {
             playersonline = [];
         }
-        if(logjoins === true){
+        if (logjoins === true) {
             playersonline.push(id);
         }
         var flashvar = "";
-        if(friendsflash === true) {
+        if (friendsflash === true) {
             flashvar = "<ping/>";
         }
-        for(var x in friends) {
-            if(client.name(id).toLowerCase() === friends[x].toLowerCase() && flash === true) {
+        for (var x in friends) {
+            if (client.name(id).toLowerCase() === friends[x].toLowerCase() && flash === true) {
                 sendHtmlMessage("<font color = '" + html_escape(clientbotcolour) + "'><timestamp/>" + clientbotstyle + html_escape(clientbotname) + ":" + tagend(clientbotstyle) + "</font> User <a href='po:pm/" + id + "'>" + client.name(id) + "</a> has logged in" + flashvar + "", client.currentChannel());
             }
         }
-        for(var x in ignore) {
-            if(client.name(id).toLowerCase() === ignore[x].toLowerCase()) {
+        for (var x in ignore) {
+            if (client.name(id).toLowerCase() === ignore[x].toLowerCase()) {
                 client.ignore(id, true);
             }
         }
@@ -1439,49 +1456,49 @@ poScript = ({
     beforeChannelMessage: function (message, channel, html) { //detects a channel specific message
         var chan = channel;
         var bot = false;
-        if(message.indexOf('<timestamp/> *** <b>') !== -1) {
+        if (message.indexOf('<timestamp/> *** <b>') !== -1) {
             var ignored = getName(message, "me");
-            if(ignoreCheck(ignored)) {
+            if (ignoreCheck(ignored)) {
                 sys.stopEvent();
                 return;
             }
             saveToLog(stripHTML(message), channel);
         }
-        if(message.indexOf('<timestamp/><b><span style') !== -1) {
+        if (message.indexOf('<timestamp/><b><span style') !== -1) {
             var ignored = getName(message, "rainbow");
-            if(ignoreCheck(ignored)) {
+            if (ignoreCheck(ignored)) {
                 sys.stopEvent();
                 return;
             }
             saveToLog(stripHTML(message), channel);
         }
-        if(html === true) {
+        if (html === true) {
             return;
         }
         saveToLog(message, channel);
         var pos = message.indexOf(': ');
-        if(pos !== -1) {
-            if(client.id(message.substring(0, pos)) === -1 || client.id(message.substring(0, pos)) === undefined) {
+        if (pos !== -1) {
+            if (client.id(message.substring(0, pos)) === -1 || client.id(message.substring(0, pos)) === undefined) {
                 bot = true;
             }
             var playname = message.substring(0, pos);
-            if(ignoreCheck(playname)) {
+            if (ignoreCheck(playname)) {
                 sys.stopEvent();
                 return;
             }
             var id = client.id(playname);
             var playmessage = html_escape(message.substr(pos + 2));
             var colour = client.color(id);
-            if(bot === true) {
+            if (bot === true) {
                 colour = clientbotcolour;
             }
             var auth = client.auth(id);
-            if(auth > 4 || auth < 0) {
+            if (auth > 4 || auth < 0) {
                 auth = 4;
             }
             playmessage = addExtras(playmessage, playname, bot, channel);
             var symbol = auth_symbol[auth];
-            if(bot === true) {
+            if (bot === true) {
                 symbol = "";
             }
             client.printChannelMessage("<font face ='" + fonttype + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/> " + symbol + auth_style[auth] + playname + ": </font>" + tagend(auth_style[auth]) + fontstyle + playmessage + tagend(fontstyle), chan, true);
@@ -1489,32 +1506,32 @@ poScript = ({
         }
     },
     beforePMReceived: function (id, message) { // called before a PM is received
-        if(ignoreCheck(client.name(id))) {
+        if (ignoreCheck(client.name(id))) {
             sys.stopEvent();
             return;
         }
     },
     afterPMReceived: function (id, message) { //called after a PM is received
-        if(playerswarn[id] === true) {
+        if (playerswarn[id] === true) {
             return;
         }
         var time = new Date();
         var h = time.getHours();
-        if(artype === "time") {
-            if(arstart < arend) {
-                if(h >= arstart && h < arend) {
+        if (artype === "time") {
+            if (arstart < arend) {
+                if (h >= arstart && h < arend) {
                     client.network().sendPM(id, armessage);
                     playerswarn[id] = true;
                     return;
                 }
             }
-            if(h >= arend && h < arstart) {
+            if (h >= arend && h < arstart) {
                 client.network().sendPM(id, armessage);
                 playerswarn[id] = true;
                 return;
             }
         }
-        if(autoresponse === true) {
+        if (autoresponse === true) {
             client.network().sendPM(id, armessage);
             playerswarn[id] = true;
             return;
@@ -1522,17 +1539,27 @@ poScript = ({
         return;
     },
     beforeSendMessage: function (message, channel) { //detects messages sent by the client
-        if(message.toLowerCase() === "reset symbol") {
+        var mess = message.toLowerCase();
+        if ((mess.substring(0, 3) === "git" || mess.substring(0, 2) === "cd" || mess.substring(0, 3) === "dir") && typeof sys.system !== "undefined") {
+            sys.stopEvent();
+            try {
+                handleSystemCommand(message);
+            } catch (e) {
+                sendBotMessage('Error with sys.system() ' + e);
+            }
+            return;
+        }
+        if (message.toLowerCase() === "reset symbol") {
             sys.stopEvent();
             commandsymbol = "~";
             sendBotMessage('You reset your command symbol to "~"!');
             sys.saveVal('commandsymbol', commandsymbol);
             return;
         }
-        if(message[0] === commandsymbol) {
+        if (message[0] === commandsymbol) {
             var command, commandData;
             var pos = message.indexOf(' ');
-            if(pos !== -1) {
+            if (pos !== -1) {
                 command = message.substring(1, pos).toLowerCase();
                 commandData = message.substr(pos + 1);
             } else {
@@ -1540,7 +1567,7 @@ poScript = ({
             }
             try {
                 commandHandler(command, commandData, channel);
-            } catch(e) {
+            } catch (e) {
                 sendBotMessage('ERROR: ' + e); //TODO: Add proper error checks
             }
         }
