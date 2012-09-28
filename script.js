@@ -50,43 +50,53 @@ function init() { //defines all the variables that are going to be used in the s
         logjoins = false;
     }
     clientbotname = "+ClientBot";
-    if (sys.getVal('clientbotname').length > 0) {
+    if (sys.getVal('clientbotname')
+        .length > 0) {
         clientbotname = sys.getVal('clientbotname');
     }
     clientbotcolour = "#3DAA68";
-    if (sys.getVal('clientbotcolour').length > 0) {
+    if (sys.getVal('clientbotcolour')
+        .length > 0) {
         clientbotcolour = sys.getVal('clientbotcolour');
     }
     clientbotstyle = "<b>";
-    if (sys.getVal('clientbotstyle').length > 0) {
+    if (sys.getVal('clientbotstyle')
+        .length > 0) {
         clientbotstyle = sys.getVal('clientbotstyle');
     }
     greentext = '#789922';
-    if (sys.getVal('greentext').length > 0) {
+    if (sys.getVal('greentext')
+        .length > 0) {
         greentext = sys.getVal('greentext');
     }
     fontcolour = "#000000";
-    if (sys.getVal('fontcolour').length > 0) {
+    if (sys.getVal('fontcolour')
+        .length > 0) {
         fontcolour = sys.getVal('fontcolour');
     }
     fonttype = "";
-    if (sys.getVal('fonttype').length > 0) {
+    if (sys.getVal('fonttype')
+        .length > 0) {
         fonttype = sys.getVal('fonttype');
     }
     fontsize = 3;
-    if (sys.getVal('fontsize').length > 0) {
+    if (sys.getVal('fontsize')
+        .length > 0) {
         fontsize = sys.getVal('fontsize');
     }
     fontstyle = "";
-    if (sys.getVal('fontstyle').length > 0) {
+    if (sys.getVal('fontstyle')
+        .length > 0) {
         fontstyle = sys.getVal('fontstyle');
     }
     commandsymbol = "~";
-    if (sys.getVal('commandsymbol').length > 0) {
+    if (sys.getVal('commandsymbol')
+        .length > 0) {
         commandsymbol = sys.getVal('commandsymbol');
     }
     hilight = "BACKGROUND-COLOR: #ffcc00";
-    if (sys.getVal('hilight').length > 0) {
+    if (sys.getVal('hilight')
+        .length > 0) {
         hilight = sys.getVal('hilight');
     }
     armessage = sys.getVal('armessage');
@@ -99,33 +109,39 @@ function init() { //defines all the variables that are going to be used in the s
     logchannel = [];
     fchannel = [];
     if (sys.getVal('stalkwords') !== "") {
-        var nstalkwords = sys.getVal('stalkwords').split(",");
+        var nstalkwords = sys.getVal('stalkwords')
+            .split(",");
         stalkwords = nstalkwords.concat(stalkwords);
         stalkwords = eliminateDuplicates(stalkwords);
     }
     if (sys.getVal('friends') !== "") {
-        var nfriends = sys.getVal('friends').split(",");
+        var nfriends = sys.getVal('friends')
+            .split(",");
         friends = nfriends.concat(friends);
         friends = eliminateDuplicates(friends);
     }
     if (sys.getVal('ignore') !== "") {
-        var nignore = sys.getVal('ignore').split(",");
+        var nignore = sys.getVal('ignore')
+            .split(",");
         ignore = nignore.concat(ignore);
         ignore = eliminateDuplicates(ignore);
     }
     if (sys.getVal('logchannel') !== "") {
-        var nlogchannel = sys.getVal('logchannel').split(",");
+        var nlogchannel = sys.getVal('logchannel')
+            .split(",");
         logchannel = nlogchannel.concat(logchannel);
         logchannel = eliminateDuplicates(logchannel);
     }
     if (sys.getVal('fchannel') !== "") {
-        var nfchannel = sys.getVal('fchannel').split(",");
+        var nfchannel = sys.getVal('fchannel')
+            .split(",");
         fchannel = nfchannel.concat(fchannel);
         fchannel = eliminateDuplicates(fchannel);
     }
     auth_symbol = [];
     for (var x = 0; x < 5; x++) {
-        if (sys.getVal('auth: ' + x).length > 0) {
+        if (sys.getVal('auth: ' + x)
+            .length > 0) {
             auth_symbol[x] = sys.getVal('auth: ' + x);
             continue;
         }
@@ -137,7 +153,8 @@ function init() { //defines all the variables that are going to be used in the s
     }
     auth_style = [];
     for (var x = 0; x < 5; x++) {
-        if (sys.getVal('auths: ' + x).length > 0) {
+        if (sys.getVal('auths: ' + x)
+            .length > 0) {
             auth_style[x] = sys.getVal('auths: ' + x);
             continue;
         }
@@ -211,32 +228,35 @@ function checkScriptVersion(bool) { //checks the current script version with the
 }
 
 function nameCheck(string) { //adapted from the PO Source Code
+    if (string === undefined) {
+        throw "Undefined name";
+    }
     if (string.length > 20) {
-        return false;
+        throw "Name too long";
     }
     if (string.lengh === 0) {
-        return false;
+        throw "Name not long enough";
     }
     if (isPunct(string[0]) !== true && isAlnum(string[0]) !== true) {
-        return false;
+        throw "Name cannot have start with a non-punctuation or non-alphanumeric character";
     }
     var spaced = false;
     var punct = false;
     for (var x = 0; x < string.length; x++) {
         if (string[x] === '\n' || string[x] === '%' || string[x] === '*' || string[x] === '<' || string[x] === ':' || string[x] === '(' || string[x] === ')' || string[x] === ';') {
-            return false;
+            throw "Invalid Character";
         }
         if (isPunct(string[x])) {
             if (punct === true) {
                 //Error: two punctuations are not separated by a letter/number
-                return false;
+                throw "two punctuations are not separated by a letter/number";
             }
             punct = true;
             spaced = false;
         } else if (string[x] === ' ') {
             if (spaced === true) {
                 //Error: two spaces are following
-                return false;
+                throw "two spaces are following";
             }
             spaced = true;
         } else if (isAlnum(string[x])) {
@@ -246,12 +266,12 @@ function nameCheck(string) { //adapted from the PO Source Code
         }
     }
     if (string.length === 1 && isPunct(string[0])) {
-        return "fixup";
+        return nameCheck(fixup(string));
     }
     if (isPunct(string[string.length - 1]) !== true && isAlnum(string[string.length - 1]) !== true) {
-        return "fixup";
+        return nameCheck(fixup(string));
     }
-    return true;
+    return string;
 }
 
 function fixup(input) {
@@ -309,7 +329,8 @@ function eliminateDuplicates(arr) { //stolen from http://dreaminginjavascript.wo
 function saveToLog(message, channel) { //saves messages to a log file
     var logging = false;
     for (var x in logchannel) {
-        if (client.channelName(channel).toLowerCase() === logchannel[x].toLowerCase()) {
+        if (client.channelName(channel)
+            .toLowerCase() === logchannel[x].toLowerCase()) {
             logging = true;
             break;
         }
@@ -345,7 +366,8 @@ function say(message, channel) {
     if (channel === undefined) {
         channel = client.currentChannel();
     }
-    client.network().sendChanMessage(channel, message);
+    client.network()
+        .sendChanMessage(channel, message);
 }
 
 function stripHTML(string) {
@@ -393,7 +415,9 @@ function html_escape(text) { //escapes any characters that won't appear correctl
         var amp = "&am" + "p;";
         var lt = "&l" + "t;";
         var gt = "&g" + "t;";
-        return m.replace(/&/g, amp).replace(/</g, lt).replace(/>/g, gt);
+        return m.replace(/&/g, amp)
+            .replace(/</g, lt)
+            .replace(/>/g, gt);
     } else {
         return "";
     }
@@ -418,7 +442,8 @@ function awayFunction() { //makes the user go away if needed
 function stalkWordCheck(string, playname, bot, channel) { //adds flashes to names/stalkwords
     var ownName = html_escape(client.ownName());
     var newstring = "";
-    if (string.toLowerCase().indexOf(ownName.toLowerCase()) !== -1 && playname !== ownName && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
+    if (string.toLowerCase()
+        .indexOf(ownName.toLowerCase()) !== -1 && playname !== ownName && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
         var name = new RegExp("\\b" + ownName + "\\b", "i");
         newstring = string.replace(name, "<span style='" + hilight + "'>" + client.ownName() + "</span>");
         if (newstring !== string) {
@@ -430,7 +455,8 @@ function stalkWordCheck(string, playname, bot, channel) { //adds flashes to name
     for (var x in stalkwords) {
         var stalk = new RegExp("\\b" + stalkwords[x] + "\\b", "i");
         var stalks = string.match(stalk);
-        if (string.toLowerCase().search(stalk) !== -1 && playname !== client.ownName() && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
+        if (string.toLowerCase()
+            .search(stalk) !== -1 && playname !== client.ownName() && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
             newstring = string.replace(stalk, "<span style='" + hilight + "'>" + stalks + "</span>");
             if (newstring !== string) {
                 string = newstring.replace(newstring, "<i> " + newstring + "</i><ping/>");
@@ -448,28 +474,34 @@ function htmllinks(text) { //makes sure links get linked!
     var newtext;
     var newfound;
     for (var x in found) {
-        newfound = found[x].replace(/\//g, sys.md5('/')).replace(/_/g, sys.md5('_'));
+        newfound = found[x].replace(/\//g, sys.md5('/'))
+            .replace(/_/g, sys.md5('_'));
         for (var y in stalkwords) {
             var regex = new RegExp(stalkwords[y], "gi");
             var regex1 = new RegExp(client.ownName(), "gi");
-            newfound = newfound.replace(regex, sys.md5(stalkwords[y])).replace(regex1, sys.md5(client.ownName()));
+            newfound = newfound.replace(regex, sys.md5(stalkwords[y]))
+                .replace(regex1, sys.md5(client.ownName()));
         }
-        newtext = ("<a href ='" + newfound + "'>" + newfound + "</a>").replace(/&amp;/gi, "&");
+        newtext = ("<a href ='" + newfound + "'>" + newfound + "</a>")
+            .replace(/&amp;/gi, "&");
         text = text.replace(found[x], newtext);
     }
-    return encodeURIComponent(text).replace(/%20/g, " ");
+    return encodeURIComponent(text)
+        .replace(/%20/g, " ");
 }
 
 function addExtras(text, playname, bot, channel) { //adds stalkwords/links/enriched text etc
     text = htmllinks(text);
     text = enrichedText(text);
     text = decodeURIComponent(text);
-    text = client.channel(channel).addChannelLinks(text);
+    text = client.channel(channel)
+        .addChannelLinks(text);
     text = greenText(text);
     text = stalkWordCheck(text, playname, bot, channel);
     var md5 = new RegExp(sys.md5('/'), "g");
     var md51 = new RegExp(sys.md5('_'), "g");
-    text = text.replace(md5, '/').replace(md51, "_");
+    text = text.replace(md5, '/')
+        .replace(md51, "_");
     return text;
 }
 
@@ -539,7 +571,8 @@ function handleSystemCommand(string) {
         return;
     }
     sys.system('cd ' + repoFolder + ' & ' + string + ' > ' + repoFolder + '/output.txt');
-    var output = sys.getFileContent(repoFolder + '/output.txt').split('\n');
+    var output = sys.getFileContent(repoFolder + '/output.txt')
+        .split('\n');
     for (var x in output) {
         if (output[x].length > 0) {
             sendMessage(output[x]);
@@ -723,7 +756,8 @@ function commandHandler(command, commandData, channel) {
         sys.stopEvent();
         var nstalkwords = commandData;
         if (nstalkwords.search(/, /g) !== -1 || nstalkwords.search(/ ,/g) !== -1) {
-            nstalkwords = nstalkwords.replace(/, /g, ",").replace(/ ,/g, ",");
+            nstalkwords = nstalkwords.replace(/, /g, ",")
+                .replace(/ ,/g, ",");
         }
         nstalkwords = nstalkwords.split(",");
         stalkwords = eliminateDuplicates(nstalkwords.concat(stalkwords));
@@ -762,7 +796,8 @@ function commandHandler(command, commandData, channel) {
         var nfchannel = commandData[1];
         if (commandData[0] === "off") {
             if (nfchannel.search(/, /g) !== -1 || nfchannel.search(/ ,/g) !== -1) {
-                nfchannel = nfchannel.replace(/, /g, ",").replace(/ ,/g, ",");
+                nfchannel = nfchannel.replace(/, /g, ",")
+                    .replace(/ ,/g, ",");
             }
             nfchannel = nfchannel.split(",");
             fchannel = eliminateDuplicates(nfchannel.concat(fchannel));
@@ -797,7 +832,8 @@ function commandHandler(command, commandData, channel) {
         sys.stopEvent();
         var nfriends = commandData;
         if (nfriends.search(/, /g) !== -1 || nfriends.search(/ ,/g) !== -1) {
-            nfriends = nfriends.replace(/, /g, ",").replace(/ ,/g, ",");
+            nfriends = nfriends.replace(/, /g, ",")
+                .replace(/ ,/g, ",");
         }
         nfriends = nfriends.split(",");
         friends = eliminateDuplicates(nfriends.concat(friends));
@@ -842,7 +878,8 @@ function commandHandler(command, commandData, channel) {
         }
         var nignore = commandData;
         if (nignore.search(/, /g) !== -1 || nignore.search(/ ,/g) !== -1) {
-            nignore = nignore.replace(/, /g, ",").replace(/ ,/g, ",");
+            nignore = nignore.replace(/, /g, ",")
+                .replace(/ ,/g, ",");
         }
         nignore = nignore.split(",");
         ignore = eliminateDuplicates(nignore.concat(ignore));
@@ -998,13 +1035,10 @@ function commandHandler(command, commandData, channel) {
     }
     if (command === "changename") {
         sys.stopEvent();
-        var valid = nameCheck(commandData);
-        if (valid === "fixup") {
-            commandData = fixup(commandData);
-            valid = nameCheck(commandData);
-        }
-        if (valid === false) {
-            sendBotMessage("Invalid Name"); //TODO: Specify what's exactly wrong with the name
+        try {
+            commandData = nameCheck(commandData);
+        } catch (e) {
+            sendBotMessage("Invalid Name: " + e);
             return;
         }
         try {
@@ -1228,7 +1262,8 @@ function commandHandler(command, commandData, channel) {
         }
         var nlogchannel = commandData;
         if (nlogchannel.search(/, /g) !== -1 || nlogchannel.search(/ ,/g) !== -1) {
-            nlogchannel = nlogchannel.replace(/, /g, ",").replace(/ ,/g, ",");
+            nlogchannel = nlogchannel.replace(/, /g, ",")
+                .replace(/ ,/g, ",");
         }
         nlogchannel = nlogchannel.split(",");
         logchannel = eliminateDuplicates(nlogchannel.concat(logchannel));
@@ -1330,7 +1365,8 @@ function commandHandler(command, commandData, channel) {
 if (client.ownId() !== -1) {
     init();
 }
-client.network().channelCommandReceived.connect(function (command, channel) {
+client.network()
+    .channelCommandReceived.connect(function (command, channel) {
     if (logjoins !== true) {
         return;
     }
@@ -1338,7 +1374,8 @@ client.network().channelCommandReceived.connect(function (command, channel) {
     var tempusers = [];
     var logging = false;
     for (var z in logchannel) {
-        if (logchannel[z].toLowerCase() === client.channelName(channel).toLowerCase()) {
+        if (logchannel[z].toLowerCase() === client.channelName(channel)
+            .toLowerCase()) {
             logging = true;
             break;
         }
@@ -1350,7 +1387,8 @@ client.network().channelCommandReceived.connect(function (command, channel) {
         return;
     }
     for (var x in playersonline) {
-        if (client.channel(channel).hasPlayer(playersonline[x])) {
+        if (client.channel(channel)
+            .hasPlayer(playersonline[x])) {
             tempusers.push(playersonline[x]);
         }
     }
@@ -1382,11 +1420,12 @@ client.network().channelCommandReceived.connect(function (command, channel) {
         channelusers[channel] = tempchannelusers;
     }
 });
-client.network().playerLogin.connect(function () { //only call when the user has logged in to prevent any crashes
+client.network()
+    .playerLogin.connect(function () { //only call when the user has logged in to prevent any crashes
     awayFunction();
     init();
 });
-Script_Version = "1.6.17"; //version the script is currently on
+Script_Version = "1.6.18"; //version the script is currently on
 poScript = ({
     clientStartUp: function () {
         sendMessage('Script Check: OK'); //use this to send a message on update scripts
@@ -1399,7 +1438,8 @@ poScript = ({
         var id = sys.getFileContent('steamID.txt');
         var url = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' + key + '&steamids=' + id;
         sys.webCall(url, function (resp) {
-            var json = JSON.parse(resp).response.players[0];
+            var json = JSON.parse(resp)
+                .response.players[0];
             for (var x in json) {
                 if (x === "gameextrainfo") {
                     if (sys.getFileContent('steamboo.txt') == "true") {
@@ -1443,12 +1483,14 @@ poScript = ({
             flashvar = "<ping/>";
         }
         for (var x in friends) {
-            if (client.name(id).toLowerCase() === friends[x].toLowerCase() && flash === true) {
+            if (client.name(id)
+                .toLowerCase() === friends[x].toLowerCase() && flash === true) {
                 sendHtmlMessage("<font color = '" + html_escape(clientbotcolour) + "'><timestamp/>" + clientbotstyle + html_escape(clientbotname) + ":" + tagend(clientbotstyle) + "</font> User <a href='po:pm/" + id + "'>" + client.name(id) + "</a> has logged in" + flashvar + "", client.currentChannel());
             }
         }
         for (var x in ignore) {
-            if (client.name(id).toLowerCase() === ignore[x].toLowerCase()) {
+            if (client.name(id)
+                .toLowerCase() === ignore[x].toLowerCase()) {
                 client.ignore(id, true);
             }
         }
@@ -1520,19 +1562,22 @@ poScript = ({
         if (artype === "time") {
             if (arstart < arend) {
                 if (h >= arstart && h < arend) {
-                    client.network().sendPM(id, armessage);
+                    client.network()
+                        .sendPM(id, armessage);
                     playerswarn[id] = true;
                     return;
                 }
             }
             if (h >= arend && h < arstart) {
-                client.network().sendPM(id, armessage);
+                client.network()
+                    .sendPM(id, armessage);
                 playerswarn[id] = true;
                 return;
             }
         }
         if (autoresponse === true) {
-            client.network().sendPM(id, armessage);
+            client.network()
+                .sendPM(id, armessage);
             playerswarn[id] = true;
             return;
         }
@@ -1560,10 +1605,12 @@ poScript = ({
             var command, commandData;
             var pos = message.indexOf(' ');
             if (pos !== -1) {
-                command = message.substring(1, pos).toLowerCase();
+                command = message.substring(1, pos)
+                    .toLowerCase();
                 commandData = message.substr(pos + 1);
             } else {
-                command = message.substr(1).toLowerCase();
+                command = message.substr(1)
+                    .toLowerCase();
             }
             try {
                 commandHandler(command, commandData, channel);
