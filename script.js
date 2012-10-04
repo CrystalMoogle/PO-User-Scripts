@@ -504,55 +504,6 @@ function htmllinks(text) { //makes sure links get linked!
         .replace(/%20/g, " ");
 }
 
-function zipFiles(filesArray, zipName, directoryName, deleteOld) {
-    var dirName = zipName;
-    if (directoryName !== undefined) {
-        dirName = directoryName;
-    }
-    if (zipName.substr(zipName.length - 4, zipName.length - 1) !== ".zip") {
-        zipName = zipName + '.zip';
-    }
-    sys.makeDir(dirName);
-    for (var x = 0; x < filesArray.length; x++) {
-        sys.writeToFile(dirName + "/" + filesArray[x], sys.getFileContent(filesArray[x]));
-        if (deleteOld === true) {
-            sys.deleteFile(filesArray[x]);
-        }
-    }
-    var path = sys.zip(zipName, dirName);
-    removeDirectory(dirName, filesArray);
-    return path;
-}
-
-function extractFiles(zipName, directoryName, deleteOld) {
-    var dirName = zipName;
-    if (directoryName !== undefined) {
-        dirName = directoryName;
-    }
-    if (zipName.substr(zipName.length - 4, zipName.length - 1) !== ".zip") {
-        zipName = zipName + '.zip';
-    }
-    if (dirName === zipName) {
-        sys.extractZip(zipName);
-        return;
-    }
-    sys.extractZip(zipName, dirName);
-}
-
-function removeDirectory(dir, files) {
-    if (files === undefined) {
-        files = sys.filesForDirectory(dir);
-    }
-    if (files === undefined) {
-        return;
-    }
-    for (var x = 0; x < files.length; x++) {
-        sys.deleteFile(dir + "/" + files[x]);
-    }
-    sys.removeDir(dir);
-    return;
-}
-
 function addExtras(text, playname, bot, channel) { //adds stalkwords/links/enriched text etc
     text = htmllinks(text);
     text = enrichedText(text);
