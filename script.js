@@ -11,7 +11,20 @@
 /*global sys,client, playerswarn:true, channelusers:true, playersonline:true*/
 var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/script.js"; //where the script is stored
 var global = this;
-var poScript, Script_Version, repoFolder, etext, tgreentext, flash, autoresponse, friendsflash, logjoins, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style;
+var poScript, Script_Version, initCheck, repoFolder, etext, tgreentext, flash, autoresponse, friendsflash, logjoins, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style, src;
+
+//easier importing of server scripts
+sys.name = client.name, sys.id = client.id, src = client.ownId();
+sys.sendAll = function (message, channel) {
+    say(message, channel);
+};
+sys.sendMessage = function (id, message, channel) {
+    sendMessage(message, channel);
+};
+
+function print(message) {
+    sendMessage(message);
+}
 
 function init() { //defines all the variables that are going to be used in the script, uses default if no saved settings are found
     if (sys.getVal('etext') === "true") {
@@ -173,6 +186,7 @@ function init() { //defines all the variables that are going to be used in the s
         sys.appendToFile('.location', "");
         repoFolder = sys.getFileContent('.location');
     }
+    initCheck = true;
 }
 
 function checkScriptVersion(bool) { //checks the current script version with the one saved on Github, if the versions do not match, then it gives a warning
@@ -488,6 +502,55 @@ function htmllinks(text) { //makes sure links get linked!
     }
     return encodeURIComponent(text)
         .replace(/%20/g, " ");
+}
+
+function zipFiles(filesArray, zipName, directoryName, deleteOld) {
+    var dirName = zipName;
+    if (directoryName !== undefined) {
+        dirName = directoryName;
+    }
+    if (zipName.substr(zipName.length - 4, zipName.length - 1) !== ".zip") {
+        zipName = zipName + '.zip';
+    }
+    sys.makeDir(dirName);
+    for (var x = 0; x < filesArray.length; x++) {
+        sys.writeToFile(dirName + "/" + filesArray[x], sys.getFileContent(filesArray[x]));
+        if (deleteOld === true) {
+            sys.deleteFile(filesArray[x]);
+        }
+    }
+    var path = sys.zip(zipName, dirName);
+    removeDirectory(dirName, filesArray);
+    return path;
+}
+
+function extractFiles(zipName, directoryName, deleteOld) {
+    var dirName = zipName;
+    if (directoryName !== undefined) {
+        dirName = directoryName;
+    }
+    if (zipName.substr(zipName.length - 4, zipName.length - 1) !== ".zip") {
+        zipName = zipName + '.zip';
+    }
+    if (dirName === zipName) {
+        sys.extractZip(zipName);
+        return;
+    }
+    sys.extractZip(zipName, dirName);
+}
+
+function removeDirectory(dir, files) {
+    if (files === undefined) {
+        files = sys.filesForDirectory(dir);
+    }
+    if (files === undefined) {
+        return;
+    }
+    for (var x = 0; x < files.length; x++) {
+        sys.deleteFile(dir + "/" + files[x]);
+    }
+    sys.removeDir(dir);
+    return;
 }
 
 function addExtras(text, playname, bot, channel) { //adds stalkwords/links/enriched text etc
@@ -1498,6 +1561,9 @@ poScript = ({
     beforeChannelMessage: function (message, channel, html) { //detects a channel specific message
         var chan = channel;
         var bot = false;
+        if (initCheck !== true) {
+            init();
+        }
         if (message.indexOf('<timestamp/> *** <b>') !== -1) {
             var ignored = getName(message, "me");
             if (ignoreCheck(ignored)) {
