@@ -178,7 +178,6 @@ function init() { //defines all the variables that are going to be used in the s
         auth_style[x] = "<i><b>";
     }
     playerswarn = [];
-    channelusers = [];
     if (sys.isSafeScripts() !== true) {
         checkScriptVersion();
         sys.appendToFile('steamAPIkey.txt', "");
@@ -1424,13 +1423,15 @@ client.network()
     awayFunction();
     init();
 });
-Script_Version = "1.7.00"; //version the script is currently on
+Script_Version = "1.7.01"; //version the script is currently on
 poScript = ({
     clientStartUp: function () {
         sendMessage('Script Check: OK'); //use this to send a message on update scripts
     },
+    beforePMDisplayed: function(message, self){
+        print(message + " " + self);
+    },
     stepEvent: function () {
-        globalMessage = null;
         if (sys.isSafeScripts() === true || sys.getFileContent('steamAPIkey.txt') === "" || sys.getFileContent('steamID.txt') === "") {
             return;
         }
@@ -1484,7 +1485,9 @@ poScript = ({
         saveToLog(client.name(id) + " left the channel", channel);
     },
     beforeNewMessage: function (message, html) {
-        globalMessage = message;
+        if (initCheck !== true) {
+            init();
+        }
         if (html === true) {
             return;
         }
@@ -1493,7 +1496,6 @@ poScript = ({
     beforeChannelMessage: function (message, channel, html) { //detects a channel specific message
         if (initCheck !== true) {
             init();
-            this.stepEvent();
         }
         if (message.indexOf('<timestamp/> *** <b>') !== -1) {
             var ignored = getName(message, "me");
@@ -1502,9 +1504,6 @@ poScript = ({
                 return;
             }
             saveToLog(stripHTML(message), channel);
-        }
-        if (message === globalMessage) {
-            return;
         }
         if (message.indexOf('<timestamp/><b><span style') !== -1) {
             var ignored = getName(message, "rainbow");
