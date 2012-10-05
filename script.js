@@ -1428,9 +1428,6 @@ poScript = ({
     clientStartUp: function () {
         sendMessage('Script Check: OK'); //use this to send a message on update scripts
     },
-    beforePMDisplayed: function(message, self){
-        print(message + " " + self);
-    },
     stepEvent: function () {
         if (sys.isSafeScripts() === true || sys.getFileContent('steamAPIkey.txt') === "" || sys.getFileContent('steamID.txt') === "") {
             return;
