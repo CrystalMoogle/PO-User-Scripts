@@ -8,10 +8,10 @@
 //Make sure to check them to set everything :x
 //these things below shouldn't be touched unless you know what you're doing~
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
-/*global sys,client, playerswarn:true, channelusers:true, playersonline:true*/
+/*global sys,client, playerswarn:true */
 var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/script.js"; //where the script is stored
 var global = this;
-var poScript, Script_Version, initCheck, repoFolder, etext, tgreentext, flash, autoresponse, friendsflash, logjoins, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style, src;
+var poScript, Script_Version, initCheck, repoFolder, etext, tgreentext, flash, autoresponse, friendsflash, logjoins, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style, src, globalMessageCheck, globalMessage;
 
 //easier importing of server scripts
 sys.name = client.name, sys.id = client.id, src = client.ownId();
@@ -341,6 +341,9 @@ function eliminateDuplicates(arr) { //stolen from http://dreaminginjavascript.wo
 }
 
 function saveToLog(message, channel) { //saves messages to a log file
+    if (sys.isSafeScripts()) {
+        return;
+    }
     var logging = false;
     for (var x in logchannel) {
         if (client.channelName(channel)
@@ -353,7 +356,7 @@ function saveToLog(message, channel) { //saves messages to a log file
         return;
     }
     if (typeof (sys.filesForDirectory('Channel Logs')) === "undefined") { //in case somehow it ends up in a different folder, or the folder gets removed
-        return;
+        sys.makeDir('Channel Logs');
     }
     var time = new Date();
     var h = time.getHours();
@@ -1271,7 +1274,7 @@ function commandHandler(command, commandData, channel) {
             return;
         }
         if (typeof (sys.filesForDirectory('Channel Logs')) === "undefined") {
-            sendBotMessage("Please make a folder in your PO folder called \"Channel Logs\"");
+            sys.makeDir('Channel Logs');
             return;
         }
         var nlogchannel = commandData;
@@ -1376,75 +1379,58 @@ function commandHandler(command, commandData, channel) {
         return;
     }
 }
+
+function formatMessage(message, channel) {
+    var pos = message.indexOf(': ');
+    var chan = channel;
+    var bot = false;
+    if (pos !== -1) {
+        if (client.id(message.substring(0, pos)) === -1 || client.id(message.substring(0, pos)) === undefined) {
+            bot = true;
+        }
+        var playname = message.substring(0, pos);
+        if (ignoreCheck(playname)) {
+            sys.stopEvent();
+            return;
+        }
+        var id = client.id(playname);
+        var playmessage = html_escape(message.substr(pos + 2));
+        var colour = client.color(id);
+        if (bot === true) {
+            colour = clientbotcolour;
+        }
+        var auth = client.auth(id);
+        if (auth > 4 || auth < 0) {
+            auth = 4;
+        }
+        playmessage = addExtras(playmessage, playname, bot, channel);
+        var symbol = auth_symbol[auth];
+        if (bot === true) {
+            symbol = "";
+        }
+        if (channel === undefined) {
+            client.printHtml("<font face ='" + fonttype + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/> " + symbol + auth_style[auth] + playname + ": </font>" + tagend(auth_style[auth]) + fontstyle + playmessage + tagend(fontstyle));
+        } else {
+            client.printChannelMessage("<font face ='" + fonttype + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/> " + symbol + auth_style[auth] + playname + ": </font>" + tagend(auth_style[auth]) + fontstyle + playmessage + tagend(fontstyle), chan, true);
+        }
+        sys.stopEvent();
+    }
+}
 if (client.ownId() !== -1) {
     init();
 }
-client.network()
-    .channelCommandReceived.connect(function (command, channel) {
-    if (logjoins !== true) {
-        return;
-    }
-    var tempchannelusers;
-    var tempusers = [];
-    var logging = false;
-    for (var z in logchannel) {
-        if (logchannel[z].toLowerCase() === client.channelName(channel)
-            .toLowerCase()) {
-            logging = true;
-            break;
-        }
-    }
-    if (logging !== true) {
-        return;
-    }
-    if (typeof playersonline === "undefined") {
-        return;
-    }
-    for (var x in playersonline) {
-        if (client.channel(channel)
-            .hasPlayer(playersonline[x])) {
-            tempusers.push(playersonline[x]);
-        }
-    }
-    tempchannelusers = tempusers.join(':');
-    if (typeof channelusers[channel] === "undefined") {
-        channelusers[channel] = tempchannelusers;
-        return;
-    }
-    if (command === 46) { //command for joining
-        var a = channelusers[channel].split(':');
-        var b = tempchannelusers.split(':');
-        for (var y in b) {
-            if (a[y] !== b[y]) {
-                saveToLog(client.name(b[y]) + " joined the channel", channel);
-                break;
-            }
-        }
-        channelusers[channel] = tempchannelusers;
-    }
-    if (command === 47) { //command for leaving
-        var a = channelusers[channel].split(':');
-        var b = tempchannelusers.split(':');
-        for (var y in a) {
-            if (a[y] !== b[y]) {
-                saveToLog(client.name(a[y]) + " left the channel", channel);
-                break;
-            }
-        }
-        channelusers[channel] = tempchannelusers;
-    }
-});
 client.network()
     .playerLogin.connect(function () { //only call when the user has logged in to prevent any crashes
     awayFunction();
     init();
 });
-Script_Version = "1.6.18"; //version the script is currently on
+Script_Version = "1.7.00"; //version the script is currently on
 poScript = ({
     clientStartUp: function () {
         sendMessage('Script Check: OK'); //use this to send a message on update scripts
     },
     stepEvent: function () {
+        globalMessage = null;
         if (sys.isSafeScripts() === true || sys.getFileContent('steamAPIkey.txt') === "" || sys.getFileContent('steamID.txt') === "") {
             return;
         }
@@ -1473,25 +1459,7 @@ poScript = ({
             sys.writeToFile('steamboo.txt', "false");
         });
     },
-    onPlayerRemoved: function (id) { //detects when  a player is no longer visible to the client (mostly log outs, but may happen from leaving all channels)
-        if (typeof playersonline === "undefined") {
-            return;
-        }
-        if (logjoins === true) {
-            for (var x in playersonline) {
-                if (playersonline[x] === id) {
-                    playersonline.splice(x, 1);
-                }
-            }
-        }
-    },
     onPlayerReceived: function (id) { //detects when a player is visible to the client (mostly logins, but may also happen upon joining a new channel)
-        if (typeof playersonline === "undefined") {
-            playersonline = [];
-        }
-        if (logjoins === true) {
-            playersonline.push(id);
-        }
         var flashvar = "";
         if (friendsflash === true) {
             flashvar = "<ping/>";
@@ -1509,11 +1477,23 @@ poScript = ({
             }
         }
     },
+    onPlayerJoinChan: function (id, channel) {
+        saveToLog(client.name(id) + " joined the channel", channel);
+    },
+    onPlayerLeaveChan: function (id, channel) {
+        saveToLog(client.name(id) + " left the channel", channel);
+    },
+    beforeNewMessage: function (message, html) {
+        globalMessage = message;
+        if (html === true) {
+            return;
+        }
+        formatMessage(message);
+    },
     beforeChannelMessage: function (message, channel, html) { //detects a channel specific message
-        var chan = channel;
-        var bot = false;
         if (initCheck !== true) {
             init();
+            this.stepEvent();
         }
         if (message.indexOf('<timestamp/> *** <b>') !== -1) {
             var ignored = getName(message, "me");
@@ -1522,6 +1502,9 @@ poScript = ({
                 return;
             }
             saveToLog(stripHTML(message), channel);
+        }
+        if (message === globalMessage) {
+            return;
         }
         if (message.indexOf('<timestamp/><b><span style') !== -1) {
             var ignored = getName(message, "rainbow");
@@ -1535,34 +1518,7 @@ poScript = ({
             return;
         }
         saveToLog(message, channel);
-        var pos = message.indexOf(': ');
-        if (pos !== -1) {
-            if (client.id(message.substring(0, pos)) === -1 || client.id(message.substring(0, pos)) === undefined) {
-                bot = true;
-            }
-            var playname = message.substring(0, pos);
-            if (ignoreCheck(playname)) {
-                sys.stopEvent();
-                return;
-            }
-            var id = client.id(playname);
-            var playmessage = html_escape(message.substr(pos + 2));
-            var colour = client.color(id);
-            if (bot === true) {
-                colour = clientbotcolour;
-            }
-            var auth = client.auth(id);
-            if (auth > 4 || auth < 0) {
-                auth = 4;
-            }
-            playmessage = addExtras(playmessage, playname, bot, channel);
-            var symbol = auth_symbol[auth];
-            if (bot === true) {
-                symbol = "";
-            }
-            client.printChannelMessage("<font face ='" + fonttype + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/> " + symbol + auth_style[auth] + playname + ": </font>" + tagend(auth_style[auth]) + fontstyle + playmessage + tagend(fontstyle), chan, true);
-            sys.stopEvent();
-        }
+        formatMessage(message, channel);
     },
     beforePMReceived: function (id, message) { // called before a PM is received
         if (ignoreCheck(client.name(id))) {
