@@ -461,7 +461,8 @@ function stalkWordCheck(string, playname, bot, channel) { //adds flashes to name
     if (string.toLowerCase()
         .indexOf(ownName.toLowerCase()) !== -1 && playname !== ownName && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
         var name = new RegExp("\\b" + ownName + "\\b", "i");
-        newstring = string.replace(name, "<span style='" + hilight + "'>" + client.ownName() + "</span>");
+        var names = string.match(name);
+        newstring = string.replace(name, "<span style='" + hilight + "'>" + names + "</span>");
         if (newstring !== string) {
             string = newstring.replace(newstring, "<i> " + newstring + "</i><ping/>");
         }
