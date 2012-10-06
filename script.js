@@ -511,8 +511,10 @@ function addExtras(text, playname, bot, channel) { //adds stalkwords/links/enric
     text = htmllinks(text);
     text = enrichedText(text);
     text = decodeURIComponent(text);
-    text = client.channel(channel)
+    if (channel !== undefined) {
+        text = client.channel(channel)
         .addChannelLinks(text);
+    }
     text = greenText(text);
     text = stalkWordCheck(text, playname, bot, channel);
     var md5 = new RegExp(sys.md5('/'), "g");
