@@ -460,27 +460,23 @@ function stalkWordCheck(string, playname, bot, channel) { //adds flashes to name
     var newstring = "";
     if (string.toLowerCase()
         .indexOf(ownName.toLowerCase()) !== -1 && playname !== ownName && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
-        var name = new RegExp("\\b" + ownName + "\\b", "i");
+        var name = new RegExp("\\b("+ownName+")\\b(?![^\\s<]*>)", "i");
         var names = string.match(name);
-        newstring = string.replace(name, "<span style='" + hilight + "'>" + names + "</span>");
+        newstring = string.replace(name, "<span style='" + hilight + "'>" + names[0] + "</span>");
         if (newstring !== string) {
             string = newstring.replace(newstring, "<i> " + newstring + "</i><ping/>");
         }
     }
-    var regex = new RegExp(sys.md5(client.ownName()), "gi");
-    string = string.replace(regex, client.ownName());
     for (var x in stalkwords) {
-        var stalk = new RegExp("\\b" + stalkwords[x] + "\\b", "i");
+        var stalk = new RegExp("\\b("+stalkwords[x]+")\\b(?![^\\s<]*>)", "i");
         var stalks = string.match(stalk);
         if (string.toLowerCase()
             .search(stalk) !== -1 && playname !== client.ownName() && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
-            newstring = string.replace(stalk, "<span style='" + hilight + "'>" + stalks + "</span>");
+            newstring = string.replace(stalk, "<span style='" + hilight + "'>" + stalks[0] + "</span>");
             if (newstring !== string) {
                 string = newstring.replace(newstring, "<i> " + newstring + "</i><ping/>");
             }
         }
-        regex = new RegExp(sys.md5(stalkwords[x]), "gi");
-        string = string.replace(regex, stalkwords[x]);
     }
     return string;
 }
@@ -493,24 +489,16 @@ function htmllinks(text) { //makes sure links get linked!
     for (var x in found) {
         newfound = found[x].replace(/\//g, sys.md5('/'))
             .replace(/_/g, sys.md5('_'));
-        for (var y in stalkwords) {
-            var regex = new RegExp(stalkwords[y], "gi");
-            var regex1 = new RegExp(client.ownName(), "gi");
-            newfound = newfound.replace(regex, sys.md5(stalkwords[y]))
-                .replace(regex1, sys.md5(client.ownName()));
-        }
         newtext = ("<a href ='" + newfound + "'>" + newfound + "</a>")
             .replace(/&amp;/gi, "&");
         text = text.replace(found[x], newtext);
     }
-    return encodeURIComponent(text)
-        .replace(/%20/g, " ");
+    return text
 }
 
 function addExtras(text, playname, bot, channel) { //adds stalkwords/links/enriched text etc
     text = htmllinks(text);
     text = enrichedText(text);
-    text = decodeURIComponent(text);
     if (channel !== undefined) {
         text = client.channel(channel)
         .addChannelLinks(text);
@@ -1426,7 +1414,7 @@ client.network()
     awayFunction();
     init();
 });
-Script_Version = "1.7.01"; //version the script is currently on
+Script_Version = "1.7.02"; //version the script is currently on
 poScript = ({
     clientStartUp: function () {
         sendMessage('Script Check: OK'); //use this to send a message on update scripts
