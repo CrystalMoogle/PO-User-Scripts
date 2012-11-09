@@ -516,9 +516,9 @@ function enrichedText(text) { //applies the enriched text, adapted from the PO 1
     if (etext === false) {
         return text;
     }
-    var expi = new RegExp("%2F(\\S+)%2F(?![^\\s<]*>)", "g");
+    var expi = new RegExp("/(\\S+)/(?![^\\s<]*>)", "g");
     text = text.replace(expi, "<i>$1</i>");
-    var expii = new RegExp("%5C(\\S+)%5C(?![^\\s<]*>)", "g");
+    var expii = new RegExp("\\\\(\\S+)\\\\(?![^\\s<]*>)", "g");
     text = text.replace(expii, "<i>$1</i>");
     var expb = new RegExp("\\*(\\S+)\\*(?![^\\s<]*>)", "g");
     text = text.replace(expb, "<b>$1</b>");
