@@ -231,7 +231,7 @@ function checkScriptVersion(bool) { //checks the current script version with the
             if (typeno === undefined) { //this shouldn't ever happen though
                 return;
             }
-            sendBotMessage("A client script update is avaiable, type: " + type[typeno] + ". Use " + commandsymbol + "updatescripts. Use " + commandsymbol + "changelog " + version + " to see the changes", undefined, script_url); //TODO make sure the script actually is a new version, rather than a previous version
+            sendBotMessage("A client script update is available, type: " + type[typeno] + ". Use " + commandsymbol + "updatescripts. Use " + commandsymbol + "changelog " + version + " to see the changes", undefined, script_url); //TODO make sure the script actually is a new version, rather than a previous version
             return;
         }
         if (bool === true) {
@@ -465,6 +465,7 @@ function stalkWordCheck(string, playname, bot, channel) { //adds flashes to name
         newstring = string.replace(name, "<span style='" + hilight + "'>" + names[0] + "</span>");
         if (newstring !== string) {
             string = newstring.replace(newstring, "<i> " + newstring + "</i><ping/>");
+            sys.beep();
         }
     }
     for (var x in stalkwords) {
@@ -475,6 +476,7 @@ function stalkWordCheck(string, playname, bot, channel) { //adds flashes to name
             newstring = string.replace(stalk, "<span style='" + hilight + "'>" + stalks[0] + "</span>");
             if (newstring !== string) {
                 string = newstring.replace(newstring, "<i> " + newstring + "</i><ping/>");
+                sys.beep();
             }
         }
     }
@@ -1512,6 +1514,7 @@ poScript = ({
             sys.stopEvent();
             return;
         }
+        sys.beep();
     },
     afterPMReceived: function (id, message) { //called after a PM is received
         if (playerswarn[id] === true) {
