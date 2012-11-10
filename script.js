@@ -231,7 +231,7 @@ function checkScriptVersion(bool) { //checks the current script version with the
             if (typeno === undefined) { //this shouldn't ever happen though
                 return;
             }
-            sendBotMessage("A client script update is avaiable, type: " + type[typeno] + ". Use " + commandsymbol + "updatescripts. Use " + commandsymbol + "changelog " + version + " to see the changes", undefined, script_url); //TODO make sure the script actually is a new version, rather than a previous version
+            sendBotMessage("A client script update is available, type: " + type[typeno] + ". Use " + commandsymbol + "updatescripts. Use " + commandsymbol + "changelog " + version + " to see the changes", undefined, script_url); //TODO make sure the script actually is a new version, rather than a previous version
             return;
         }
         if (bool === true) {
