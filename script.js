@@ -450,8 +450,6 @@ function awayFunction() { //makes the user go away if needed
     }
     if (sys.getVal("idle") === "true") {
         client.goAway(true);
-    } else {
-        client.goAway(false);
     }
 }
 
