@@ -1,6 +1,7 @@
 /*  
     Client Scripts
     Make sure you check ~commandslist for a list of commands
+    Safe Scripts are pretty much required to be off
     Currently needs PO Version 2.0.06 to run correctly (Though 2.0.07 is strongly recommended)
     Report bugs here: http://pokemon-online.eu/forums/showthread.php?15079 and read over the thread to check for anything
     Needed files: Utilities.js
