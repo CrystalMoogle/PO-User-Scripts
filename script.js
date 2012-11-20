@@ -14,7 +14,7 @@ var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/devel/"; 
 var scriptsFolder = "ClientScripts"; //replace with undefined if you don't want a folder
 var global = this;
 var poScript, Script_Version, initCheck, repoFolder, etext, tgreentext, flash, autoresponse, friendsflash, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style, src, globalMessageCheck, globalMessage, Utilities;
-
+var neededFiles = ["utilities.js"]; //files needed for the script in an array
 //easier importing of server scripts
 sys.name = client.name, sys.id = client.id, src = client.ownId();
 sys.sendAll = function (message, channel) {
@@ -41,12 +41,19 @@ function cleanFile(filename) {
     sys.appendToFile(filename, "");
 }
 
-function checkFiles() {
+function checkFiles() { //TODO change this when more files get added
     sys.makeDir(scriptsFolder);
-    cleanFile(scriptsFolder + '/utilities.js');
-    if (sys.getFileContent(scriptsFolder + '/utilities.js') === "") {
-        sys.writeToFile(scriptsFolder + "/" + 'utilities.js', sys.synchronousWebCall(script_url + "clientscripts/utilities.js"));
+    for (var x = 0; x < neededFiles.length; x++) {
+        cleanFile(scriptsFolder + '/' + neededFiles[x]);
+        if (sys.getFileContent(scriptsFolder + '/' + neededFiles[x]) === "") {
+            sys.writeToFile(scriptsFolder + "/" + neededFiles[x], sys.synchronousWebCall(script_url + "clientscripts/" + neededFiles[x]));
+        }
     }
+}
+
+function updateFile(filename) {
+    sys.writeToFile(scriptsFolder + "/" + filename, sys.synchronousWebCall(script_url + "clientscripts/" + filename));
+    importScript(filename);
 }
 
 function init() { //defines all the variables that are going to be used in the script, uses default if no saved settings are found
@@ -217,16 +224,10 @@ function say(message, channel) {
         .sendChanMessage(channel, message);
 }
 
-function stripHTML(string) {
-    var regex = /(<([^>]+)>)/ig;
-    string = string.replace(regex, "");
-    return string;
-}
-
 function getName(string, type) { //gets the name from rainbow/me messages
     var name = "";
     if (type === "rainbow") {
-        string = stripHTML(string);
+        string = Utilities.stripHTML(string);
         var pos = string.indexOf(': ');
         if (pos !== -1) {
             name = string.substring(0, pos);
@@ -953,6 +954,10 @@ function commandHandler(command, commandData, channel) {
             try {
                 sys.changeScript(resp, true);
                 sys.writeToFile(sys.scriptsFolder + "scripts.js", resp);
+                var updateOnScriptUpdate = ["utilities.js"]; //Since the majority of the time, if utilities needs updating, then scripts will do too
+                for (var x = 0; x < updateOnScriptUpdate.length; x++) {
+                    updateFile(updateOnScriptUpdate[x]);
+                }
             }
             catch (err) {
                 sys.changeScript(sys.getFileContent(sys.scriptsFolder + 'scripts.js'));
@@ -961,6 +966,11 @@ function commandHandler(command, commandData, channel) {
         };
         sendBotMessage("Fetching scripts from (link)", channel_local, updateURL);
         sys.webCall(updateURL, changeScript);
+        return;
+    }
+    if (command === "updatefile") {
+        sys.stopEvent();
+        updateFile(commandData);
         return;
     }
     if (command === "authsymbol" || command === "authsymbols") {
@@ -1290,7 +1300,7 @@ poScript = ({
                 sys.stopEvent();
                 return;
             }
-            saveToLog(stripHTML(message), channel);
+            saveToLog(Utilities.stripHTML(message), channel);
         }
         if (message.indexOf('<timestamp/><b><span style') !== -1) {
             var ignored = getName(message, "rainbow");
@@ -1298,7 +1308,7 @@ poScript = ({
                 sys.stopEvent();
                 return;
             }
-            saveToLog(stripHTML(message), channel);
+            saveToLog(Utilities.stripHTML(message), channel);
         }
         if (html === true) {
             return;

@@ -332,5 +332,10 @@ exports = {
             return true;
         }
         return false;
+    },
+    stripHtml: function stripHTML(string) {
+        var regex = /(<([^>]+)>)/ig;
+        string = string.replace(regex, "");
+        return string;
     }
 };
