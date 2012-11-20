@@ -983,7 +983,7 @@ function commandHandler(command, commandData, channel) {
     }
     if (command === "loadsettings") { //Allow user defined files to be loaded in the future from web or file system
         sys.stopEvent();
-        Utilities.loadSettings();
+        Utilities.loadSettings(undefined, undefined, false);
         return;
     }
     if (command === "authsymbol" || command === "authsymbols") {

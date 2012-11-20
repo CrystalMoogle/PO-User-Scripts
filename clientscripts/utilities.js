@@ -4,7 +4,7 @@
     Nothing here should be changed unless you know exactly what you're doing
 */
 exports = {
-    loadSettings: function loadSettings(json, defaultUsed) {
+    loadSettings: function loadSettings(json, defaultUsed, silent) {
         cleanFile('memory.json');
         try {
             var settings;
@@ -46,6 +46,9 @@ exports = {
             playerswarn = settings.playerswarn;
             auth_symbol = settings.auth_symbol;
             auth_style = settings.auth_style;
+            if (silent === false) {
+                sendBotMessage("Settings loaded");
+            }
         }
         catch (e) {
             sendBotMessage("Error with your settings: " + e);
