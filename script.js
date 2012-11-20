@@ -24,7 +24,7 @@ sys.sendMessage = function (id, message, channel) {
     sendMessage(message, channel);
 };
 checkFiles();
-Utilities = importScript('utilities.js');
+loadFiles();
 
 function print(message) {
     sendMessage(message);
@@ -53,7 +53,11 @@ function checkFiles() { //TODO change this when more files get added
 
 function updateFile(filename) {
     sys.writeToFile(scriptsFolder + "/" + filename, sys.synchronousWebCall(script_url + "clientscripts/" + filename));
-    importScript(filename);
+    loadFiles();
+}
+
+function loadFiles() {
+    Utilities = importScript('utilities.js');
 }
 
 function init() { //defines all the variables that are going to be used in the script, uses default if no saved settings are found
