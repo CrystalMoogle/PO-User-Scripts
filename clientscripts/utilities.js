@@ -58,6 +58,7 @@ exports = {
             }
         }
     },
+
     loadDefaultSettings: function loadDefaultSettings() {
         var json = {
             "etext": false,
@@ -103,6 +104,7 @@ exports = {
         };
         this.loadSettings(JSON.stringify(json), true);
     },
+
     loadFromRegistry: function loadFromRegistry() { //kinda needed because compatability sucks
         if (sys.getVal('etext') === "true") {
             etext = true;
@@ -264,6 +266,7 @@ exports = {
         playerswarn = [];
         this.saveSettings();
     },
+
     saveSettings: function saveSettings() {
         var settings = {};
         settings.etext = etext;
@@ -296,6 +299,7 @@ exports = {
         settings.auth_style = auth_style;
         sys.writeToFile('memory.json', JSON.stringify(settings));
     },
+
     eliminateDuplicates: function eliminateDuplicates(arr) { //stolen from http://dreaminginjavascript.wordpress.com/2008/08/22/eliminating-duplicates/ eliminates any duplicates that are in an array
         var i,
         len = arr.length,
@@ -309,9 +313,11 @@ exports = {
         }
         return out;
     },
+
     isPunct: function isPunct(i) {
         return (this.isGraph(i) && !(this.isAlnum(i)));
     },
+
     isGraph: function isGraph(i) {
         var myCharCode = i.charCodeAt(0);
         if ((myCharCode > 32) && (myCharCode < 127)) {
@@ -319,9 +325,11 @@ exports = {
         }
         return false;
     },
+
     isAlnum: function isAlnum(i) {
         return (this.isDigit(i) || this.isAlpha(i));
     },
+
     isDigit: function isDigit(i) {
         var myCharCode = i.charCodeAt(0);
         if ((myCharCode > 47) && (myCharCode < 58)) {
@@ -329,6 +337,7 @@ exports = {
         }
         return false;
     },
+
     isAlpha: function isAlpha(i) {
         var myCharCode = i.charCodeAt(0);
         if (((myCharCode > 64) && (myCharCode < 91)) || ((myCharCode > 96) && (myCharCode < 123))) {
@@ -336,9 +345,30 @@ exports = {
         }
         return false;
     },
+
     stripHTML: function stripHTML(string) {
         var regex = /(<([^>]+)>)/ig;
         string = string.replace(regex, "");
         return string;
+    },
+
+    html_escape: function html_escape(text) { //escapes any characters that won't appear correctly in HTMLmessages
+        var m = String(text);
+        if (m.length > 0) {
+            var amp = "&am" + "p;";
+            var lt = "&l" + "t;";
+            var gt = "&g" + "t;";
+            return m.replace(/&/g, amp)
+                .replace(/</g, lt)
+                .replace(/>/g, gt);
+        }
+        else {
+            return "";
+        }
+    },
+
+    tagend: function tagend(string) { //automatically creates an end tag from a html tagsent to it
+        var newstring = string.replace(/</g, "</");
+        return newstring;
     }
 };

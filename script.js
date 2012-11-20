@@ -80,7 +80,7 @@ function checkScriptVersion(bool) { //checks the current script version with the
     if (checkversion === "false" && bool === false) {
         return;
     }
-    sys.webCall(script_url, function (resp) {
+    sys.webCall(script_url+script.js, function (resp) {
         if (resp.length === 0) {
             sendBotMessage("There was an error accessing the script, paste the contents of (link) into your PO folder and restart, or wait for a client update", undefined, "https://github.com/downloads/coyotte508/pokemon-online/ssl.zip");
             return;
@@ -250,35 +250,15 @@ function sendBotMessage(message, channel, link) { //sends a mesage with the bot 
     if (channel === undefined) {
         channel = client.currentChannel();
     }
-    message = html_escape(message);
+    message = Utilities.html_escape(message);
     if (link === "<ping/>") {
         message = message.replace(/&lt;ping\/&gt;/g, link);
     }
     if (message.indexOf("(link)") !== -1 && link !== undefined) {
         message = message.replace(/\(link\)/g, "<a href ='" + link + "'>" + link + "</a>");
     }
-    client.printChannelMessage("<font color = '" + html_escape(clientbotcolour) + "'><timestamp/>" + clientbotstyle + html_escape(clientbotname) + ":" + tagend(clientbotstyle) + "</font> " + message, channel, true);
+    client.printChannelMessage("<font color = '" + Utilities.html_escape(clientbotcolour) + "'><timestamp/>" + clientbotstyle + Utilities.html_escape(clientbotname) + ":" + Utilities.tagend(clientbotstyle) + "</font> " + message, channel, true);
     return;
-}
-
-function html_escape(text) { //escapes any characters that won't appear correctly in HTMLmessages
-    var m = String(text);
-    if (m.length > 0) {
-        var amp = "&am" + "p;";
-        var lt = "&l" + "t;";
-        var gt = "&g" + "t;";
-        return m.replace(/&/g, amp)
-            .replace(/</g, lt)
-            .replace(/>/g, gt);
-    }
-    else {
-        return "";
-    }
-}
-
-function tagend(string) { //automatically creates an end tag from a html tagsent to it
-    var newstring = string.replace(/</g, "</");
-    return newstring;
 }
 
 function awayFunction() { //makes the user go away if needed
@@ -291,7 +271,7 @@ function awayFunction() { //makes the user go away if needed
 }
 
 function stalkWordCheck(string, playname, bot, channel) { //adds flashes to names/stalkwords
-    var ownName = html_escape(client.ownName());
+    var ownName = Utilities.html_escape(client.ownName());
     var newstring = "";
     if (string.toLowerCase()
         .indexOf(ownName.toLowerCase()) !== -1 && playname !== ownName && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
@@ -670,7 +650,7 @@ function commandHandler(command, commandData, channel) {
             }
             check.push(friends[x] + " <font color='red'>(offline)</font>");
         }
-        sendHtmlMessage("<font color = '" + html_escape(clientbotcolour) + "'><timestamp/>" + clientbotstyle + html_escape(clientbotname) + ":" + tagend(clientbotstyle) + "</font> Your friends are: " + check);
+        sendHtmlMessage("<font color = '" + Utilities.html_escape(clientbotcolour) + "'><timestamp/>" + clientbotstyle + Utilities.html_escape(clientbotname) + ":" + Utilities.tagend(clientbotstyle) + "</font> Your friends are: " + check);
         return;
     }
     if (command === "addfriend") {
@@ -1234,7 +1214,7 @@ function formatMessage(message, channel) {
             return;
         }
         var id = client.id(playname);
-        var playmessage = html_escape(message.substr(pos + 2));
+        var playmessage = Utilities.html_escape(message.substr(pos + 2));
         var colour = client.color(id);
         if (bot === true) {
             colour = clientbotcolour;
@@ -1249,10 +1229,10 @@ function formatMessage(message, channel) {
             symbol = "";
         }
         if (channel === undefined) {
-            client.printHtml("<font face ='" + fonttype + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/> " + symbol + auth_style[auth] + playname + ": </font>" + tagend(auth_style[auth]) + fontstyle + playmessage + tagend(fontstyle));
+            client.printHtml("<font face ='" + fonttype + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/> " + symbol + auth_style[auth] + playname + ": </font>" + Utilities.tagend(auth_style[auth]) + fontstyle + playmessage + Utilities.tagend(fontstyle));
         }
         else {
-            client.printChannelMessage("<font face ='" + fonttype + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/> " + symbol + auth_style[auth] + playname + ": </font>" + tagend(auth_style[auth]) + fontstyle + playmessage + tagend(fontstyle), chan, true);
+            client.printChannelMessage("<font face ='" + fonttype + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/> " + symbol + auth_style[auth] + playname + ": </font>" + Utilities.tagend(auth_style[auth]) + fontstyle + playmessage + Utilities.tagend(fontstyle), chan, true);
         }
         sys.stopEvent();
     }
@@ -1278,7 +1258,7 @@ poScript = ({
         for (var x in friends) {
             if (client.name(id)
                 .toLowerCase() === friends[x].toLowerCase() && flash === true) {
-                sendHtmlMessage("<font color = '" + html_escape(clientbotcolour) + "'><timestamp/>" + clientbotstyle + html_escape(clientbotname) + ":" + tagend(clientbotstyle) + "</font> User <a href='po:pm/" + id + "'>" + client.name(id) + "</a> has logged in" + flashvar + "", client.currentChannel());
+                sendHtmlMessage("<font color = '" + Utilities.html_escape(clientbotcolour) + "'><timestamp/>" + clientbotstyle + Utilities.html_escape(clientbotname) + ":" + Utilities.tagend(clientbotstyle) + "</font> User <a href='po:pm/" + id + "'>" + client.name(id) + "</a> has logged in" + flashvar + "", client.currentChannel());
             }
         }
         for (var x in ignore) {
