@@ -337,9 +337,5 @@ exports = {
         var regex = /(<([^>]+)>)/ig;
         string = string.replace(regex, "");
         return string;
-    },
-    testFunction: function testFunction() {
-        sendMessage('test successful!');
-        return;
     }
 };
