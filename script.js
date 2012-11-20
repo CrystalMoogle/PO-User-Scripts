@@ -939,7 +939,7 @@ function commandHandler(command, commandData, channel) {
             return;
         }
         sendBotMessage("Fetching scripts...");
-        var updateURL = script_url + 'scripts.js';
+        var updateURL = script_url + 'script.js';
         if (commandData !== undefined && (commandData.substring(0, 7) === 'http://' || commandData.substring(0, 8) === 'https://')) {
             updateURL = commandData;
         }
