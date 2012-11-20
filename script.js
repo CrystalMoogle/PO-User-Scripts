@@ -981,6 +981,11 @@ function commandHandler(command, commandData, channel) {
         sendBotMessage("This is not a valid script file");
         return;
     }
+    if (command === "loadsettings") { //Allow user defined files to be loaded in the future from web or file system
+        sys.stopEvent();
+        Utilities.loadSettings();
+        return;
+    }
     if (command === "authsymbol" || command === "authsymbols") {
         sys.stopEvent();
         var symbols = commandData.split(":");
