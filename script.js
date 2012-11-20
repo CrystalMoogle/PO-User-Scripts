@@ -1,17 +1,18 @@
-//this script has all the current scripts merged together into one neat package
-//report bugs to Crystal Moogle
-//feel free to use it, edit it, improve it, do whatever.
-//lot of stuff "borrowed" from main scripts and stackoverflow~ :3
-//commands found by using ~commandlist
-//currently needs 2.0.05 to fix channel links
-//Config settings has been moved to ~commandslist
-//Make sure to check them to set everything :x
+/*  
+    Client Scripts
+    Make sure you check ~commandslist for a list of commands
+    Currently needs PO Version 2.0.06 to run correctly (Though 2.0.07 is strongly recommended)
+    Report bugs here: http://pokemon-online.eu/forums/showthread.php?15079 and read over the thread to check for anything
+    Needed files: Utilities.js
+    If it doesn't automatically download them, get them from https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/clientscripts/utilities.js and save them as utilities.js in a folder called "ClientScripts" in your main PO Folder
+*/
 //these things below shouldn't be touched unless you know what you're doing~
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global sys,client, playerswarn:true */
-var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/script.js"; //where the script is stored
+var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/"; //where the script is stored
+var scriptsFolder = "ClientScripts"; //replace with undefined if you don't want a folder
 var global = this;
-var poScript, Script_Version, initCheck, repoFolder, etext, tgreentext, flash, autoresponse, friendsflash, logjoins, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style, src, globalMessageCheck, globalMessage;
+var poScript, Script_Version, initCheck, repoFolder, etext, tgreentext, flash, autoresponse, friendsflash, logjoins, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style, src, globalMessageCheck, globalMessage, Utilities;
 
 //easier importing of server scripts
 sys.name = client.name, sys.id = client.id, src = client.ownId();
@@ -21,169 +22,39 @@ sys.sendAll = function (message, channel) {
 sys.sendMessage = function (id, message, channel) {
     sendMessage(message, channel);
 };
+checkFiles();
+Utilities = importScript('utilities.js');
 
 function print(message) {
     sendMessage(message);
 }
 
+function importScript(file) {
+    if (scriptsFolder !== undefined) {
+        return eval(sys.getFileContent(scriptsFolder + "/" + file));
+    }
+    return eval(sys.getFileContent(file));
+}
+
+function cleanFile(filename) {
+    sys.appendToFile(filename, "");
+}
+
+function checkFiles() {
+    sys.makeDir(scriptsFolder);
+    cleanFile(scriptsFolder + '/utilities.js');
+    if (sys.getFileContent(scriptsFolder + '/utilities.js') === "") {
+        sys.writeToFile(scriptsFolder + "/" + 'utilities.js', sys.synchronousWebCall(script_url + "clientscripts/utilities.js"));
+    }
+}
+
 function init() { //defines all the variables that are going to be used in the script, uses default if no saved settings are found
-    if (sys.getVal('etext') === "true") {
-        etext = true;
-    } else {
-        etext = false;
-    }
-    if (sys.getVal('tgreentext') === "true") {
-        tgreentext = "true";
-    } else {
-        tgreentext = "false";
-    }
-    if (sys.getVal('flash') === "false") { //making sure flash is on always unless specified to not be
-        flash = false;
-    } else {
-        flash = true;
-    }
-    if (sys.getVal('autoresponse') === true) {
-        autoresponse = true;
-    } else {
-        autoresponse = false;
-    }
-    if (sys.getVal('friendsflash') === "true") {
-        friendsflash = true;
-    } else {
-        friendsflash = false;
-    }
-    if (sys.getVal('checkversion') === "true") {
-        checkversion = "true";
-    } else {
-        checkversion = "false";
-    }
-    if (sys.getVal('logjoins') === "true") {
-        logjoins = true;
-    } else {
-        logjoins = false;
-    }
-    clientbotname = "+ClientBot";
-    if (sys.getVal('clientbotname')
-        .length > 0) {
-        clientbotname = sys.getVal('clientbotname');
-    }
-    clientbotcolour = "#3DAA68";
-    if (sys.getVal('clientbotcolour')
-        .length > 0) {
-        clientbotcolour = sys.getVal('clientbotcolour');
-    }
-    clientbotstyle = "<b>";
-    if (sys.getVal('clientbotstyle')
-        .length > 0) {
-        clientbotstyle = sys.getVal('clientbotstyle');
-    }
-    greentext = '#789922';
-    if (sys.getVal('greentext')
-        .length > 0) {
-        greentext = sys.getVal('greentext');
-    }
-    fontcolour = "#000000";
-    if (sys.getVal('fontcolour')
-        .length > 0) {
-        fontcolour = sys.getVal('fontcolour');
-    }
-    fonttype = "";
-    if (sys.getVal('fonttype')
-        .length > 0) {
-        fonttype = sys.getVal('fonttype');
-    }
-    fontsize = 3;
-    if (sys.getVal('fontsize')
-        .length > 0) {
-        fontsize = sys.getVal('fontsize');
-    }
-    fontstyle = "";
-    if (sys.getVal('fontstyle')
-        .length > 0) {
-        fontstyle = sys.getVal('fontstyle');
-    }
-    commandsymbol = "~";
-    if (sys.getVal('commandsymbol')
-        .length > 0) {
-        commandsymbol = sys.getVal('commandsymbol');
-    }
-    hilight = "BACKGROUND-COLOR: #ffcc00";
-    if (sys.getVal('hilight')
-        .length > 0) {
-        hilight = sys.getVal('hilight');
-    }
-    armessage = sys.getVal('armessage');
-    arstart = sys.getVal('arstart');
-    arend = sys.getVal('arend');
-    artype = sys.getVal('artype');
-    stalkwords = [];
-    friends = [];
-    ignore = [];
-    logchannel = [];
-    fchannel = [];
-    if (sys.getVal('stalkwords') !== "") {
-        var nstalkwords = sys.getVal('stalkwords')
-            .split(",");
-        stalkwords = nstalkwords.concat(stalkwords);
-        stalkwords = eliminateDuplicates(stalkwords);
-    }
-    if (sys.getVal('friends') !== "") {
-        var nfriends = sys.getVal('friends')
-            .split(",");
-        friends = nfriends.concat(friends);
-        friends = eliminateDuplicates(friends);
-    }
-    if (sys.getVal('ignore') !== "") {
-        var nignore = sys.getVal('ignore')
-            .split(",");
-        ignore = nignore.concat(ignore);
-        ignore = eliminateDuplicates(ignore);
-    }
-    if (sys.getVal('logchannel') !== "") {
-        var nlogchannel = sys.getVal('logchannel')
-            .split(",");
-        logchannel = nlogchannel.concat(logchannel);
-        logchannel = eliminateDuplicates(logchannel);
-    }
-    if (sys.getVal('fchannel') !== "") {
-        var nfchannel = sys.getVal('fchannel')
-            .split(",");
-        fchannel = nfchannel.concat(fchannel);
-        fchannel = eliminateDuplicates(fchannel);
-    }
-    auth_symbol = [];
-    for (var x = 0; x < 5; x++) {
-        if (sys.getVal('auth: ' + x)
-            .length > 0) {
-            auth_symbol[x] = sys.getVal('auth: ' + x);
-            continue;
-        }
-        if (x === 0 || x === 4) {
-            auth_symbol[x] = "";
-            continue;
-        }
-        auth_symbol[x] = "+";
-    }
-    auth_style = [];
-    for (var x = 0; x < 5; x++) {
-        if (sys.getVal('auths: ' + x)
-            .length > 0) {
-            auth_style[x] = sys.getVal('auths: ' + x);
-            continue;
-        }
-        if (x === 0 || x === 4) {
-            auth_style[x] = "<b>";
-            continue;
-        }
-        auth_style[x] = "<i><b>";
-    }
-    playerswarn = [];
     if (sys.isSafeScripts() !== true) {
+        Utilities.loadSettings();
         checkScriptVersion();
-        sys.appendToFile('steamAPIkey.txt', "");
-        sys.appendToFile('steamID.txt', "");
-        sys.appendToFile('.location', "");
-        repoFolder = sys.getFileContent('.location');
+    }
+    else {
+        Utilities.loadFromRegistry();
     }
     initCheck = true;
 }
@@ -215,8 +86,8 @@ function checkScriptVersion(bool) { //checks the current script version with the
         version = version.replace(/"/g, "");
         var type = {
             "0": "Major Release (huge changes)",
-            "1": "Minor Release (new features)",
-            "2": "Bug fixes/Minor Update"
+                "1": "Minor Release (new features)",
+                "2": "Bug fixes/Minor Update"
         };
         if (version !== Script_Version) {
             var typeno;
@@ -250,8 +121,11 @@ function nameCheck(string) { //adapted from the PO Source Code
     if (string.lengh === 0) {
         throw "Name not long enough";
     }
-    if (isPunct(string[0]) !== true && isAlnum(string[0]) !== true) {
+    if (Utilities.isPunct(string[0]) !== true && Utilities.isAlnum(string[0]) !== true) {
         throw "Name cannot have start with a non-punctuation or non-alphanumeric character";
+    }
+    if (string[0] === "+") {
+        throw "Cannot use \"+\" at start of names";
     }
     var spaced = false;
     var punct = false;
@@ -259,29 +133,31 @@ function nameCheck(string) { //adapted from the PO Source Code
         if (string[x] === '\n' || string[x] === '%' || string[x] === '*' || string[x] === '<' || string[x] === ':' || string[x] === '(' || string[x] === ')' || string[x] === ';') {
             throw "Invalid Character";
         }
-        if (isPunct(string[x])) {
+        if (Utilities.isPunct(string[x])) {
             if (punct === true) {
                 //Error: two punctuations are not separated by a letter/number
                 throw "two punctuations are not separated by a letter/number";
             }
             punct = true;
             spaced = false;
-        } else if (string[x] === ' ') {
+        }
+        else if (string[x] === ' ') {
             if (spaced === true) {
                 //Error: two spaces are following
                 throw "two spaces are following";
             }
             spaced = true;
-        } else if (isAlnum(string[x])) {
+        }
+        else if (Utilities.isAlnum(string[x])) {
             //we allow another punct & space
             punct = false;
             spaced = false;
         }
     }
-    if (string.length === 1 && isPunct(string[0])) {
+    if (string.length === 1 && Utilities.isPunct(string[0])) {
         return nameCheck(fixup(string));
     }
-    if (isPunct(string[string.length - 1]) !== true && isAlnum(string[string.length - 1]) !== true) {
+    if (Utilities.isPunct(string[string.length - 1]) !== true && Utilities.isAlnum(string[string.length - 1]) !== true) {
         return nameCheck(fixup(string));
     }
     return string;
@@ -291,52 +167,6 @@ function fixup(input) {
     if (input.length > 0 && input[input.length - 1] === ' ') {
         return input.substr(0, input.length - 1);
     }
-}
-// Test for punctuation characters
-function isPunct(i) {
-    return (isGraph(i) && !(isAlnum(i)));
-}
-// Test for printable characters (only good up to char 127)
-function isGraph(i) {
-    var myCharCode = i.charCodeAt(0);
-    if ((myCharCode > 32) && (myCharCode < 127)) {
-        return true;
-    }
-    return false;
-}
-// Test for letters and digits
-function isAlnum(i) {
-    return (isDigit(i) || isAlpha(i));
-}
-// Test for digits
-function isDigit(i) {
-    var myCharCode = i.charCodeAt(0);
-    if ((myCharCode > 47) && (myCharCode < 58)) {
-        return true;
-    }
-    return false;
-}
-// Test for letters (only good up to char 127)
-function isAlpha(i) {
-    var myCharCode = i.charCodeAt(0);
-    if (((myCharCode > 64) && (myCharCode < 91)) || ((myCharCode > 96) && (myCharCode < 123))) {
-        return true;
-    }
-    return false;
-}
-
-function eliminateDuplicates(arr) { //stolen from http://dreaminginjavascript.wordpress.com/2008/08/22/eliminating-duplicates/ eliminates any duplicates that are in an array
-    var i,
-    len = arr.length,
-        out = [],
-        obj = {};
-    for (i = 0; i < len; i++) {
-        obj[arr[i]] = 0;
-    }
-    for (i in obj) {
-        out.push(i);
-    }
-    return out;
 }
 
 function saveToLog(message, channel) { //saves messages to a log file
@@ -434,7 +264,8 @@ function html_escape(text) { //escapes any characters that won't appear correctl
         return m.replace(/&/g, amp)
             .replace(/</g, lt)
             .replace(/>/g, gt);
-    } else {
+    }
+    else {
         return "";
     }
 }
@@ -458,7 +289,7 @@ function stalkWordCheck(string, playname, bot, channel) { //adds flashes to name
     var newstring = "";
     if (string.toLowerCase()
         .indexOf(ownName.toLowerCase()) !== -1 && playname !== ownName && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
-        var name = new RegExp("\\b("+ownName+")\\b(?![^\\s<]*>)", "i");
+        var name = new RegExp("\\b(" + ownName + ")\\b(?![^\\s<]*>)", "i");
         var names = string.match(name);
         newstring = string.replace(name, "<span style='" + hilight + "'>" + names[0] + "</span>");
         if (newstring !== string) {
@@ -466,7 +297,7 @@ function stalkWordCheck(string, playname, bot, channel) { //adds flashes to name
         }
     }
     for (var x in stalkwords) {
-        var stalk = new RegExp("\\b("+stalkwords[x]+")\\b(?![^\\s<]*>)", "i");
+        var stalk = new RegExp("\\b(" + stalkwords[x] + ")\\b(?![^\\s<]*>)", "i");
         var stalks = string.match(stalk);
         if (string.toLowerCase()
             .search(stalk) !== -1 && playname !== client.ownName() && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
@@ -491,7 +322,7 @@ function htmllinks(text) { //makes sure links get linked!
             .replace(/&amp;/gi, "&");
         text = text.replace(found[x], newtext);
     }
-    return text
+    return text;
 }
 
 function addExtras(text, playname, bot, channel) { //adds stalkwords/links/enriched text etc
@@ -499,7 +330,7 @@ function addExtras(text, playname, bot, channel) { //adds stalkwords/links/enric
     text = enrichedText(text);
     if (channel !== undefined) {
         text = client.channel(channel)
-        .addChannelLinks(text);
+            .addChannelLinks(text);
     }
     text = greenText(text);
     text = stalkWordCheck(text, playname, bot, channel);
@@ -528,7 +359,8 @@ function enrichedText(text) { //applies the enriched text, adapted from the PO 1
 function greenText(text) { //applies greentext
     if (text.substr(0, 4) === "&gt;" && tgreentext === "true") {
         text = "<font color = '" + greentext + "'>" + text + "</font>";
-    } else {
+    }
+    else {
         text = "<font color = '" + fontcolour + "'>" + text;
     }
     return text;
@@ -649,13 +481,13 @@ function commandHandler(command, commandData, channel) {
         sys.stopEvent();
         if (commandData === "on") {
             etext = true;
-            sys.saveVal('etext', true);
+            Utilities.saveSettings();
             sendBotMessage("You turned Enriched text on!");
             return;
         }
         if (commandData === "off") {
             etext = false;
-            sys.saveVal('etext', false);
+            Utilities.saveSettings();
             sendBotMessage("You turned Enriched text off!");
             return;
         }
@@ -664,14 +496,14 @@ function commandHandler(command, commandData, channel) {
     if (command === "greentext") {
         sys.stopEvent();
         if (commandData === "on") {
-            tgreentext = "true";
-            sys.saveVal('tgreentext', true);
+            tgreentext = true;
+            Utilities.saveSettings();
             sendBotMessage("You turned greentext on!");
             return;
         }
         if (commandData === "off") {
-            tgreentext = "false";
-            sys.saveVal('tgreentext', false);
+            tgreentext = false;
+            Utilities.saveSettings();
             sendBotMessage("You turned greentext off!");
             return;
         }
@@ -709,14 +541,14 @@ function commandHandler(command, commandData, channel) {
         }
         if (commandData === "on") {
             checkversion = true;
-            sys.saveVal('checkversion', true);
+            Utilities.saveSettings();
             sendBotMessage("You now get alerted about new versions");
             checkScriptVersion();
             return;
         }
         if (commandData === "off") {
             checkversion = false;
-            sys.saveVal('checkversion', false);
+            Utilities.saveSettings();
             sendBotMessage("You no longer get alerted about new versions");
             return;
         }
@@ -765,8 +597,8 @@ function commandHandler(command, commandData, channel) {
                 .replace(/ ,/g, ",");
         }
         nstalkwords = nstalkwords.split(",");
-        stalkwords = eliminateDuplicates(nstalkwords.concat(stalkwords));
-        sys.saveVal('stalkwords', stalkwords.toString());
+        stalkwords = Utilities.eliminateDuplicates(nstalkwords.concat(stalkwords));
+        Utilities.saveSettings();
         sendBotMessage("You added " + commandData + " to your stalkwords!");
     }
     if (command === "removestalkword") {
@@ -775,7 +607,7 @@ function commandHandler(command, commandData, channel) {
         for (var x in stalkwords) {
             if (stalkwords[x].toLowerCase() === commandData) {
                 stalkwords.splice(x, 1);
-                sys.saveVal('stalkwords', stalkwords.toString());
+                Utilities.saveSettings();
                 sendBotMessage("You removed " + commandData + " from your stalkwords!");
                 return;
             }
@@ -788,12 +620,13 @@ function commandHandler(command, commandData, channel) {
         if (commandData.length < 2 || commandData[1] === "") {
             if (commandData[0] === "on") {
                 flash = true;
-                sys.saveVal('flash', true);
+                Utilities.saveSettings();
                 sendBotMessage("You turned flashes on!");
                 return;
-            } else {
+            }
+            else {
                 flash = false;
-                sys.saveVal('flash', false);
+                Utilities.saveSettings();
                 sendBotMessage("You turned flashes off!");
                 return;
             }
@@ -805,15 +638,16 @@ function commandHandler(command, commandData, channel) {
                     .replace(/ ,/g, ",");
             }
             nfchannel = nfchannel.split(",");
-            fchannel = eliminateDuplicates(nfchannel.concat(fchannel));
-            sys.saveVal('fchannel', fchannel.toString());
+            fchannel = Utilities.eliminateDuplicates(nfchannel.concat(fchannel));
+            Utilities.saveSettings();
             sendBotMessage("You won't be flashed in " + commandData[1]);
-        } else {
+        }
+        else {
             commandData[1] = commandData[1].toLowerCase();
             for (var x in fchannel) {
                 if (fchannel[x].toLowerCase() === commandData[1]) {
                     fchannel.splice(x, 1);
-                    sys.saveVal('fchannel', fchannel.toString());
+                    Utilities.saveSettings();
                     sendBotMessage("You will be flashed in " + commandData[1]);
                     return;
                 }
@@ -841,8 +675,8 @@ function commandHandler(command, commandData, channel) {
                 .replace(/ ,/g, ",");
         }
         nfriends = nfriends.split(",");
-        friends = eliminateDuplicates(nfriends.concat(friends));
-        sys.saveVal('friends', friends.toString());
+        friends = Utilities.eliminateDuplicates(nfriends.concat(friends));
+        Utilities.saveSettings();
         sendBotMessage("You added " + commandData + " to your friends!");
     }
     if (command === "removefriend") {
@@ -851,7 +685,7 @@ function commandHandler(command, commandData, channel) {
         for (var x in friends) {
             if (friends[x].toLowerCase() === commandData) {
                 friends.splice(x, 1);
-                sys.saveVal('friends', friends.toString());
+                Utilities.saveSettings();
                 sendBotMessage("You removed " + commandData + " from your friends!");
                 return;
             }
@@ -862,12 +696,13 @@ function commandHandler(command, commandData, channel) {
         sys.stopEvent();
         if (commandData === "on") {
             friendsflash = true;
-            sys.saveVal('friendsflash', true);
+            Utilities.saveSettings();
             sendBotMessage("You turned friend flashes on!");
             return;
-        } else {
+        }
+        else {
             friendsflash = false;
-            sys.saveVal('friendsflash', false);
+            Utilities.saveSettings();
             sendBotMessage("You turned friend flashes off!");
         }
         return;
@@ -887,8 +722,8 @@ function commandHandler(command, commandData, channel) {
                 .replace(/ ,/g, ",");
         }
         nignore = nignore.split(",");
-        ignore = eliminateDuplicates(nignore.concat(ignore));
-        sys.saveVal('ignore', ignore.toString());
+        ignore = Utilities.eliminateDuplicates(nignore.concat(ignore));
+        Utilities.saveSettings();
         if (client.id(commandData) !== -1) {
             client.ignore(client.id(commandData), true);
         }
@@ -900,7 +735,7 @@ function commandHandler(command, commandData, channel) {
         for (var x in ignore) {
             if (ignore[x].toLowerCase() === commandData) {
                 ignore.splice(x, 1);
-                sys.saveVal('ignore', ignore.toString());
+                Utilities.saveSettings();
                 if (client.id(commandData) !== -1) {
                     client.ignore(client.id(commandData), false);
                 }
@@ -917,7 +752,7 @@ function commandHandler(command, commandData, channel) {
         }
         clientbotname = commandData;
         sendBotMessage(clientbotname + " is now your clientbot's name!");
-        sys.saveVal("clientbotname", clientbotname);
+        Utilities.saveSettings();
         return;
     }
     if (command === "changebotstyle") {
@@ -925,12 +760,12 @@ function commandHandler(command, commandData, channel) {
         if (commandData === undefined) {
             clientbotstyle = "";
             sendBotMessage("You removed your client bot style!");
-            sys.saveVal("clientbotstyle", clientbotstyle);
+            Utilities.saveSettings();
             return;
         }
         clientbotstyle = commandData;
         sendBotMessage(clientbotstyle + " is now your clientbot's style!");
-        sys.saveVal("clientbotstyle", clientbotstyle);
+        Utilities.saveSettings();
         return;
     }
     if (command === "changebotcolour" || command === "changebotcolor") {
@@ -940,7 +775,7 @@ function commandHandler(command, commandData, channel) {
         }
         clientbotcolour = commandData;
         sendBotMessage(clientbotcolour + " is now your clientbot's colour!");
-        sys.saveVal("clientbotcolour", clientbotcolour);
+        Utilities.saveSettings();
         return;
     }
     if (command === "greentextcolor" || command === "greentextcolour") {
@@ -948,20 +783,20 @@ function commandHandler(command, commandData, channel) {
         if (commandData === undefined || commandData === "") {
             greentext = '#789922';
             sendBotMessage(greentext + " is now your greentext colour!");
-            sys.saveVal("greentext", greentext);
+            Utilities.saveSettings();
             return;
         }
         greentext = commandData;
         sendBotMessage(greentext + " is now your greentext colour!");
-        sys.saveVal("greentext", greentext);
+        Utilities.saveSettings();
         return;
     }
     if (command === "resetbot") {
         sys.stopEvent();
         clientbotcolour = "#3DAA68";
         clientbotname = "+ClientBot";
-        sys.saveVal("clientbotcolour", clientbotcolour);
-        sys.saveVal("clientbotname", clientbotname);
+        clientbotstyle = "<b>";
+        Utilities.saveSettings();
         sendBotMessage("You reset your bot to default values");
         return;
     }
@@ -985,12 +820,12 @@ function commandHandler(command, commandData, channel) {
             if (modifier === undefined || modifier === "") {
                 modifier = "#000000";
                 fontcolour = modifier;
-                sys.saveVal('fontcolour', modifier);
+                Utilities.saveSettings();
                 sendBotMessage("You changed your font colour to the default");
                 return;
             }
             fontcolour = modifier;
-            sys.saveVal('fontcolour', modifier);
+            Utilities.saveSettings();
             sendBotMessage("You changed your font colour to: " + modifier);
             return;
         }
@@ -998,7 +833,7 @@ function commandHandler(command, commandData, channel) {
             if (modifier === undefined || modifier === "") {
                 modifier = "";
                 fontstyle = modifier;
-                sys.saveVal('fontstyle', modifier);
+                Utilities.saveSettings();
                 sendBotMessage("You changed your font style to the default");
                 return;
             }
@@ -1007,7 +842,7 @@ function commandHandler(command, commandData, channel) {
                 return;
             }
             fontstyle = modifier;
-            sys.saveVal('fontstyle', modifier);
+            Utilities.saveSettings();
             sendBotMessage("You changed your font style to: " + modifier);
             return;
         }
@@ -1015,12 +850,12 @@ function commandHandler(command, commandData, channel) {
             if (modifier === undefined || modifier === "") {
                 modifier = "";
                 fonttype = modifier;
-                sys.saveVal('fonttype', modifier);
+                Utilities.saveSettings();
                 sendBotMessage("You changed your font type to the default");
                 return;
             }
             fonttype = modifier;
-            sys.saveVal('fonttype', modifier);
+            Utilities.saveSettings();
             sendBotMessage("You changed your font to: " + modifier);
             return;
         }
@@ -1028,12 +863,12 @@ function commandHandler(command, commandData, channel) {
             if (modifier === undefined || modifier === "" || isNaN(parseInt(modifier, 10))) {
                 modifier = 3;
                 fontsize = modifier;
-                sys.saveVal('fontsize', modifier);
+                Utilities.saveSettings();
                 sendBotMessage("You changed your font size to the default");
                 return;
             }
             fontsize = modifier;
-            sys.saveVal('fontsize', modifier);
+            Utilities.saveSettings();
             sendBotMessage("You changed your font size to: " + modifier);
             return;
         }
@@ -1042,14 +877,16 @@ function commandHandler(command, commandData, channel) {
         sys.stopEvent();
         try {
             commandData = nameCheck(commandData);
-        } catch (e) {
+        }
+        catch (e) {
             sendBotMessage("Invalid Name: " + e);
             return;
         }
         try {
             client.changeName(commandData);
             sendBotMessage("You changed your name to " + commandData);
-        } catch (e) {
+        }
+        catch (e) {
             if (e.toString() === "TypeError: Result of expression 'client.changeName' [undefined] is not a function.") {
                 sendBotMessage("You need to update your client to Version 2.0.06 or above to use this command");
             }
@@ -1102,7 +939,7 @@ function commandHandler(command, commandData, channel) {
             return;
         }
         sendBotMessage("Fetching scripts...");
-        var updateURL = script_url;
+        var updateURL = script_url + 'scripts.js';
         if (commandData !== undefined && (commandData.substring(0, 7) === 'http://' || commandData.substring(0, 8) === 'https://')) {
             updateURL = commandData;
         }
@@ -1115,7 +952,8 @@ function commandHandler(command, commandData, channel) {
             try {
                 sys.changeScript(resp, true);
                 sys.writeToFile(sys.scriptsFolder + "scripts.js", resp);
-            } catch (err) {
+            }
+            catch (err) {
                 sys.changeScript(sys.getFileContent(sys.scriptsFolder + 'scripts.js'));
                 sendBotMessage('Updating failed, loaded old scripts!');
             }
@@ -1145,7 +983,7 @@ function commandHandler(command, commandData, channel) {
             symbol = "";
         }
         auth_symbol[auth] = symbol;
-        sys.saveVal("auth: " + auth, symbol);
+        Utilities.saveSettings();
         if (symbol === "") {
             sendBotMessage("Auth " + auth + " now has no symbol");
             return;
@@ -1178,7 +1016,7 @@ function commandHandler(command, commandData, channel) {
             style = "";
         }
         auth_style[auth] = style;
-        sys.saveVal("auths: " + auth, style);
+        Utilities.saveSettings();
         if (style === "") {
             sendBotMessage("Auth " + auth + " now has no style");
             return;
@@ -1221,7 +1059,7 @@ function commandHandler(command, commandData, channel) {
             sendBotMessage("Warning: This symbol is the same one used for most server scripts, you can still use it for client scripts, but it may interfere with server ones");
         }
         commandsymbol = symbol;
-        sys.saveVal('commandsymbol', symbol);
+        Utilities.saveSettings();
         sendBotMessage("Command symbol is set to: " + symbol);
         return;
     }
@@ -1229,27 +1067,13 @@ function commandHandler(command, commandData, channel) {
         sys.stopEvent();
         if (commandData === undefined) {
             hilight = "BACKGROUND-COLOR: #ffcc00";
-            sys.saveVal('hilight', hilight);
+            Utilities.saveSettings();
             sendBotMessage("Highlight colour set to the default");
             return;
         }
         hilight = "BACKGROUND-COLOR: " + commandData;
-        sys.saveVal('hilight', hilight);
+        Utilities.saveSettings();
         sendBotMessage("Highlight colour set to: " + hilight);
-        return;
-    }
-    if (command === "logjoins") {
-        sys.stopEvent();
-        if (commandData === "on") {
-            logjoins = true;
-            sys.saveVal('logjoins', true);
-            sendBotMessage("You turned logging joins on!");
-            return;
-        } else {
-            logjoins = false;
-            sys.saveVal('logjoins', false);
-            sendBotMessage("You turned logging joins off!");
-        }
         return;
     }
     if (command === "logchannels") {
@@ -1271,8 +1095,8 @@ function commandHandler(command, commandData, channel) {
                 .replace(/ ,/g, ",");
         }
         nlogchannel = nlogchannel.split(",");
-        logchannel = eliminateDuplicates(nlogchannel.concat(logchannel));
-        sys.saveVal('logchannel', logchannel.toString());
+        logchannel = Utilities.eliminateDuplicates(nlogchannel.concat(logchannel));
+        Utilities.saveSettings();
         sendBotMessage("You added " + commandData + " to your log channels!");
     }
     if (command === "removelogchannel") {
@@ -1281,7 +1105,7 @@ function commandHandler(command, commandData, channel) {
         for (var x in logchannel) {
             if (logchannel[x].toLowerCase() === commandData) {
                 logchannel.splice(x, 1);
-                sys.saveVal('logchannel', logchannel.toString());
+                Utilities.saveSettings();
                 sendBotMessage("You removed " + commandData + " from your log channels!");
                 return;
             }
@@ -1290,8 +1114,12 @@ function commandHandler(command, commandData, channel) {
     }
     if (command === "armessage") {
         sys.stopEvent();
+        if (commandData === undefined) {
+            sendBotMessage('Your current message is: ' + armessage);
+            return;
+        }
         armessage = commandData;
-        sys.saveVal('armessage', armessage);
+        Utilities.saveSettings();
         sendBotMessage('You set your auto-respond message to: ' + armessage);
         return;
     }
@@ -1299,13 +1127,13 @@ function commandHandler(command, commandData, channel) {
         sys.stopEvent();
         if (commandData === "command") {
             artype = "command";
-            sys.saveVal('artype', artype);
+            Utilities.saveSettings();
             sendBotMessage('Your auto-respond message will be activated by command');
             return;
         }
         if (commandData === "time") {
             artype = "time";
-            sys.saveVal('artype', artype);
+            Utilities.saveSettings();
             sendBotMessage('Your auto-respond message will be activated by time');
             return;
         }
@@ -1325,8 +1153,7 @@ function commandHandler(command, commandData, channel) {
         }
         arstart = time[0];
         arend = time[1];
-        sys.saveVal('arend', arend);
-        sys.saveVal('arstart', arstart);
+        Utilities.saveSettings();
         sendBotMessage('You auto response message will activate between ' + arstart + ':00 and ' + arend + ':00');
         return;
     }
@@ -1336,7 +1163,7 @@ function commandHandler(command, commandData, channel) {
             return;
         }
         autoresponse = true;
-        sys.saveVal('autoresponse', autoresponse);
+        Utilities.saveSettings();
         sendBotMessage('You turned your auto response on');
         return;
     }
@@ -1346,7 +1173,7 @@ function commandHandler(command, commandData, channel) {
             return;
         }
         autoresponse = false;
-        sys.saveVal('autoresponse', autoresponse);
+        Utilities.saveSettings();
         sendBotMessage('You turned your auto response off');
         return;
     }
@@ -1361,7 +1188,8 @@ function commandHandler(command, commandData, channel) {
         try {
             var res = eval(commandData);
             sendMessage("Got from eval: " + res, bindChannel);
-        } catch (err) {
+        }
+        catch (err) {
             sendMessage("Error in eval: " + err, bindChannel);
         }
         return;
@@ -1398,7 +1226,8 @@ function formatMessage(message, channel) {
         }
         if (channel === undefined) {
             client.printHtml("<font face ='" + fonttype + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/> " + symbol + auth_style[auth] + playname + ": </font>" + tagend(auth_style[auth]) + fontstyle + playmessage + tagend(fontstyle));
-        } else {
+        }
+        else {
             client.printChannelMessage("<font face ='" + fonttype + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/> " + symbol + auth_style[auth] + playname + ": </font>" + tagend(auth_style[auth]) + fontstyle + playmessage + tagend(fontstyle), chan, true);
         }
         sys.stopEvent();
@@ -1412,39 +1241,10 @@ client.network()
     awayFunction();
     init();
 });
-Script_Version = "1.7.02"; //version the script is currently on
+Script_Version = "2.0.0"; //version the script is currently on
 poScript = ({
     clientStartUp: function () {
         sendMessage('Script Check: OK'); //use this to send a message on update scripts
-    },
-    stepEvent: function () {
-        if (sys.isSafeScripts() === true || sys.getFileContent('steamAPIkey.txt') === "" || sys.getFileContent('steamID.txt') === "") {
-            return;
-        }
-        var key = sys.getFileContent('steamAPIkey.txt');
-        var id = sys.getFileContent('steamID.txt');
-        var url = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' + key + '&steamids=' + id;
-        sys.webCall(url, function (resp) {
-            var json = JSON.parse(resp)
-                .response.players[0];
-            for (var x in json) {
-                if (x === "gameextrainfo") {
-                    if (sys.getFileContent('steamboo.txt') == "true") {
-                        return;
-                    }
-                    say("Now Playing: " + json[x] + " (steam)", client.channelId('Indigo Plateau'));
-                    sys.writeToFile('steamboo.txt', "true");
-                    return;
-                }
-                if (json.personastate === 3 || json.personastate === 4) {
-                    autoresponse = true;
-                    sys.appendToFile('testingstatus.txt', json.personastate == 3 ? "Away\n" : "Snooze\n");
-                } else {
-                    autoresponse = false;
-                }
-            }
-            sys.writeToFile('steamboo.txt', "false");
-        });
     },
     onPlayerReceived: function (id) { //detects when a player is visible to the client (mostly logins, but may also happen upon joining a new channel)
         var flashvar = "";
@@ -1547,7 +1347,8 @@ poScript = ({
             sys.stopEvent();
             try {
                 handleSystemCommand(message);
-            } catch (e) {
+            }
+            catch (e) {
                 sendBotMessage('Error with sys.system() ' + e);
             }
             return;
@@ -1556,7 +1357,7 @@ poScript = ({
             sys.stopEvent();
             commandsymbol = "~";
             sendBotMessage('You reset your command symbol to "~"!');
-            sys.saveVal('commandsymbol', commandsymbol);
+            Utilities.saveSettings();
             return;
         }
         if (message[0] === commandsymbol) {
@@ -1566,13 +1367,15 @@ poScript = ({
                 command = message.substring(1, pos)
                     .toLowerCase();
                 commandData = message.substr(pos + 1);
-            } else {
+            }
+            else {
                 command = message.substr(1)
                     .toLowerCase();
             }
             try {
                 commandHandler(command, commandData, channel);
-            } catch (e) {
+            }
+            catch (e) {
                 sendBotMessage('ERROR: ' + e); //TODO: Add proper error checks
             }
         }
