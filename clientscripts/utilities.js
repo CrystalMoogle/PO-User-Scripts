@@ -10,7 +10,6 @@ exports = {
             var settings;
             if (json === undefined) {
                 if (sys.getFileContent('memory.json') === "") {
-                    sendBotMessage('File not found, loading from old settings');
                     this.loadFromRegistry();
                 }
                 settings = JSON.parse(sys.getFileContent('memory.json'));
@@ -264,6 +263,7 @@ exports = {
             auth_style[x] = "<i><b>";
         }
         playerswarn = [];
+        sendBotMessage('File not found, loaded from old settings');
         this.saveSettings();
     },
 
