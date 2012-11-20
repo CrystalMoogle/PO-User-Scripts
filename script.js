@@ -970,7 +970,11 @@ function commandHandler(command, commandData, channel) {
     }
     if (command === "updatefile") {
         sys.stopEvent();
-        updateFile(commandData);
+        if (neededFiles.indexOf(commandData) !== -1) {
+            updateFile(commandData);
+            return;
+        }
+        sendBotMessage("This is not a valid script file");
         return;
     }
     if (command === "authsymbol" || command === "authsymbols") {
