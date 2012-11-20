@@ -333,7 +333,7 @@ exports = {
         }
         return false;
     },
-    stripHtml: function stripHTML(string) {
+    stripHTML: function stripHTML(string) {
         var regex = /(<([^>]+)>)/ig;
         string = string.replace(regex, "");
         return string;
