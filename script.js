@@ -24,7 +24,6 @@ sys.sendMessage = function (id, message, channel) {
     sendMessage(message, channel);
 };
 checkFiles();
-loadFiles();
 
 function print(message) {
     sendMessage(message);
@@ -41,7 +40,7 @@ function cleanFile(filename) {
     sys.appendToFile(filename, "");
 }
 
-function checkFiles() { //TODO change this when more files get added
+function checkFiles() {
     sys.makeDir(scriptsFolder);
     for (var x = 0; x < neededFiles.length; x++) {
         cleanFile(scriptsFolder + '/' + neededFiles[x]);
@@ -49,6 +48,7 @@ function checkFiles() { //TODO change this when more files get added
             sys.writeToFile(scriptsFolder + "/" + neededFiles[x], sys.synchronousWebCall(script_url + "clientscripts/" + neededFiles[x]));
         }
     }
+    loadFiles();
 }
 
 function updateFile(filename) {
