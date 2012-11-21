@@ -10,6 +10,7 @@ exports = {
             var settings;
             if (json === undefined) {
                 if (sys.getFileContent('memory.json') === "") {
+                    sendBotMessage('File not found, loaded from old settings');
                     this.loadFromRegistry();
                 }
                 settings = JSON.parse(sys.getFileContent('memory.json'));
@@ -263,7 +264,6 @@ exports = {
             auth_style[x] = "<i><b>";
         }
         playerswarn = [];
-        sendBotMessage('File not found, loaded from old settings');
         this.saveSettings();
     },
 
@@ -368,6 +368,9 @@ exports = {
     },
 
     tagend: function tagend(string) { //automatically creates an end tag from a html tagsent to it
+        if (string === undefined) {
+            return;
+        }
         var newstring = string.replace(/</g, "</");
         return newstring;
     }
