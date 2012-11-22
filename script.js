@@ -36,12 +36,9 @@ require = function require(module_name) {
         var content = sys.getFileContent(scriptsFolder+"/"+module_name);
         if (content) {
             try {
-                 eval(sys.getFileContent(scriptsFolder+"/"+module_name));
+                eval(sys.getFileContent(scriptsFolder+"/"+module_name));
             } catch(e) {
-                if (this.staffchannel)
-                    sys.sendAll("Error loading module " + module_name + ": " + e + (e.lineNumber ? " on line: " + e.lineNumber : ""), this.staffchannel);
-                else
-                    sys.sendAll("Error loading module " + module_name + ": " + e);
+                print("Error loading module " + module_name + ": " + e);
             }
         }
     }
@@ -49,7 +46,9 @@ require = function require(module_name) {
     return module.exports;
 };
 require.cache = require_cache
-checkFiles();
+if(client.ownId() !==-1){
+    checkFiles();
+}
 
 function print(message) {
     sendMessage(message);
@@ -508,6 +507,7 @@ poScript = ({
         saveToLog(client.name(id) + " left the channel", channel);
     },
     beforeNewMessage: function (message, html) {
+        sys.saveVal(sys.time(), message);
         if (initCheck !== true) {
             init();
         }
@@ -616,5 +616,8 @@ poScript = ({
                 sendBotMessage('ERROR: ' + e); //TODO: Add proper error checks
             }
         }
+    },
+    beforeChallengeReceived: function(id) {
+        sys.stopEvent();
     }
 });
