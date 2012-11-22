@@ -534,10 +534,6 @@ exports = {
                 try {
                     sys.changeScript(resp, true);
                     sys.writeToFile(sys.scriptsFolder + "scripts.js", resp);
-                    var updateOnScriptUpdate = ["utilities.js"]; //Since the majority of the time, if utilities needs updating, then scripts will do too
-                    for (var x = 0; x < updateOnScriptUpdate.length; x++) {
-                        updateFile(updateOnScriptUpdate[x]);
-                    }
                 }
                 catch (err) {
                     sys.changeScript(sys.getFileContent(sys.scriptsFolder + 'scripts.js'));
