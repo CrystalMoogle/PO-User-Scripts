@@ -3,7 +3,7 @@
     This is a required file for the main script
     Nothing here should be changed unless you know exactly what you're doing
 */
-exports = {
+Utilities = {
     loadSettings: function loadSettings(json, defaultUsed, silent) {
         cleanFile('memory.json');
         try {
