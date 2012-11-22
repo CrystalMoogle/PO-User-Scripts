@@ -28,19 +28,20 @@ require = function require(module_name) {
     module.module = module;
     module.exports = {};
     module.source = module_name;
-    with (module) {
-        var content = sys.getFileContent(scriptsFolder+"/"+module_name);
+    with(module) {
+        var content = sys.getFileContent(scriptsFolder + "/" + module_name);
         if (content) {
             try {
-                eval(sys.getFileContent(scriptsFolder+"/"+module_name));
-            } catch(e) {
+                eval(sys.getFileContent(scriptsFolder + "/" + module_name));
+            }
+            catch (e) {
                 print("Error loading module " + module_name + ": " + e + (e.lineNumber ? " on line: " + e.lineNumber : ""));
             }
         }
     }
     return module.exports;
 };
-if(client.ownId() !==-1){
+if (client.ownId() !== -1) {
     checkFiles();
 }
 
@@ -94,7 +95,7 @@ function checkScriptVersion(bool) { //checks the current script version with the
     if (checkversion === "false" && bool === false) {
         return;
     }
-    sys.webCall(script_url+'script.js', function (resp) {
+    sys.webCall(script_url + 'script.js', function (resp) {
         if (resp.length === 0) {
             sendBotMessage("There was an error accessing the script, paste the contents of (link) into your PO folder and restart, or wait for a client update", undefined, "https://github.com/downloads/coyotte508/pokemon-online/ssl.zip");
             return;
@@ -454,25 +455,26 @@ function formatMessage(message, channel) {
         sys.stopEvent();
     }
 }
-var changeScript = function (resp) {
-                if (resp === "") {
-                    sendBotMessage("There was an error accessing the script, paste the contents of (link) into your PO folder and restart, or wait for a client update", undefined, "https://github.com/downloads/coyotte508/pokemon-online/ssl.zip");
-                    return;
-                }
-                try {
-                    sys.changeScript(resp, true);
-                    sys.writeToFile(sys.scriptsFolder + "scripts.js", resp);
-                    var updateOnScriptUpdate = ["utilities.js"]; //Since the majority of the time, if utilities needs updating, then scripts will do too
-                    for (var x = 0; x < updateOnScriptUpdate.length; x++) {
-                        updateFile(updateOnScriptUpdate[x]);
-                    }
-                }
-                catch (err) {
-                    sys.changeScript(sys.getFileContent(sys.scriptsFolder + 'scripts.js'));
-                    sendBotMessage('err' + ' ' + err.lineNumber);
-                    sendBotMessage('Updating failed, loaded old scripts!');
-                }
-            };
+
+function changeScript(resp) {
+    if (resp === "") {
+        sendBotMessage("There was an error accessing the script, paste the contents of (link) into your PO folder and restart, or wait for a client update", undefined, "https://github.com/downloads/coyotte508/pokemon-online/ssl.zip");
+        return;
+    }
+    try {
+        sys.changeScript(resp, true);
+        sys.writeToFile(sys.scriptsFolder + "scripts.js", resp);
+        var updateOnScriptUpdate = ["utilities.js"]; //Since the majority of the time, if utilities needs updating, then scripts will do too
+        for (var x = 0; x < updateOnScriptUpdate.length; x++) {
+            updateFile(updateOnScriptUpdate[x]);
+        }
+    }
+    catch (err) {
+        sys.changeScript(sys.getFileContent(sys.scriptsFolder + 'scripts.js'));
+        sendBotMessage('err' + ' ' + err.lineNumber);
+        sendBotMessage('Updating failed, loaded old scripts!');
+    }
+}
 if (client.ownId() !== -1) {
     init();
 }
@@ -484,10 +486,7 @@ client.network()
 Script_Version = "2.0.00"; //version the script is currently on
 poScript = ({
     clientStartUp: function () {
-        if (client.ownId() !== -1) {
-            loadFiles();
-        }
-        //sendMessage('Script Check: OK'); //use this to send a message on update scripts
+        sendMessage('Script Check: OK'); //use this to send a message on update scripts
     },
     onPlayerReceived: function (id) { //detects when a player is visible to the client (mostly logins, but may also happen upon joining a new channel)
         var flashvar = "";
@@ -524,7 +523,6 @@ poScript = ({
         formatMessage(message);
     },
     beforeChannelMessage: function (message, channel, html) { //detects a channel specific message
-        return;
         if (initCheck !== true) {
             init();
         }
@@ -618,7 +616,6 @@ poScript = ({
                     .toLowerCase();
             }
             try {
-                print(command)
                 Commands.commandHandler(command, commandData, channel);
             }
             catch (e) {
@@ -626,8 +623,8 @@ poScript = ({
             }
         }
     },
-    beforeChallengeReceived: function(id) {
+    beforeChallengeReceived: function (id) {
         sys.stopEvent();
     }
-    
+
 });
