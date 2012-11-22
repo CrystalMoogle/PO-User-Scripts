@@ -38,7 +38,7 @@ require = function require(module_name) {
             try {
                 eval(sys.getFileContent(scriptsFolder+"/"+module_name));
             } catch(e) {
-                print("Error loading module " + module_name + ": " + e);
+                print("Error loading module " + module_name + ": " + e + (e.lineNumber ? " on line: " + e.lineNumber : ""));
             }
         }
     }
@@ -52,13 +52,6 @@ if(client.ownId() !==-1){
 
 function print(message) {
     sendMessage(message);
-}
-
-function importScript(file) {
-    if (scriptsFolder !== undefined) {
-        return eval(sys.getFileContent(scriptsFolder + "/" + file));
-    }
-    return eval(sys.getFileContent(file));
 }
 
 function cleanFile(filename) {
@@ -77,6 +70,7 @@ function checkFiles() {
 }
 
 function updateFile(filename) {
+    delete require.cache[filename];
     sys.writeToFile(scriptsFolder + "/" + filename, sys.synchronousWebCall(script_url + "clientscripts/" + filename));
     loadFiles();
 }
