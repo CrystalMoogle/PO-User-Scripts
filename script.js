@@ -13,7 +13,7 @@
 var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/devel/"; //where the script is stored
 var scriptsFolder = "ClientScripts"; //replace with undefined if you don't want a folder
 var global = this;
-var poScript, Script_Version, initCheck, repoFolder, etext, tgreentext, flash, autoresponse, friendsflash, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style, src, globalMessageCheck, globalMessage, Utilities;
+var poScript, Script_Version, initCheck, repoFolder, etext, tgreentext, flash, autoresponse, friendsflash, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style, src, globalMessageCheck, globalMessage, Utilities, Commands;
 var neededFiles = ["utilities.js", "commands.js"]; //files needed for the script in an array
 //easier importing of server scripts
 sys.name = client.name, sys.id = client.id, src = client.ownId();
@@ -45,7 +45,7 @@ require = function require(module_name) {
     require.cache[module_name] = module.exports;
     return module.exports;
 };
-require.cache = require_cache
+require.cache = require_cache;
 if(client.ownId() !==-1){
     checkFiles();
 }
@@ -109,7 +109,7 @@ function checkScriptVersion(bool) { //checks the current script version with the
     if (checkversion === "false" && bool === false) {
         return;
     }
-    sys.webCall(script_url+script.js, function (resp) {
+    sys.webCall(script_url+'script.js', function (resp) {
         if (resp.length === 0) {
             sendBotMessage("There was an error accessing the script, paste the contents of (link) into your PO folder and restart, or wait for a client update", undefined, "https://github.com/downloads/coyotte508/pokemon-online/ssl.zip");
             return;
