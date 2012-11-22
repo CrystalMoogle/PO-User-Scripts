@@ -83,7 +83,7 @@ function updateFile(filename) {
 }
 
 function loadFiles() {
-    Utilities = require('utilities');
+    Utilities = require('utilities.js');
     Commands = require('commands.js');
 }
 
