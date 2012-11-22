@@ -1,4 +1,4 @@
-Commands = {
+exports = {
     commandHandler: function commandHandler(command, commandData, channel) {
         if (command === "commandlist" || command === "commandslist") { //handles all the commands
             sys.stopEvent();
