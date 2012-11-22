@@ -526,20 +526,6 @@ exports = {
                 updateURL = commandData;
             }
             var channel_local = channel;
-            var changeScript = function (resp) {
-                if (resp === "") {
-                    sendBotMessage("There was an error accessing the script, paste the contents of (link) into your PO folder and restart, or wait for a client update", undefined, "https://github.com/downloads/coyotte508/pokemon-online/ssl.zip");
-                    return;
-                }
-                try {
-                    sys.changeScript(resp, true);
-                    sys.writeToFile(sys.scriptsFolder + "scripts.js", resp);
-                }
-                catch (err) {
-                    sys.changeScript(sys.getFileContent(sys.scriptsFolder + 'scripts.js'));
-                    sendBotMessage('Updating failed, loaded old scripts!');
-                }
-            };
             sendBotMessage("Fetching scripts from (link)", channel_local, updateURL);
             sys.webCall(updateURL, changeScript);
             return;
