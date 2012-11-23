@@ -23,7 +23,12 @@ sys.sendAll = function (message, channel) {
 sys.sendMessage = function (id, message, channel) {
     sendMessage(message, channel);
 };
+var require_cache = typeof require != 'undefined' ? require.cache : {};
 require = function require(module_name) {
+    if (require.cache[module_name]) {
+        return require.cache[module_name];
+    }
+    
     var module = {};
     module.module = module;
     module.exports = {};
@@ -39,8 +44,11 @@ require = function require(module_name) {
             }
         }
     }
+    require.cache[module_name] = module.exports;
     return module.exports;
 };
+require.cache = require_cache;
+
 if (client.ownId() !== -1) {
     checkFiles();
 }
@@ -65,6 +73,7 @@ function checkFiles() {
 }
 
 function updateFile(filename) {
+    delete require.cache[filename];
     sys.writeToFile(scriptsFolder + "/" + filename, sys.synchronousWebCall(script_url + "clientscripts/" + filename));
     loadFiles();
 }
@@ -464,14 +473,13 @@ function changeScript(resp) {
     try {
         sys.changeScript(resp, true);
         sys.writeToFile(sys.scriptsFolder + "scripts.js", resp);
-        var updateOnScriptUpdate = ["utilities.js"]; //Since the majority of the time, if utilities needs updating, then scripts will do too
+        var updateOnScriptUpdate = ["utilities.js", "commands.js"]; //Since the majority of the time, if utilities needs updating, then scripts will do too
         for (var x = 0; x < updateOnScriptUpdate.length; x++) {
             updateFile(updateOnScriptUpdate[x]);
         }
     }
     catch (err) {
         sys.changeScript(sys.getFileContent(sys.scriptsFolder + 'scripts.js'));
-        sendBotMessage('err' + ' ' + err.lineNumber);
         sendBotMessage('Updating failed, loaded old scripts!');
     }
 }
