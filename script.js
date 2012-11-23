@@ -40,7 +40,6 @@ require = function require(module_name) {
             }
         }
     }
-    require.cache[module_name] = module.exports;
     return module.exports;
 };
 
