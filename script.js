@@ -461,31 +461,114 @@ function tierCheck(pokemon, gen) { //still needs a lot of work. xml->json is a h
     if (gen === undefined) {
         gen = 5;
     }
-    var check = [1,2,3,4,5,"all"];
+    var check = [1, 2, 3, 4, 5, "all"];
     if (check.indexOf(gen) !== -1) {
         gen = 5;
     }
-    cleanFile(scriptsFolder+'/tiers.json');
-    if (sys.getFileContent(scriptsFolder+'/tiers.json') === "") {
+    cleanFile(scriptsFolder + '/tiers.json');
+    if (sys.getFileContent(scriptsFolder + '/tiers.json') === "") {
         Utilities.tiersCheck(); //will make later just zzz...
     }
-    var tiers = JSON.parse(sys.getFileContent(scriptsFolder+'/tiers.json')).category.category; //xml to JSON wasn't the smoothest transition...
+    var tiers = JSON.parse(sys.getFileContent(scriptsFolder + '/tiers.json'))
+        .category.category; //xml to JSON wasn't the smoothest transition...
     var allowed = [];
     if (gen === 5) {
-        for(var x in tiers[7].tier) {
+        for (var x in tiers[7].tier) {
             var pokemons = tiers[7].tier[x]["-pokemons"];
             if (pokemons === undefined) {
                 allowed.push(tiers[7].tier[x]["-name"]);
                 continue;
             }
-            if (pokemons.toLowerCase().indexOf(pokemon.toLowerCase()) === -1 && allowed.indexOf(tiers[7].tier[x]["-banParent"]) !== -1) {
+            if (pokemons.toLowerCase()
+                .indexOf(pokemon.toLowerCase()) === -1 && allowed.indexOf(tiers[7].tier[x]["-banParent"]) !== -1) {
                 allowed.push(tiers[7].tier[x]["-name"]);
             }
         }
     }
     return allowed;
 }
-    
+
+function getAbility(pokemon) {
+    if (sys.pokemon(pokemon) === "Keldeo-R") {
+        pokemon = pokemon % 65536;
+    }
+    var abilityone = sys.pokeAbility(pokemon, 0, 5);
+    var abilitytwo = sys.pokeAbility(pokemon, 1, 5);
+    var abilitydw = sys.pokeAbility(pokemon, 2, 5);
+    if (pokemon === sys.pokeNum('Thundurus-T')) {
+        abilityone = 10;
+    }
+    if (pokemon === sys.pokeNum('Tornadus-T')) {
+        abilityone = 144;
+    }
+    if (pokemon === sys.pokeNum('Thundurus-T')) {
+        abilityone = 22;
+    }
+    if (pokemon === sys.pokeNum('Kyurem-W')) {
+        abilityone = 163;
+    }
+    if (pokemon === sys.pokeNum('Kyurem-B')) {
+        abilityone = 164;
+    }
+    if (abilitytwo === 0 && abilitydw === 0 || abilitytwo === undefined && abilitydw === undefined) {
+        return "Ability: " + sys.ability(abilityone);
+    }
+    if (abilitytwo === 0 && abilitydw !== 0 || abilitytwo === undefined && abilitydw !== undefined) {
+        return "Abilities: " + sys.ability(abilityone) + " / " + sys.ability(abilitydw) + " (Dream World)";
+    }
+    return "Abilities: " + sys.ability(abilityone) + " / " + sys.ability(abilitytwo) + " / " + sys.ability(abilitydw) + " (Dream World)";
+}
+
+function getMinMax(val, hp) {
+    var min, max;
+    val = parseInt(val * 2, 10);
+    if (hp !== true) {
+        var minmin, maxplus;
+        min = parseInt(val + 31, 10);
+        minmin = parseInt((val + 31) * 0.9, 10);
+        max = parseInt(val + 31 + 64, 10);
+        maxplus = parseInt((val + 31 + 64) * 1.1, 10);
+        return "&nbsp;&nbsp;&nbsp;&nbsp;Min (-): " + minmin + " | Min: " + min + " | Max: " + max + " | Max (+): " + maxplus;
+    }
+    min = parseInt(val + 110, 10);
+    max = parseInt(val + 110 + 64, 10);
+    return "&nbsp;&nbsp;&nbsp;&nbsp;Min: " + min + " | Max: " + max;
+}
+
+function pokeDex(pokemon) {
+    if (sys.pokemon(pokemon) === "Missingno") {
+        return;
+    }
+    var data = [];
+    var npokemon = pokemon; //so we can refer to the old number when needed
+    if (pokemon > 649) {
+        npokemon = pokemon % 65536;
+    }
+    data.push("");
+    data.push("<b>#" + npokemon + " " + sys.pokemon(pokemon) + "</b>");
+    data.push('<img src="pokemon:' + pokemon + '"/>');
+    var typea = sys.pokeType1(pokemon, 5);
+    var typeb = sys.pokeType2(pokemon, 5);
+    data.push("<b>Type: " + sys.type(typea) + (typeb !== 17 ? " / " + sys.type(typeb) + "</b>" : "</b>"));
+    data.push("<b>" + getAbility(pokemon) + "</b>");
+    data.push("<b>HP: " + sys.baseStats(pokemon, 0, 5) + "</b>");
+    data.push(getMinMax(sys.baseStats(pokemon, 0, 5), true));
+    data.push("<b>Atk: " + sys.baseStats(pokemon, 1, 5) + "</b>");
+    data.push(getMinMax(sys.baseStats(pokemon, 1, 5), false));
+    data.push("<b>Def: " + sys.baseStats(pokemon, 2, 5) + "</b>");
+    data.push(getMinMax(sys.baseStats(pokemon, 2, 5), false));
+    data.push("<b>SpAtk: " + sys.baseStats(pokemon, 3, 5) + "</b>");
+    data.push(getMinMax(sys.baseStats(pokemon, 3, 5), false));
+    data.push("<b>SpDef: " + sys.baseStats(pokemon, 4, 5) + "</b>");
+    data.push(getMinMax(sys.baseStats(pokemon, 4, 5), false));
+    data.push("<b>Speed: " + sys.baseStats(pokemon, 5, 5) + "</b>");
+    data.push(getMinMax(sys.baseStats(pokemon, 5, 5), false));
+    data.push("");
+    for (var x = 0; x < data.length; x++) {
+        sendHtmlMessage(data[x]);
+    }
+}
+
 function changeScript(resp) {
     if (resp === "") {
         sendBotMessage("There was an error accessing the script, paste the contents of (link) into your PO folder and restart, or wait for a client update", undefined, "https://github.com/downloads/coyotte508/pokemon-online/ssl.zip");
