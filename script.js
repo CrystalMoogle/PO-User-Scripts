@@ -24,7 +24,6 @@ sys.sendMessage = function (id, message, channel) {
     sendMessage(message, channel);
 };
 require = function require(module_name) {
-    
     var module = {};
     module.module = module;
     module.exports = {};
@@ -43,7 +42,7 @@ require = function require(module_name) {
     return module.exports;
 };
 
-if (client.ownId() !== -1) {
+if (typeof client !== 'undefined' && client.ownId() !== -1) {
     checkFiles();
 }
 
@@ -458,6 +457,35 @@ function formatMessage(message, channel) {
     }
 }
 
+function tierCheck(pokemon, gen) { //still needs a lot of work. xml->json is a headache and I give up for the moment :3
+    if (gen === undefined) {
+        gen = 5;
+    }
+    var check = [1,2,3,4,5,"all"];
+    if (check.indexOf(gen) !== -1) {
+        gen = 5;
+    }
+    cleanFile(scriptsFolder+'/tiers.json');
+    if (sys.getFileContent(scriptsFolder+'/tiers.json') === "") {
+        Utilities.tiersCheck(); //will make later just zzz...
+    }
+    var tiers = JSON.parse(sys.getFileContent(scriptsFolder+'/tiers.json')).category.category; //xml to JSON wasn't the smoothest transition...
+    var allowed = [];
+    if (gen === 5) {
+        for(var x in tiers[7].tier) {
+            var pokemons = tiers[7].tier[x]["-pokemons"];
+            if (pokemons === undefined) {
+                allowed.push(tiers[7].tier[x]["-name"]);
+                continue;
+            }
+            if (pokemons.toLowerCase().indexOf(pokemon.toLowerCase()) === -1 && allowed.indexOf(tiers[7].tier[x]["-banParent"]) !== -1) {
+                allowed.push(tiers[7].tier[x]["-name"]);
+            }
+        }
+    }
+    return allowed;
+}
+    
 function changeScript(resp) {
     if (resp === "") {
         sendBotMessage("There was an error accessing the script, paste the contents of (link) into your PO folder and restart, or wait for a client update", undefined, "https://github.com/downloads/coyotte508/pokemon-online/ssl.zip");
