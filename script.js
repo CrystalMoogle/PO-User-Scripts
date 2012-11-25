@@ -457,37 +457,6 @@ function formatMessage(message, channel) {
     }
 }
 
-function tierCheck(pokemon, gen) { //still needs a lot of work. xml->json is a headache and I give up for the moment :3
-    if (gen === undefined) {
-        gen = 5;
-    }
-    var check = [1, 2, 3, 4, 5, "all"];
-    if (check.indexOf(gen) !== -1) {
-        gen = 5;
-    }
-    cleanFile(scriptsFolder + '/tiers.json');
-    if (sys.getFileContent(scriptsFolder + '/tiers.json') === "") {
-        Utilities.tiersCheck(); //will make later just zzz...
-    }
-    var tiers = JSON.parse(sys.getFileContent(scriptsFolder + '/tiers.json'))
-        .category.category; //xml to JSON wasn't the smoothest transition...
-    var allowed = [];
-    if (gen === 5) {
-        for (var x in tiers[7].tier) {
-            var pokemons = tiers[7].tier[x]["-pokemons"];
-            if (pokemons === undefined) {
-                allowed.push(tiers[7].tier[x]["-name"]);
-                continue;
-            }
-            if (pokemons.toLowerCase()
-                .indexOf(pokemon.toLowerCase()) === -1 && allowed.indexOf(tiers[7].tier[x]["-banParent"]) !== -1) {
-                allowed.push(tiers[7].tier[x]["-name"]);
-            }
-        }
-    }
-    return allowed;
-}
-
 function getAbility(pokemon) {
     if (sys.pokemon(pokemon) === "Keldeo-R") {
         pokemon = pokemon % 65536;
