@@ -279,7 +279,7 @@ function awayFunction() { //makes the user go away if needed
     if (client.ownId() === -1) { //this shouldn't happen due to Network.playerLogin but people have been complaining of crashes so gonna see if this helps
         return;
     }
-    if (sys.getVal("idle") === "true") {
+    if (autoidle === true) {
         client.goAway(true);
     }
 }
@@ -702,7 +702,7 @@ poScript = ({
         }
     },
     beforeChallengeReceived: function (id) {
-        if (nochallenge = true) {
+        if (nochallenge === true) {
             sys.stopEvent();
         }
     }

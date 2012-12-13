@@ -7,6 +7,7 @@ exports = {
             sendMessage(commandsymbol + "greentext on/off: Allows you to turn greentext on/off");
             sendMessage(commandsymbol + "greentextcolo(u)r colour: Allows you to change your greentext colour");
             sendMessage(commandsymbol + "idle on/off: Allows you to turn auto-idle on/off");
+            sendMessage(commandsymbol + "ignorechallenges on/off: Allows you to ignore all challenges without idling");
             sendMessage(commandsymbol + "goto channel: Allows you to switch to that channel (joins if you're not in that channel)");
             sendMessage(commandsymbol + "reconnect: Allows you to reconnect to the server (Does not work if kicked/IP changes)");
             sendMessage(commandsymbol + "pm name: Allows you to start a PM with a user");
