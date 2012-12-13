@@ -650,12 +650,12 @@ exports = {
         if (command === "pokedex") {
             sys.stopEvent();
             if (commandData === undefined) {
-                sendBotMessage("Usage is ~pokedex pokemon:gen (optional)");
+                sendBotMessage("Usage is " + commandsymbol + "pokedex pokemon:gen (optional)");
                 return;
             }
             commandData = commandData.split(':');
             if (commandData.length > 2) {
-                sendBotMessage("Usage is ~pokedex pokemon:gen (optional)");
+                sendBotMessage("Usage is " + commandsymbol + "pokedex pokemon:gen (optional)");
                 return;
             }
             var pokemon = sys.pokeNum(commandData[0]);
