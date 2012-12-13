@@ -39,11 +39,12 @@ exports = {
             sendMessage(commandsymbol + "ar[on/off]: Turns your autoresponse on/off if type if command");
             sendMessage(commandsymbol + "artime hour1:hour2: Sets your autoresponse to activate between hour1 and hour2");
             sendMessage(commandsymbol + "fontcommands: Shows you the font command details");
+            sendMessage(commandsymbol + "pokedex:gen: Shows you details about a pokemon. Gen is an optional parameter to view the pokemon in different gens");
             sendMessage(commandsymbol + "damagecalc [s]atk:move power:modifier:[s]def:HP: Basic damage calculator");
             sendMessage("Explanation: [s]atk is the attacking pokémon's exact stat (not base), move power is the move's base power, modifier is any modifiers that need to be added (e.g. life orb is 1.3), HP/[s]def is the defending pokémon's exact HP/Def stats (not base)");
             sendMessage("Example: " + commandsymbol + "damagecalc 100:100:1.3:100:100 will show you the result of a pokémon with 100 [s]atk, with Life Orb using a 100bp move against a pokémon with 100HP/[s]def");
             sendMessage("");
-            sendBotMessage('If you ever forget your command symbol, type reset symbol to revert it back to "~"');
+            sendBotMessage('If you ever forget your command symbol, type "reset symbol" (no quotes) to revert it back to "~"');
             return;
         }
         if (command === "fontcommands") {
@@ -627,6 +628,23 @@ exports = {
             sendBotMessage(paras[1] + "BP move coming from " + paras[0] + "[s]atk with a " + paras[2] + " modifier on " + paras[4] + "HP and " + paras[3] + "[s]def, does approxmiately " + calc + " damage");
             return;
         }
+        if (command === "pokedex") {
+            sys.stopEvent();
+            commandData = commandData.split(':');
+            if (commandData.length > 2) {
+                sendBotMessage("Usage is /pokedex pokemon:gen (optional)");
+            }
+            var pokemon = sys.pokeNum(commandData[0]);
+            var gen = commandData[1];
+            if (isNaN(gen) || gen === undefined || gen > 5 || gen < 1) {
+                gen = 5;
+            }
+            var returnval = pokeDex(pokemon, gen);
+            if (returnval) {
+                sendBotMessage(returnval);
+            }
+            return;
+        }
         if (command === "commandsymbol") {
             sys.stopEvent();
             var symbol = commandData;
@@ -777,4 +795,4 @@ exports = {
             return;
         }
     }
-}
+};

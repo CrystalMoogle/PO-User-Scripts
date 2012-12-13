@@ -330,10 +330,11 @@ function htmllinks(text) { //makes sure links get linked!
 function addExtras(text, playname, bot, channel) { //adds stalkwords/links/enriched text etc
     text = htmllinks(text);
     text = enrichedText(text);
-    if (channel !== undefined) {
-        text = client.channel(channel)
-            .addChannelLinks(text);
+    if (channel === null) {
+        channel = client.channelId(client.myChannels()[0]);
     }
+    text = client.channel(channel)
+        .addChannelLinks(text);
     text = greenText(text);
     text = stalkWordCheck(text, playname, bot, channel);
     var md5 = new RegExp(sys.md5('/'), "g");
@@ -457,20 +458,20 @@ function formatMessage(message, channel) {
     }
 }
 
-function getAbility(pokemon) {
+function getAbility(pokemon, gen) {
     if (sys.pokemon(pokemon) === "Keldeo-R") {
         pokemon = pokemon % 65536;
     }
-    var abilityone = sys.pokeAbility(pokemon, 0, 5);
-    var abilitytwo = sys.pokeAbility(pokemon, 1, 5);
-    var abilitydw = sys.pokeAbility(pokemon, 2, 5);
+    var abilityone = sys.pokeAbility(pokemon, 0, gen);
+    var abilitytwo = sys.pokeAbility(pokemon, 1, gen);
+    var abilitydw = sys.pokeAbility(pokemon, 2, gen);
     if (pokemon === sys.pokeNum('Thundurus-T')) {
         abilityone = 10;
     }
     if (pokemon === sys.pokeNum('Tornadus-T')) {
         abilityone = 144;
     }
-    if (pokemon === sys.pokeNum('Thundurus-T')) {
+    if (pokemon === sys.pokeNum('Landorus-T')) {
         abilityone = 22;
     }
     if (pokemon === sys.pokeNum('Kyurem-W')) {
@@ -484,6 +485,9 @@ function getAbility(pokemon) {
     }
     if (abilitytwo === 0 && abilitydw !== 0 || abilitytwo === undefined && abilitydw !== undefined) {
         return "Abilities: " + sys.ability(abilityone) + " / " + sys.ability(abilitydw) + " (Dream World)";
+    }
+    if (abilitytwo !== 0 && abilitydw === 0 || abilitytwo !== undefined && abilitydw === undefined) {
+        return "Abilities: " + sys.ability(abilityone) + " / " + sys.ability(abilitytwo);
     }
     return "Abilities: " + sys.ability(abilityone) + " / " + sys.ability(abilitytwo) + " / " + sys.ability(abilitydw) + " (Dream World)";
 }
@@ -504,38 +508,53 @@ function getMinMax(val, hp) {
     return "&nbsp;&nbsp;&nbsp;&nbsp;Min: " + min + " | Max: " + max;
 }
 
-function pokeDex(pokemon) {
+function pokeDex(pokemon, gen) {
     if (sys.pokemon(pokemon) === "Missingno") {
-        return;
+        return "Invalid pokemon";
+    }
+    if (gen === undefined) {
+        gen = 5;
     }
     var data = [];
     var npokemon = pokemon; //so we can refer to the old number when needed
     if (pokemon > 649) {
         npokemon = pokemon % 65536;
     }
+    var generations = [0, 151, 252, 386, 493, 649];
+    if (npokemon > generations[gen]) {
+        return "Pokemon is not in this gen";
+    }
     data.push("");
     data.push("<b>#" + npokemon + " " + sys.pokemon(pokemon) + "</b>");
-    data.push('<img src="pokemon:' + pokemon + '"/>');
-    var typea = sys.pokeType1(pokemon, 5);
-    var typeb = sys.pokeType2(pokemon, 5);
+    data.push('<img src="pokemon:' + pokemon + '&gen='+ gen + '"/>');
+    var typea = sys.pokeType1(pokemon, gen);
+    var typeb = sys.pokeType2(pokemon, gen);
     data.push("<b>Type: " + sys.type(typea) + (typeb !== 17 ? " / " + sys.type(typeb) + "</b>" : "</b>"));
-    data.push("<b>" + getAbility(pokemon) + "</b>");
-    data.push("<b>HP: " + sys.baseStats(pokemon, 0, 5) + "</b>");
-    data.push(getMinMax(sys.baseStats(pokemon, 0, 5), true));
-    data.push("<b>Atk: " + sys.baseStats(pokemon, 1, 5) + "</b>");
-    data.push(getMinMax(sys.baseStats(pokemon, 1, 5), false));
-    data.push("<b>Def: " + sys.baseStats(pokemon, 2, 5) + "</b>");
-    data.push(getMinMax(sys.baseStats(pokemon, 2, 5), false));
-    data.push("<b>SpAtk: " + sys.baseStats(pokemon, 3, 5) + "</b>");
-    data.push(getMinMax(sys.baseStats(pokemon, 3, 5), false));
-    data.push("<b>SpDef: " + sys.baseStats(pokemon, 4, 5) + "</b>");
-    data.push(getMinMax(sys.baseStats(pokemon, 4, 5), false));
-    data.push("<b>Speed: " + sys.baseStats(pokemon, 5, 5) + "</b>");
-    data.push(getMinMax(sys.baseStats(pokemon, 5, 5), false));
+    if (gen > 2) {
+        data.push("<b>" + getAbility(pokemon, gen) + "</b>");
+    }
+    data.push("<b>HP: " + sys.baseStats(pokemon, 0, gen) + "</b>");
+    data.push(getMinMax(sys.baseStats(pokemon, 0, gen), true));
+    data.push("<b>Atk: " + sys.baseStats(pokemon, 1, gen) + "</b>");
+    data.push(getMinMax(sys.baseStats(pokemon, 1, gen), false));
+    data.push("<b>Def: " + sys.baseStats(pokemon, 2, gen) + "</b>");
+    data.push(getMinMax(sys.baseStats(pokemon, 2, gen), false));
+    if (gen !== 1) {
+        data.push("<b>SpAtk: " + sys.baseStats(pokemon, 3, gen) + "</b>");
+        data.push(getMinMax(sys.baseStats(pokemon, 3, gen), false));
+        data.push("<b>SpDef: " + sys.baseStats(pokemon, 4, gen) + "</b>");
+        data.push(getMinMax(sys.baseStats(pokemon, 4, gen), false));
+    } else {
+        data.push("<b>Special: " + sys.baseStats(pokemon, 3, gen) + "</b>");
+        data.push(getMinMax(sys.baseStats(pokemon, 3, gen), false));
+    }
+    data.push("<b>Speed: " + sys.baseStats(pokemon, 5, gen) + "</b>");
+    data.push(getMinMax(sys.baseStats(pokemon, 5, gen), false));
     data.push("");
     for (var x = 0; x < data.length; x++) {
         sendHtmlMessage(data[x]);
     }
+    return;
 }
 
 function changeScript(resp) {
