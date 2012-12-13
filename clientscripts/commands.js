@@ -3,10 +3,9 @@ exports = {
         if (command === "commandlist" || command === "commandslist") { //handles all the commands
             sys.stopEvent();
             sendMessage("*** Client Commands ***");
-            sendMessage(commandsymbol + "etext on/off: Allows you to turn Enriched text on/off");
-            sendMessage(commandsymbol + "greentext on/off: Allows you to turn greentext on/off");
-            sendMessage(commandsymbol + "greentextcolo(u)r colour: Allows you to change your greentext colour");
+            sendMessage(commandsymbol + "commandsymbol symbol: Allows you to change the command symbol");
             sendMessage(commandsymbol + "idle on/off: Allows you to turn auto-idle on/off");
+            sendMessage(commandsymbol + "flash on/off:channel: Allows you to turn flashes on/off. Channel is an optional parameter to turn flashes off for one channel");
             sendMessage(commandsymbol + "ignorechallenges on/off: Allows you to ignore all challenges without idling");
             sendMessage(commandsymbol + "goto channel: Allows you to switch to that channel (joins if you're not in that channel)");
             sendMessage(commandsymbol + "reconnect: Allows you to reconnect to the server (Does not work if kicked/IP changes)");
@@ -14,38 +13,57 @@ exports = {
             sendMessage(commandsymbol + "changename: Allows you to change your name");
             sendMessage(commandsymbol + "stalkwords: Allows you to view your current stalkwords");
             sendMessage(commandsymbol + "[add/remove]stalkword word: Allows you to add/remove stalkwords");
-            sendMessage(commandsymbol + "flash on/off:channel: Allows you to turn flashes on/off. Channel is an optional parameter to turn flashes off for one channel");
-            sendMessage(commandsymbol + "friends: Allows you to view your current friends and their online status");
-            sendMessage(commandsymbol + "[add/remove]friend friend: Allows you to add/remove friends");
-            sendMessage(commandsymbol + "friendflash on/off: Allows you turn friend flashes on/off");
-            sendMessage(commandsymbol + "ignorelist: Allows you to view your autoignore list");
-            sendMessage(commandsymbol + "[add/remove]ignore user: Allows you to add/remove people from your ignore list");
             sendMessage(commandsymbol + "logchannels: Allows you to view your log channels");
             sendMessage(commandsymbol + "[add/remove]logchannel channel: Allows you to add/remove channels from the channels you log");
-            sendMessage(commandsymbol + "changebotcolo(u)r colour: Allows you to change the bot's (client and server) colour");
-            sendMessage(commandsymbol + "changebotname name: Allows you to change clientbot's name");
-            sendMessage(commandsymbol + "changebotstyle htmltag: Allows you to change the style of the client bot (start tags only)");
-            sendMessage(commandsymbol + "resetbot: Allows you to reset the bot to its default values");
-            sendMessage(commandsymbol + "checkversion: Allows you to check for updates");
-            sendMessage(commandsymbol + "updatealert on/off: Allows you to get automatically alerted about new versions");
-            sendMessage(commandsymbol + "changelog version: Allows you to view the changelog");
-            sendMessage(commandsymbol + "versions: Allows you to view the current versions");
-            sendMessage(commandsymbol + "updatescripts: Allows you to updatescripts");
-            sendMessage(commandsymbol + "authsymbols auth:symbol: Allows you to change authsymbols. If symbol is left blank, then it removes the current auth symbol");
-            sendMessage(commandsymbol + "authstyle auth:htmltag: Allows you to change the name style of auth. Make sure to use start tags only. If htmltag is left blank, then it will remove the current style");
-            sendMessage(commandsymbol + "highlight colour: Allows you to change the colour of the highlight when flashed");
-            sendMessage(commandsymbol + "commandsymbol symbol: Allows you to change the command symbol");
-            sendMessage(commandsymbol + "armessage: Sets your autoresponse message");
-            sendMessage(commandsymbol + "artype [command/time]: Sets how to activate your autoresponse, time does it between certain hours, command activates it by command");
-            sendMessage(commandsymbol + "ar[on/off]: Turns your autoresponse on/off if type if command");
-            sendMessage(commandsymbol + "artime hour1:hour2: Sets your autoresponse to activate between hour1 and hour2");
-            sendMessage(commandsymbol + "fontcommands: Shows you the font command details");
             sendMessage(commandsymbol + "pokedex:gen: Shows you details about a pokemon. Gen is an optional parameter to view the pokemon in different gens");
+            sendMessage(commandsymbol + "formatcommands: Displays the formatting comands (e.g. enriched text, auth symbols)");
+            sendMessage(commandsymbol + "scriptcommands: Shows commands related to the scripts (e.g. versions, updatescripts)");
+            sendMessage(commandsymbol + "socialcommands: Shows commands related to social aspects (e.g. friendslist, ignorelist)");
+            sendMessage(commandsymbol + "fontcommands: Shows you the font command details");
             sendMessage(commandsymbol + "damagecalc [s]atk:move power:modifier:[s]def:HP: Basic damage calculator");
             sendMessage("Explanation: [s]atk is the attacking pokémon's exact stat (not base), move power is the move's base power, modifier is any modifiers that need to be added (e.g. life orb is 1.3), HP/[s]def is the defending pokémon's exact HP/Def stats (not base)");
             sendMessage("Example: " + commandsymbol + "damagecalc 100:100:1.3:100:100 will show you the result of a pokémon with 100 [s]atk, with Life Orb using a 100bp move against a pokémon with 100HP/[s]def");
             sendMessage("");
             sendBotMessage('If you ever forget your command symbol, type "reset symbol" (no quotes) to revert it back to "~"');
+            return;
+        }
+        if (command === "formatcommands") {
+            sys.stopEvent();
+            sendMessage("*** Formatting Commands ***");
+            sendMessage(commandsymbol + "etext on/off: Allows you to turn Enriched text on/off");
+            sendMessage(commandsymbol + "greentext on/off: Allows you to turn greentext on/off");
+            sendMessage(commandsymbol + "greentextcolo(u)r colour: Allows you to change your greentext colour");
+            sendMessage(commandsymbol + "highlight colour: Allows you to change the colour of the highlight when flashed");
+            sendMessage(commandsymbol + "changebotcolo(u)r colour: Allows you to change the bot's (client and server) colour");
+            sendMessage(commandsymbol + "changebotname name: Allows you to change clientbot's name");
+            sendMessage(commandsymbol + "changebotstyle htmltag: Allows you to change the style of the client bot (start tags only)");
+            sendMessage(commandsymbol + "resetbot: Allows you to reset the bot to its default values");
+            sendMessage(commandsymbol + "authsymbols auth:symbol: Allows you to change authsymbols. If symbol is left blank, then it removes the current auth symbol");
+            sendMessage(commandsymbol + "authstyle auth:htmltag: Allows you to change the name style of auth. Make sure to use start tags only. If htmltag is left blank, then it will remove the current style");
+            return;
+        }
+        if (command === "scriptcommands") {
+            sys.stopEvent();
+            sendMessage("*** Script Commands ***");
+            sendMessage(commandsymbol + "updatescripts: Allows you to updatescripts");
+            sendMessage(commandsymbol + "versions: Allows you to view the current versions");
+            sendMessage(commandsymbol + "changelog version: Allows you to view the changelog");
+            sendMessage(commandsymbol + "checkversion: Allows you to check for updates");
+            sendMessage(commandsymbol + "updatealert on/off: Allows you to get automatically alerted about new versions");
+            return;
+        }
+        if (command  === "socialcommands") {
+            sys.stopEvent();
+            sendMessage("*** Social Commands ***");
+            sendMessage(commandsymbol + "friends: Allows you to view your current friends and their online status");
+            sendMessage(commandsymbol + "[add/remove]friend friend: Allows you to add/remove friends");
+            sendMessage(commandsymbol + "friendflash on/off: Allows you turn friend flashes on/off");
+            sendMessage(commandsymbol + "ignorelist: Allows you to view your autoignore list");
+            sendMessage(commandsymbol + "[add/remove]ignore user: Allows you to add/remove people from your ignore list");
+            sendMessage(commandsymbol + "armessage: Sets your autoresponse message");
+            sendMessage(commandsymbol + "artype [command/time]: Sets how to activate your autoresponse, time does it between certain hours, command activates it by command");
+            sendMessage(commandsymbol + "ar[on/off]: Turns your autoresponse on/off if type if command");
+            sendMessage(commandsymbol + "artime hour1:hour2: Sets your autoresponse to activate between hour1 and hour2");
             return;
         }
         if (command === "fontcommands") {
