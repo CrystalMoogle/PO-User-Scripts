@@ -1,6 +1,11 @@
+/*
+    Commands script for client scripts
+    This is a required file for the main script    
+*/
+
 exports = {
     commandHandler: function commandHandler(command, commandData, channel) {
-        if (command === "commandlist" || command === "commandslist") { //handles all the commands
+        if (command === "commandlist" || command === "commandslist") {
             sys.stopEvent();
             sendMessage("*** Client Commands ***");
             sendMessage(commandsymbol + "commandsymbol symbol: Allows you to change the command symbol");
@@ -8,7 +13,7 @@ exports = {
             sendMessage(commandsymbol + "flash on/off:channel: Allows you to turn flashes on/off. Channel is an optional parameter to turn flashes off for one channel");
             sendMessage(commandsymbol + "ignorechallenges on/off: Allows you to ignore all challenges without idling");
             sendMessage(commandsymbol + "goto channel: Allows you to switch to that channel (joins if you're not in that channel)");
-            sendMessage(commandsymbol + "reconnect: Allows you to reconnect to the server (Does not work if kicked/IP changes)");
+            sendMessage(commandsymbol + "reconnect: Allows you to reconnect to the server");
             sendMessage(commandsymbol + "pm name: Allows you to start a PM with a user");
             sendMessage(commandsymbol + "changename: Allows you to change your name");
             sendMessage(commandsymbol + "stalkwords: Allows you to view your current stalkwords");
@@ -16,7 +21,7 @@ exports = {
             sendMessage(commandsymbol + "logchannels: Allows you to view your log channels");
             sendMessage(commandsymbol + "[add/remove]logchannel channel: Allows you to add/remove channels from the channels you log");
             sendMessage(commandsymbol + "pokedex:gen: Shows you details about a pokemon. Gen is an optional parameter to view the pokemon in different gens");
-            sendMessage(commandsymbol + "formatcommands: Displays the formatting comands (e.g. enriched text, auth symbols)");
+            sendMessage(commandsymbol + "formatcommands: Shows the formatting comands (e.g. enriched text, auth symbols)");
             sendMessage(commandsymbol + "scriptcommands: Shows commands related to the scripts (e.g. versions, updatescripts)");
             sendMessage(commandsymbol + "socialcommands: Shows commands related to social aspects (e.g. friendslist, ignorelist)");
             sendMessage(commandsymbol + "fontcommands: Shows you the font command details");
