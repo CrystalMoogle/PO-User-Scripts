@@ -19,6 +19,8 @@ exports = {
                 settings = JSON.parse(json);
             }
             etext = settings.etext;
+            nochallenge = settings.nochallenge;
+            autoidle = settings.autoidle;
             tgreentext = settings.tgreentext;
             flash = settings.flash;
             autoresponse = settings.autoresponse;
@@ -62,6 +64,8 @@ exports = {
     loadDefaultSettings: function loadDefaultSettings() {
         var json = {
             "etext": false,
+                "autoidle":false,
+                "nochallenge":false,
                 "tgreentext": false,
                 "flash": true,
                 "autoresponse": false,
@@ -112,6 +116,13 @@ exports = {
         else {
             etext = false;
         }
+        if (sys.getVal('idle') === "true") {
+            autoidle = true;
+        }
+        else {
+            autoidle = false;
+        }
+        nochallenge = false;
         if (sys.getVal('tgreentext') === "true") {
             tgreentext = "true";
         }
@@ -270,6 +281,8 @@ exports = {
     saveSettings: function saveSettings() {
         var settings = {};
         settings.etext = etext;
+        settings.autoidle = autoidle;
+        settings.nochallenge = nochallenge;
         settings.tgreentext = tgreentext;
         settings.flash = flash;
         settings.autoresponse = autoresponse;

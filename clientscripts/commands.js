@@ -96,14 +96,32 @@ exports = {
             sys.stopEvent();
             if (commandData === "on") {
                 client.goAway(true);
-                sys.saveVal('idle', true);
+                autoidle = true;
+                Utilities.saveSettings();
                 sendBotMessage("You turned auto-idling on!");
                 return;
             }
             if (commandData === "off") {
                 client.goAway(false);
-                sys.saveVal('idle', false);
+                autoidle = false;
+                Utilities.saveSettings();
                 sendBotMessage("You turned auto-idling off!");
+                return;
+            }
+            sendBotMessage("Please use on/off");
+        }
+        if (command === "ignorechallenges") {
+            sys.stopEvent();
+            if (commandData === "on") {
+                nochallenge = true;
+                Utilities.saveSettings();
+                sendBotMessage("You are ignoring all challenges");
+                return;
+            }
+            if (commandData === "off") {
+                nochallenge = false;
+                Utilities.saveSettings();
+                sendBotMessage("You are no longer ignoring challenges");
                 return;
             }
             sendBotMessage("Please use on/off");

@@ -203,8 +203,7 @@ function saveToLog(message, channel) { //saves messages to a log file
     }
     var logging = false;
     for (var x in logchannel) {
-        if (client.channelName(channel)
-            .toLowerCase() === logchannel[x].toLowerCase()) {
+        if (client.channelName(channel).toLowerCase() === logchannel[x].toLowerCase()) {
             logging = true;
             break;
         }
@@ -240,8 +239,7 @@ function say(message, channel) {
     if (channel === undefined) {
         channel = client.currentChannel();
     }
-    client.network()
-        .sendChanMessage(channel, message);
+    client.network().sendChanMessage(channel, message);
 }
 
 function getName(string, type) { //gets the name from rainbow/me messages
@@ -289,8 +287,7 @@ function awayFunction() { //makes the user go away if needed
 function stalkWordCheck(string, playname, bot, channel) { //adds flashes to names/stalkwords
     var ownName = Utilities.html_escape(client.ownName());
     var newstring = "";
-    if (string.toLowerCase()
-        .indexOf(ownName.toLowerCase()) !== -1 && playname !== ownName && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
+    if (string.toLowerCase().indexOf(ownName.toLowerCase()) !== -1 && playname !== ownName && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
         var name = new RegExp("\\b(" + ownName + ")\\b(?![^\\s<]*>)", "i");
         var names = string.match(name);
         newstring = string.replace(name, "<span style='" + hilight + "'>" + names[0] + "</span>");
@@ -301,8 +298,7 @@ function stalkWordCheck(string, playname, bot, channel) { //adds flashes to name
     for (var x in stalkwords) {
         var stalk = new RegExp("\\b(" + stalkwords[x] + ")\\b(?![^\\s<]*>)", "i");
         var stalks = string.match(stalk);
-        if (string.toLowerCase()
-            .search(stalk) !== -1 && playname !== client.ownName() && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
+        if (string.toLowerCase().search(stalk) !== -1 && playname !== client.ownName() && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
             newstring = string.replace(stalk, "<span style='" + hilight + "'>" + stalks[0] + "</span>");
             if (newstring !== string) {
                 string = newstring.replace(newstring, "<i> " + newstring + "</i><ping/>");
@@ -318,10 +314,8 @@ function htmllinks(text) { //makes sure links get linked!
     var newtext;
     var newfound;
     for (var x in found) {
-        newfound = found[x].replace(/\//g, sys.md5('/'))
-            .replace(/_/g, sys.md5('_'));
-        newtext = ("<a href ='" + newfound + "'>" + newfound + "</a>")
-            .replace(/&amp;/gi, "&");
+        newfound = found[x].replace(/\//g, sys.md5('/')).replace(/_/g, sys.md5('_'));
+        newtext = ("<a href ='" + newfound + "'>" + newfound + "</a>").replace(/&amp;/gi, "&");
         text = text.replace(found[x], newtext);
     }
     return text;
@@ -333,14 +327,12 @@ function addExtras(text, playname, bot, channel) { //adds stalkwords/links/enric
     if (channel === null) {
         channel = client.channelId(client.myChannels()[0]);
     }
-    text = client.channel(channel)
-        .addChannelLinks(text);
+    text = client.channel(channel).addChannelLinks(text);
     text = greenText(text);
     text = stalkWordCheck(text, playname, bot, channel);
     var md5 = new RegExp(sys.md5('/'), "g");
     var md51 = new RegExp(sys.md5('_'), "g");
-    text = text.replace(md5, '/')
-        .replace(md51, "_");
+    text = text.replace(md5, '/').replace(md51, "_");
     return text;
 }
 
@@ -411,8 +403,7 @@ function handleSystemCommand(string) {
         return;
     }
     sys.system('cd ' + repoFolder + ' & ' + string + ' > ' + repoFolder + '/output.txt');
-    var output = sys.getFileContent(repoFolder + '/output.txt')
-        .split('\n');
+    var output = sys.getFileContent(repoFolder + '/output.txt').split('\n');
     for (var x in output) {
         if (output[x].length > 0) {
             sendMessage(output[x]);
@@ -574,8 +565,7 @@ function changeScript(resp) {
 if (client.ownId() !== -1) {
     init();
 }
-client.network()
-    .playerLogin.connect(function () { //only call when the user has logged in to prevent any crashes
+client.network().playerLogin.connect(function () { //only call when the user has logged in to prevent any crashes
     awayFunction();
     init();
 });
@@ -590,14 +580,12 @@ poScript = ({
             flashvar = "<ping/>";
         }
         for (var x in friends) {
-            if (client.name(id)
-                .toLowerCase() === friends[x].toLowerCase() && flash === true) {
+            if (client.name(id).toLowerCase() === friends[x].toLowerCase() && flash === true) {
                 sendHtmlMessage("<font color = '" + Utilities.html_escape(clientbotcolour) + "'><timestamp/>" + clientbotstyle + Utilities.html_escape(clientbotname) + ":" + Utilities.tagend(clientbotstyle) + "</font> User <a href='po:pm/" + id + "'>" + client.name(id) + "</a> has logged in" + flashvar + "", client.currentChannel());
             }
         }
         for (var x in ignore) {
-            if (client.name(id)
-                .toLowerCase() === ignore[x].toLowerCase()) {
+            if (client.name(id).toLowerCase() === ignore[x].toLowerCase()) {
                 client.ignore(id, true);
             }
         }
@@ -609,7 +597,6 @@ poScript = ({
         saveToLog(client.name(id) + " left the channel", channel);
     },
     beforeNewMessage: function (message, html) {
-        sys.saveVal(sys.time(), message);
         if (initCheck !== true) {
             init();
         }
@@ -659,22 +646,19 @@ poScript = ({
         if (artype === "time") {
             if (arstart < arend) {
                 if (h >= arstart && h < arend) {
-                    client.network()
-                        .sendPM(id, armessage);
+                    client.network().sendPM(id, armessage);
                     playerswarn[id] = true;
                     return;
                 }
             }
             if (h >= arend && h < arstart) {
-                client.network()
-                    .sendPM(id, armessage);
+                client.network().sendPM(id, armessage);
                 playerswarn[id] = true;
                 return;
             }
         }
         if (autoresponse === true) {
-            client.network()
-                .sendPM(id, armessage);
+            client.network().sendPM(id, armessage);
             playerswarn[id] = true;
             return;
         }
@@ -703,13 +687,11 @@ poScript = ({
             var command, commandData;
             var pos = message.indexOf(' ');
             if (pos !== -1) {
-                command = message.substring(1, pos)
-                    .toLowerCase();
+                command = message.substring(1, pos).toLowerCase();
                 commandData = message.substr(pos + 1);
             }
             else {
-                command = message.substr(1)
-                    .toLowerCase();
+                command = message.substr(1).toLowerCase();
             }
             try {
                 Commands.commandHandler(command, commandData, channel);
@@ -720,7 +702,9 @@ poScript = ({
         }
     },
     beforeChallengeReceived: function (id) {
-        sys.stopEvent();
+        if (nochallenge = true) {
+            sys.stopEvent();
+        }
     }
 
 });
