@@ -686,6 +686,7 @@ exports = {
             if (isNaN(gen) || gen === undefined || gen > 5 || gen < 1) {
                 gen = 5;
             }
+            pokeDex(pokemon, gen)
             return;
         }
         if (command === "commandsymbol") {
