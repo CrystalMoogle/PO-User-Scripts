@@ -686,11 +686,6 @@ exports = {
             if (isNaN(gen) || gen === undefined || gen > 5 || gen < 1) {
                 gen = 5;
             }
-            try {
-                pokeDex(pokemon, gen);
-            } catch(e) {
-                sendBotMessage(e);
-            }
             return;
         }
         if (command === "commandsymbol") {
