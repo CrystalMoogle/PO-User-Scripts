@@ -183,7 +183,7 @@ exports = {
             sys.stopEvent();
             var channela = commandData.toLowerCase();
             var channels = client.channelNames();
-            for (var x in channels) {
+            for (var x = 0; x < channels.length; x++) {
                 if (channela === channels[x].toLowerCase()) {
                     channela = channels[x];
                     if (!client.hasChannel(client.channelId(channela))) {
@@ -229,7 +229,7 @@ exports = {
         if (command === "removestalkword") {
             sys.stopEvent();
             commandData = commandData.toLowerCase();
-            for (var x in stalkwords) {
+            for (var x = 0; x < stalkwords.length; x++) {
                 if (stalkwords[x].toLowerCase() === commandData) {
                     stalkwords.splice(x, 1);
                     Utilities.saveSettings();
@@ -269,7 +269,7 @@ exports = {
             }
             else {
                 commandData[1] = commandData[1].toLowerCase();
-                for (var x in fchannel) {
+                for (var x = 0; x < fchannel.length; x++) {
                     if (fchannel[x].toLowerCase() === commandData[1]) {
                         fchannel.splice(x, 1);
                         Utilities.saveSettings();
@@ -282,7 +282,7 @@ exports = {
         if (command === "friends") {
             sys.stopEvent();
             var check = [];
-            for (var x in friends) {
+            for (var x = 0; x < friends.length; x++) {
                 if (client.id(friends[x]) !== -1) {
                     check.push("<a href='po:pm/" + client.id(friends[x]) + "'>" + friends[x] + "</a> <font color='green'>(online)</font>");
                     continue;
@@ -307,7 +307,7 @@ exports = {
         if (command === "removefriend") {
             sys.stopEvent();
             commandData = commandData.toLowerCase();
-            for (var x in friends) {
+            for (var x = 0; x < friends.length; x++) {
                 if (friends[x].toLowerCase() === commandData) {
                     friends.splice(x, 1);
                     Utilities.saveSettings();
@@ -357,7 +357,7 @@ exports = {
         if (command === "removeignore") {
             sys.stopEvent();
             commandData = commandData.toLowerCase();
-            for (var x in ignore) {
+            for (var x = 0; x < ignore.length; x++) {
                 if (ignore[x].toLowerCase() === commandData) {
                     ignore.splice(x, 1);
                     Utilities.saveSettings();
@@ -535,7 +535,7 @@ exports = {
             }
             var details = changelog.versions[commandData].split('\n');
             sendBotMessage("Details for version: " + commandData);
-            for (var x in details) {
+            for (var x = 0; x < details.length; x++) {
                 sendBotMessage(details[x]);
             }
             return;
@@ -656,7 +656,7 @@ exports = {
                 sendBotMessage("Format is [s]atk:movepower:boosts:[s]def:hp");
                 return;
             }
-            for (var x in paras) {
+            for (var x = 0; x < paras.length; x++) {
                 paras[x] = parseFloat(paras[x]);
                 if (isNaN(paras[x])) {
                     sendBotMessage('Parameters must be all numbers!');
@@ -686,7 +686,7 @@ exports = {
             if (isNaN(gen) || gen === undefined || gen > 5 || gen < 1) {
                 gen = 5;
             }
-            pokeDex(pokemon, gen)
+            pokeDex(pokemon, gen);
             return;
         }
         if (command === "commandsymbol") {
@@ -746,7 +746,7 @@ exports = {
         if (command === "removelogchannel") {
             sys.stopEvent();
             commandData = commandData.toLowerCase();
-            for (var x in logchannel) {
+            for (var x = 0; x < logchannel.length; x++) {
                 if (logchannel[x].toLowerCase() === commandData) {
                     logchannel.splice(x, 1);
                     Utilities.saveSettings();
@@ -836,7 +836,6 @@ exports = {
             catch (err) {
                 sendMessage("Error in eval: " + err, bindChannel);
             }
-            return;
         }
     }
 };
