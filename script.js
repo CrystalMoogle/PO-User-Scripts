@@ -13,10 +13,9 @@
 var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/devel/"; //where the script is stored
 var scriptsFolder = "ClientScripts"; //replace with undefined if you don't want a folder
 var global = this;
-var poScript, Script_Version, initCheck, repoFolder, etext, tgreentext, flash, autoresponse, friendsflash, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style, src, globalMessageCheck, globalMessage, Utilities, Commands;
+var poScript, Script_Version, initCheck, repoFolder, etext, tgreentext, flash, autoresponse, friendsflash, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style, src, Utilities, Commands, autoidle, nochallenge;
 var neededFiles = ["utilities.js", "commands.js"]; //files needed for the script in an array
-//easier importing of server scripts
-sys.name = client.name, sys.id = client.id, src = client.ownId();
+
 sys.sendAll = function (message, channel) {
     say(message, channel);
 };
@@ -93,7 +92,7 @@ function checkScriptVersion(bool) { //checks the current script version with the
     if (bool === undefined) {
         bool = false;
     }
-    if (checkversion === "false" && bool === false) {
+    if (checkversion === false && bool === false) {
         return;
     }
     sys.webCall(script_url + 'script.js', function (resp) {
@@ -102,7 +101,7 @@ function checkScriptVersion(bool) { //checks the current script version with the
             return;
         }
         checkscript = resp.split('\n');
-        for (var x in checkscript) {
+        for (var x = 0; x < checkscript.length; x++) {
             if (checkscript[x].substr(0, 14) === "Script_Version") {
                 version = String(checkscript[x].match(regex));
             }
@@ -121,7 +120,7 @@ function checkScriptVersion(bool) { //checks the current script version with the
             var typeno;
             var nversion = version.split('.');
             var cversion = Script_Version.split('.');
-            for (var x in nversion) {
+            for (var x = 0; x < nversion.length; x++) {
                 if (nversion[x] !== cversion[x]) {
                     typeno = x;
                     break;
@@ -146,7 +145,7 @@ function nameCheck(string) { //adapted from the PO Source Code
     if (string.length > 20) {
         throw "Name too long";
     }
-    if (string.lengh === 0) {
+    if (string.length === 0) {
         throw "Name not long enough";
     }
     if (Utilities.isPunct(string[0]) !== true && Utilities.isAlnum(string[0]) !== true) {
@@ -195,6 +194,7 @@ function fixup(input) {
     if (input.length > 0 && input[input.length - 1] === ' ') {
         return input.substr(0, input.length - 1);
     }
+    return "";
 }
 
 function saveToLog(message, channel) { //saves messages to a log file
@@ -202,7 +202,7 @@ function saveToLog(message, channel) { //saves messages to a log file
         return;
     }
     var logging = false;
-    for (var x in logchannel) {
+    for (var x = 0; x < logchannel.length; x++) {
         if (client.channelName(channel).toLowerCase() === logchannel[x].toLowerCase()) {
             logging = true;
             break;
@@ -272,7 +272,6 @@ function sendBotMessage(message, channel, link) { //sends a mesage with the bot 
         message = message.replace(/\(link\)/g, "<a href ='" + link + "'>" + link + "</a>");
     }
     client.printChannelMessage("<font color = '" + Utilities.html_escape(clientbotcolour) + "'><timestamp/>" + clientbotstyle + Utilities.html_escape(clientbotname) + ":" + Utilities.tagend(clientbotstyle) + "</font> " + message, channel, true);
-    return;
 }
 
 function awayFunction() { //makes the user go away if needed
@@ -295,7 +294,7 @@ function stalkWordCheck(string, playname, bot, channel) { //adds flashes to name
             string = newstring.replace(newstring, "<i> " + newstring + "</i><ping/>");
         }
     }
-    for (var x in stalkwords) {
+    for (var x = 0; x < stalkwords.length; x++) {
         var stalk = new RegExp("\\b(" + stalkwords[x] + ")\\b(?![^\\s<]*>)", "i");
         var stalks = string.match(stalk);
         if (string.toLowerCase().search(stalk) !== -1 && playname !== client.ownName() && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
@@ -314,9 +313,11 @@ function htmllinks(text) { //makes sure links get linked!
     var newtext;
     var newfound;
     for (var x in found) {
-        newfound = found[x].replace(/\//g, sys.md5('/')).replace(/_/g, sys.md5('_'));
-        newtext = ("<a href ='" + newfound + "'>" + newfound + "</a>").replace(/&amp;/gi, "&");
-        text = text.replace(found[x], newtext);
+        if (found.hasOwnProperty(x)) {
+            newfound = found[x].replace(/\//g, sys.md5('/')).replace(/_/g, sys.md5('_'));
+            newtext = ("<a href ='" + newfound + "'>" + newfound + "</a>").replace(/&amp;/gi, "&");
+            text = text.replace(found[x], newtext);
+        }
     }
     return text;
 }
@@ -374,19 +375,15 @@ function sendMessage(message, channel) { //sends a message to the user
         channel = client.currentChannel();
     }
     client.printChannelMessage(message, channel, false);
-    return;
 }
 
 function ignoreCheck(name) { //checks if ignored, this is used since it's possible to bypass the autoignore function by logging in via an alt then switching names
-    for (var i in ignore) {
+    for (var i = 0; i < ignore.length; i++) {
         if (name.toLowerCase() === ignore[i].toLowerCase()) {
             client.ignore(client.id(name), true);
         }
     }
-    if (client.isIgnored(client.id(name))) {
-        return true;
-    }
-    return false;
+    return client.isIgnored(client.id(name));
 }
 
 function sendHtmlMessage(message, channel) { //sends a html message to the user
@@ -394,10 +391,9 @@ function sendHtmlMessage(message, channel) { //sends a html message to the user
         channel = client.currentChannel();
     }
     client.printChannelMessage(message, channel, true);
-    return;
 }
 
-function handleSystemCommand(string) {
+/*function handleSystemCommand(string) {
     //TODO make the repoFolder change upon use of "cd"
     if (repoFolder === undefined) {
         return;
@@ -409,11 +405,10 @@ function handleSystemCommand(string) {
             sendMessage(output[x]);
         }
     }
-}
+}*/
 
 function formatMessage(message, channel) {
     var pos = message.indexOf(': ');
-    var chan = channel;
     var bot = false;
     if (pos !== -1) {
         if (client.id(message.substring(0, pos)) === -1 || client.id(message.substring(0, pos)) === undefined) {
@@ -443,7 +438,7 @@ function formatMessage(message, channel) {
             client.printHtml("<font face ='" + fonttype + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/> " + symbol + auth_style[auth] + playname + ": </font>" + Utilities.tagend(auth_style[auth]) + fontstyle + playmessage + Utilities.tagend(fontstyle));
         }
         else {
-            client.printChannelMessage("<font face ='" + fonttype + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/> " + symbol + auth_style[auth] + playname + ": </font>" + Utilities.tagend(auth_style[auth]) + fontstyle + playmessage + Utilities.tagend(fontstyle), chan, true);
+            client.printChannelMessage("<font face ='" + fonttype + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/> " + symbol + auth_style[auth] + playname + ": </font>" + Utilities.tagend(auth_style[auth]) + fontstyle + playmessage + Utilities.tagend(fontstyle), channel, true);
         }
         sys.stopEvent();
     }
@@ -501,7 +496,7 @@ function getMinMax(val, hp) {
 
 function pokeDex(pokemon, gen) {
     if (sys.pokemon(pokemon) === "Missingno") {
-        return "Invalid pokemon";
+        throw "Invalid pokemon";
     }
     if (gen === undefined) {
         gen = 5;
@@ -513,7 +508,7 @@ function pokeDex(pokemon, gen) {
     }
     var generations = [0, 151, 252, 386, 493, 649];
     if (npokemon > generations[gen]) {
-        return "Pokemon is not in this gen";
+        throw "Pokemon is not in this gen";
     }
     data.push("");
     data.push("<b>#" + npokemon + " " + sys.pokemon(pokemon) + "</b>");
@@ -545,7 +540,6 @@ function pokeDex(pokemon, gen) {
     for (var x = 0; x < data.length; x++) {
         sendHtmlMessage(data[x]);
     }
-    return;
 }
 
 function changeScript(resp) {
@@ -579,12 +573,12 @@ poScript = ({
         if (friendsflash === true) {
             flashvar = "<ping/>";
         }
-        for (var x in friends) {
+        for (var x = 0; x < friends.length; x++) {
             if (client.name(id).toLowerCase() === friends[x].toLowerCase() && flash === true) {
                 sendHtmlMessage("<font color = '" + Utilities.html_escape(clientbotcolour) + "'><timestamp/>" + clientbotstyle + Utilities.html_escape(clientbotname) + ":" + Utilities.tagend(clientbotstyle) + "</font> User <a href='po:pm/" + id + "'>" + client.name(id) + "</a> has logged in" + flashvar + "", client.currentChannel());
             }
         }
-        for (var x in ignore) {
+        for (var x = 0; x < ignore.length; x++) {
             if (client.name(id).toLowerCase() === ignore[x].toLowerCase()) {
                 client.ignore(id, true);
             }
@@ -631,13 +625,12 @@ poScript = ({
         saveToLog(message, channel);
         formatMessage(message, channel);
     },
-    beforePMReceived: function (id, message) { // called before a PM is received
+    beforePMReceived: function (id) { // called before a PM is received
         if (ignoreCheck(client.name(id))) {
             sys.stopEvent();
-            return;
         }
     },
-    afterPMReceived: function (id, message) { //called after a PM is received
+    afterPMReceived: function (id) { //called after a PM is received
         if (playerswarn[id] === true) {
             return;
         }
@@ -660,12 +653,10 @@ poScript = ({
         if (autoresponse === true) {
             client.network().sendPM(id, armessage);
             playerswarn[id] = true;
-            return;
         }
-        return;
     },
     beforeSendMessage: function (message, channel) { //detects messages sent by the client
-        var mess = message.toLowerCase();
+        /*var mess = message.toLowerCase();
         if ((mess.substring(0, 3) === "git" || mess.substring(0, 2) === "cd" || mess.substring(0, 3) === "dir") && typeof sys.system !== "undefined") {
             sys.stopEvent();
             try {
@@ -675,7 +666,7 @@ poScript = ({
                 sendBotMessage('Error with sys.system() ' + e);
             }
             return;
-        }
+        }*/
         if (message.toLowerCase() === "reset symbol") {
             sys.stopEvent();
             commandsymbol = "~";
@@ -701,7 +692,7 @@ poScript = ({
             }
         }
     },
-    beforeChallengeReceived: function (id) {
+    beforeChallengeReceived: function () {
         if (nochallenge === true) {
             sys.stopEvent();
         }
