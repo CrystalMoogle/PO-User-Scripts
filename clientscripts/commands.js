@@ -677,16 +677,20 @@ exports = {
                 return;
             }
             commandData = commandData.split(':');
-            if (commandData.length > 2) {
-                sendBotMessage("Usage is " + commandsymbol + "pokedex pokemon:gen (optional)");
+            if (commandData.length > 3) {
+                sendBotMessage("Usage is " + commandsymbol + "pokedex pokemon:gen:level (gen/level are optional)");
                 return;
             }
             var pokemon = sys.pokeNum(commandData[0]);
             var gen = commandData[1];
+            var level = commandData[2];
             if (isNaN(gen) || gen === undefined || gen > 5 || gen < 1) {
                 gen = 5;
             }
-            pokeDex(pokemon, gen);
+            if (isNaN(level) || level === undefined || level > 100 || level < 1) {
+                level = 100;
+            }
+            pokeDex(pokemon, gen, level);
             return;
         }
         if (command === "commandsymbol") {
