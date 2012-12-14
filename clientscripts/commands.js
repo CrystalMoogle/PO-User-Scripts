@@ -686,9 +686,10 @@ exports = {
             if (isNaN(gen) || gen === undefined || gen > 5 || gen < 1) {
                 gen = 5;
             }
-            var returnval = pokeDex(pokemon, gen);
-            if (returnval) {
-                sendBotMessage(returnval);
+            try {
+                pokeDex(pokemon, gen);
+            } catch(e) {
+                sendBotMessage(e);
             }
             return;
         }
