@@ -486,14 +486,14 @@ function getMinMax(val, hp, level) {
     val = parseInt(val * 2, 10);
     if (hp !== true) {
         var minmin, maxplus;
-        min = Math.floor(parseInt((val + 31) * level / 100 + 5, 10));
-        minmin = Math.floor(parseInt(((val + 31) * level / 100 + 5) * 0.9, 10));
-        max = Math.floor(parseInt((val + 31 + 63) * level / 100 + 5, 10));
-        maxplus = Math.floor(parseInt(((val + 31 + 63) * level / 100 + 5) * 1.1, 10));
+        min = Math.floor((val + 31) * level / 100) + 5;
+        minmin = parseInt(Math.floor(((val + 31) * level / 100) + 5) * 0.9, 10);
+        max = Math.floor((val + 31 + 63) * level / 100 + 5);
+        maxplus = parseInt(Math.floor(((val + 31 + 63) * level / 100) + 5) * 1.1, 10);
         return "&nbsp;&nbsp;&nbsp;&nbsp;Min (-): " + minmin + " | Min: " + min + " | Max: " + max + " | Max (+): " + maxplus;
     }
-    min = Math.floor(parseInt((val + 31) * level / 100 + level + 10, 10));
-    max = Math.floor(parseInt((val + 63 + 31) * level / 100 + level + 10, 10));
+    min = Math.floor((val + 31) * level / 100) + level + 10;
+    max = Math.floor((val + 63 + 31) * level / 100) + level + 10;
     return "&nbsp;&nbsp;&nbsp;&nbsp;Min: " + min + " | Max: " + max;
 }
 
@@ -570,6 +570,7 @@ client.network().playerLogin.connect(function () { //only call when the user has
     init();
 });
 Script_Version = "2.0.00"; //version the script is currently on
+//noinspection JSUnusedAssignment
 poScript = ({
     clientStartUp: function () {
         sendMessage('Script Check: OK'); //use this to send a message on update scripts
