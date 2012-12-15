@@ -478,23 +478,31 @@ function getAbility(pokemon, gen) {
     return "Abilities: " + sys.ability(abilityone) + " / " + sys.ability(abilitytwo) + " / " + sys.ability(abilitydw) + " (Dream World)";
 }
 
-function getMinMax(val, hp, level) {
-    var min, max;
+function getMinMax(val, hp, level, gen) {
     if (level === undefined){
         level = 100;
     }
-    val = parseInt(val * 2, 10);
-    if (hp !== true) {
-        var minmin, maxplus;
-        min = Math.floor((val + 31) * level / 100) + 5;
-        minmin = parseInt(Math.floor(((val + 31) * level / 100) + 5) * 0.9, 10);
-        max = Math.floor((val + 31 + 63) * level / 100 + 5);
-        maxplus = parseInt(Math.floor(((val + 31 + 63) * level / 100) + 5) * 1.1, 10);
-        return "&nbsp;&nbsp;&nbsp;&nbsp;Min (-): " + minmin + " | Min: " + min + " | Max: " + max + " | Max (+): " + maxplus;
+    if(gen > 2) {
+        var min, max;
+        val = parseInt(val * 2, 10);
+        if (hp !== true) {
+            var minmin, maxplus;
+            min = Math.floor((val + 31) * level / 100) + 5;
+            minmin = parseInt(Math.floor(((val + 31) * level / 100) + 5) * 0.9, 10);
+            max = Math.floor((val + 31 + 63) * level / 100 + 5);
+            maxplus = parseInt(Math.floor(((val + 31 + 63) * level / 100) + 5) * 1.1, 10);
+            return "&nbsp;&nbsp;&nbsp;&nbsp;Min (-): " + minmin + " | Min: " + min + " | Max: " + max + " | Max (+): " + maxplus;
+        }
+        min = Math.floor((val + 31) * level / 100) + level + 10;
+        max = Math.floor((val + 63 + 31) * level / 100) + level + 10;
+        return "&nbsp;&nbsp;&nbsp;&nbsp;Min: " + min + " | Max: " + max;
     }
-    min = Math.floor((val + 31) * level / 100) + level + 10;
-    max = Math.floor((val + 63 + 31) * level / 100) + level + 10;
-    return "&nbsp;&nbsp;&nbsp;&nbsp;Min: " + min + " | Max: " + max;
+    if (hp !== true){
+        var stat = (15 + val + (Math.sqrt(65535) / 8)) * level / 50 + 5;
+        return "&nbsp;&nbsp;&nbsp;&nbsp; Stat: " + Math.floor(stat);
+    }
+    var stat = (15 + val + (Math.sqrt(65535) / 8) + 50) * level / 50 + 10;
+    return "&nbsp;&nbsp;&nbsp;&nbsp; Stat: " + Math.floor(stat);
 }
 
 function pokeDex(pokemon, gen, level) {
@@ -518,7 +526,8 @@ function pokeDex(pokemon, gen, level) {
     }
     data.push("");
     data.push("<b>#" + npokemon + " " + sys.pokemon(pokemon) + "</b>");
-    data.push('<img src="pokemon:' + pokemon + '&gen='+ gen + '"/>');
+    data.push('<img src="pokemon:' + pokemon + '&gen='+ gen + '"/>' + (gen === 1 ? "" :'<img src="pokemon:' + pokemon + '&gen='+ gen + '&shiny=true"/>'));
+    data.push('<b>Level: ' + level + '</b>');
     var typea = sys.pokeType1(pokemon, gen);
     var typeb = sys.pokeType2(pokemon, gen);
     data.push("<b>Type: " + sys.type(typea) + (typeb !== 17 ? " / " + sys.type(typeb) + "</b>" : "</b>"));
@@ -526,22 +535,22 @@ function pokeDex(pokemon, gen, level) {
         data.push("<b>" + getAbility(pokemon, gen) + "</b>");
     }
     data.push("<b>HP: " + sys.baseStats(pokemon, 0, gen) + "</b>");
-    data.push(getMinMax(sys.baseStats(pokemon, 0, gen), true, level));
+    data.push(getMinMax(sys.baseStats(pokemon, 0, gen), true, level, gen));
     data.push("<b>Atk: " + sys.baseStats(pokemon, 1, gen) + "</b>");
-    data.push(getMinMax(sys.baseStats(pokemon, 1, gen), false, level));
+    data.push(getMinMax(sys.baseStats(pokemon, 1, gen), false, level, gen));
     data.push("<b>Def: " + sys.baseStats(pokemon, 2, gen) + "</b>");
-    data.push(getMinMax(sys.baseStats(pokemon, 2, gen), false, level));
+    data.push(getMinMax(sys.baseStats(pokemon, 2, gen), false, level, gen));
     if (gen !== 1) {
         data.push("<b>SpAtk: " + sys.baseStats(pokemon, 3, gen) + "</b>");
-        data.push(getMinMax(sys.baseStats(pokemon, 3, gen), false, level));
+        data.push(getMinMax(sys.baseStats(pokemon, 3, gen), false, level, gen));
         data.push("<b>SpDef: " + sys.baseStats(pokemon, 4, gen) + "</b>");
-        data.push(getMinMax(sys.baseStats(pokemon, 4, gen), false, level));
+        data.push(getMinMax(sys.baseStats(pokemon, 4, gen), false, level, gen));
     } else {
         data.push("<b>Special: " + sys.baseStats(pokemon, 3, gen) + "</b>");
-        data.push(getMinMax(sys.baseStats(pokemon, 3, gen), false, level));
+        data.push(getMinMax(sys.baseStats(pokemon, 3, gen), false, level, gen));
     }
     data.push("<b>Speed: " + sys.baseStats(pokemon, 5, gen) + "</b>");
-    data.push(getMinMax(sys.baseStats(pokemon, 5, gen), false, level));
+    data.push(getMinMax(sys.baseStats(pokemon, 5, gen), false, level, gen));
     data.push("");
     for (var x = 0; x < data.length; x++) {
         sendHtmlMessage(data[x]);
