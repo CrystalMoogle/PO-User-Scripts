@@ -83,8 +83,11 @@ function checkPlugins() {
     loadPlugins();
 }
 
-function addPlugin(filename) {
-    sys.webCall(script_url + "clientscripts/" + filename, function(resp) {
+function addPlugin(filename, url) {
+    if (url === undefined) {
+        url = script_url + "clientscripts/" + filename
+    }
+    sys.webCall(url, function(resp) {
         sys.writeToFile(scriptsFolder + "/" + filename,resp);
         loadFiles();
         loadPlugins();
@@ -93,8 +96,12 @@ function addPlugin(filename) {
     userplugins = userplugins.concat(filename);
     Utilities.saveSettings();
 }
-function updateFile(filename) {
-    sys.webCall(script_url + "clientscripts/" + filename, function(resp) {
+
+function updateFile(filename, url) {
+    if (url === undefined) {
+        url = script_url + "clientscripts/" + filename
+    }
+    sys.webCall(url, function(resp) {
         sys.writeToFile(scriptsFolder + "/" + filename,resp);
         loadFiles();
         loadPlugins();
