@@ -66,6 +66,9 @@ function checkFiles() {
         }
     }
     loadFiles();
+}
+
+function checkPlugins() {
     for (var x = 0; x < userplugins.length; x++) {
         if (pluginFiles.indexOf(userplugins[x]) === -1) {
             pluginFiles = pluginFiles.concat(userplugins[x]);
@@ -151,6 +154,7 @@ function init() { //defines all the variables that are going to be used in the s
     else {
         Utilities.loadFromRegistry();
     }
+    checkPlugins();
     initCheck = true;
 }
 
