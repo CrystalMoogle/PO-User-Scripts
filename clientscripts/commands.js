@@ -581,7 +581,7 @@ exports = {
         }
         if (command === "updateplugin") {
             sys.stopEvent();
-            if (neededFiles.indexOf(commandData) !== -1 || Plugins.indexOf(commandData) !== -1) {
+            if (neededFiles.indexOf(commandData) !== -1 || pluginFiles.indexOf(commandData) !== -1) {
                 updateFile(commandData);
                 return;
             }
@@ -590,7 +590,7 @@ exports = {
         }
         if (command === "addplugin") {
             sys.stopEvent();
-            if (neededFiles.indexOf(commandData.split(/\//).pop()) !== -1 || Plugins.indexOf(commandData.split(/\//).pop()) !== -1) {
+            if (neededFiles.indexOf(commandData.split(/\//).pop()) !== -1 || pluginFiles.indexOf(commandData.split(/\//).pop()) !== -1) {
                 updateFile(commandData);
                 return;
             }
