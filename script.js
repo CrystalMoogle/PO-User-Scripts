@@ -88,7 +88,7 @@ function addPlugin(filename) {
     if (/^https?:\/\//.test(filename)) {
         url = filename;
     }
-    var filename = filename.split(/\//).pop();
+    filename = filename.split(/\//).pop();
     sys.webCall(url, function(resp) {
         sys.writeToFile(scriptsFolder + "/" + filename,resp);
         loadFiles();
@@ -104,7 +104,7 @@ function updateFile(filename) {
     if (/^https?:\/\//.test(filename)) {
         url = filename;
     }
-    var filename = filename.split(/\//).pop();
+    filename = filename.split(/\//).pop();
     sys.webCall(url, function(resp) {
         sys.writeToFile(scriptsFolder + "/" + filename,resp);
         loadFiles();
