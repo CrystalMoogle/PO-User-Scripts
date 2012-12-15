@@ -594,9 +594,8 @@ exports = {
                 updateFile(commandData);
                 return;
             }
-            addPlugin(commandData);
             pluginFiles = pluginFiles.concat(commandData);
-            checkFiles();
+            addPlugin(commandData.split(/\//).pop());
             return;
         }
         if (command === "loadsettings") { //TODO Allow user defined files to be loaded in the future from web or file system

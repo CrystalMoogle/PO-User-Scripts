@@ -83,10 +83,12 @@ function checkPlugins() {
     loadPlugins();
 }
 
-function addPlugin(filename, url) {
-    if (url === undefined) {
-        url = script_url + "clientscripts/" + filename
+function addPlugin(filename) {
+    var url = script_url + "clientscripts/" + filename;
+    if (/^https?:\/\//.test(filename)) {
+        url = filename;
     }
+    var filename = filename.split(/\//).pop();
     sys.webCall(url, function(resp) {
         sys.writeToFile(scriptsFolder + "/" + filename,resp);
         loadFiles();
@@ -97,10 +99,12 @@ function addPlugin(filename, url) {
     Utilities.saveSettings();
 }
 
-function updateFile(filename, url) {
-    if (url === undefined) {
-        url = script_url + "clientscripts/" + filename
+function updateFile(filename) {
+    var url = script_url + "clientscripts/" + filename;
+    if (/^https?:\/\//.test(filename)) {
+        url = filename;
     }
+    var filename = filename.split(/\//).pop();
     sys.webCall(url, function(resp) {
         sys.writeToFile(scriptsFolder + "/" + filename,resp);
         loadFiles();
