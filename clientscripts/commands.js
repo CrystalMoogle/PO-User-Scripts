@@ -20,7 +20,7 @@ exports = {
             sendMessage(commandsymbol + "[add/remove]stalkword word: Allows you to add/remove stalkwords");
             sendMessage(commandsymbol + "logchannels: Allows you to view your log channels");
             sendMessage(commandsymbol + "[add/remove]logchannel channel: Allows you to add/remove channels from the channels you log");
-            sendMessage(commandsymbol + "pokedex:gen: Shows you details about a pokemon. Gen is an optional parameter to view the pokemon in different gens");
+            sendMessage(commandsymbol + "pokedex:gen:level: Shows you details about a pokemon. Gen/level are optional parameters to view the pokemon in different gens/at different levels");
             sendMessage(commandsymbol + "formatcommands: Shows the formatting comands (e.g. enriched text, auth symbols)");
             sendMessage(commandsymbol + "scriptcommands: Shows commands related to the scripts (e.g. versions, updatescripts)");
             sendMessage(commandsymbol + "socialcommands: Shows commands related to social aspects (e.g. friendslist, ignorelist)");
@@ -673,7 +673,7 @@ exports = {
         if (command === "pokedex") {
             sys.stopEvent();
             if (commandData === undefined) {
-                sendBotMessage("Usage is " + commandsymbol + "pokedex pokemon:gen (optional)");
+                sendBotMessage("Usage is " + commandsymbol + "pokedex pokemon:gen:level (gen/level are optional)");
                 return;
             }
             commandData = commandData.split(':');
@@ -682,8 +682,8 @@ exports = {
                 return;
             }
             var pokemon = sys.pokeNum(commandData[0]);
-            var gen = commandData[1];
-            var level = commandData[2];
+            var gen = parseInt(commandData[1], 10);
+            var level = parseInt(commandData[2], 10);
             if (isNaN(gen) || gen === undefined || gen > 5 || gen < 1) {
                 gen = 5;
             }
