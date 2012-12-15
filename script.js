@@ -13,15 +13,19 @@
 var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/devel/"; //where the script is stored
 var scriptsFolder = "ClientScripts"; //replace with undefined if you don't want a folder
 var global = this;
-var poScript, Script_Version, initCheck, repoFolder, etext, tgreentext, flash, autoresponse, friendsflash, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style, src, Utilities, Commands, autoidle, nochallenge;
+var poScript, Script_Version, initCheck, repoFolder, etext, tgreentext, flash, autoresponse, friendsflash, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style, src, Utilities, Commands, autoidle, nochallenge, Plugins;
 var neededFiles = ["utilities.js", "commands.js"]; //files needed for the script in an array
+var pluginFiles = [];
 
-sys.sendAll = function (message, channel) {
-    say(message, channel);
+String.prototype.format = function() {
+    var formatted = this;
+    for (var i = 0; i < arguments.length; i++) {
+        var regexp = new RegExp('\\{'+i+'\\}', 'gi');
+        formatted = formatted.replace(regexp, arguments[i]);
+    }
+    return formatted;
 };
-sys.sendMessage = function (id, message, channel) {
-    sendMessage(message, channel);
-};
+
 require = function require(module_name) {
     var module = {};
     module.module = module;
@@ -62,6 +66,7 @@ function checkFiles() {
         }
     }
     loadFiles();
+    loadPlugins();
 }
 
 function updateFile(filename) {
@@ -72,6 +77,44 @@ function updateFile(filename) {
 function loadFiles() {
     Utilities = require('utilities.js');
     Commands = require('commands.js');
+}
+
+function loadPlugins() {
+    var plugins = [];
+    for (var i = 0; i < pluginFiles.length; ++i) {
+        var plugin = require(pluginFiles[i]);
+        plugin.source = pluginFiles[i];
+        plugins.push(plugin);
+    }
+    Plugins = plugins;
+}
+
+function callPlugins(event) {
+    var ret = false;
+    var args = Array.prototype.slice.call(arguments, 1);
+    for (var i = 0; i < Plugins.length; ++i) {
+        if (Plugins[i].hasOwnProperty(event)) {
+            try {
+                if (Plugins[i][event].apply(Plugins[i], args)) {
+                    ret = true;
+                    break;
+                }
+            } catch (e) {
+                sendBotMessage('Plugins-error on {0}: {1}'.format(Plugins[i].source, e));
+            }
+        }
+    }
+    return ret;
+}
+
+function getPlugins(data) {
+    var ret = {};
+    for (var i = 0; i < Plugins.length; ++i) {
+        if (Plugins[i].hasOwnProperty(data)) {
+            ret[Plugins[i].source] = Plugins[i][data];
+        }
+    }
+    return ret;
 }
 
 function init() { //defines all the variables that are going to be used in the script, uses default if no saved settings are found
@@ -408,6 +451,9 @@ function sendHtmlMessage(message, channel) { //sends a html message to the user
 }*/
 
 function formatMessage(message, channel) {
+    if (callPlugins("formatMessage", message, channel)) {
+        return;
+    }
     var pos = message.indexOf(': ');
     var bot = false;
     if (pos !== -1) {
@@ -619,6 +665,7 @@ poScript = ({
         if (initCheck !== true) {
             init();
         }
+        callPlugins("beforeChannelMessage", message, channel, html);
         if (message.indexOf('<timestamp/> *** <b>') !== -1) {
             var ignored = getName(message, "me");
             if (ignoreCheck(ignored)) {
@@ -683,6 +730,7 @@ poScript = ({
             }
             return;
         }*/
+        callPlugins("beforeSendMessage", message, channel);
         if (message.toLowerCase() === "reset symbol") {
             sys.stopEvent();
             commandsymbol = "~";
@@ -705,6 +753,9 @@ poScript = ({
             }
             catch (e) {
                 sendBotMessage('ERROR: ' + e); //TODO: Add proper error checks
+            }
+            if (callPlugins("commandHandler", command, commandData, channel)) {
+                sys.stopEvent();
             }
         }
     },

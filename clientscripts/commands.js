@@ -25,6 +25,12 @@ exports = {
             sendMessage(commandsymbol + "scriptcommands: Shows commands related to the scripts (e.g. versions, updatescripts)");
             sendMessage(commandsymbol + "socialcommands: Shows commands related to social aspects (e.g. friendslist, ignorelist)");
             sendMessage(commandsymbol + "fontcommands: Shows you the font command details");
+            var pluginhelps = getPlugins("help-string");
+            for (var module in pluginhelps) {
+                var help = typeof pluginhelps[module] == "string" ? [pluginhelps[module]] : pluginhelps[module];
+                for (i = 0; i < help.length; ++i)
+                    sendMessage(commandsymbol + help[i]);
+            }
             sendMessage(commandsymbol + "damagecalc [s]atk:move power:modifier:[s]def:HP: Basic damage calculator");
             sendMessage("Explanation: [s]atk is the attacking pokémon's exact stat (not base), move power is the move's base power, modifier is any modifiers that need to be added (e.g. life orb is 1.3), HP/[s]def is the defending pokémon's exact HP/Def stats (not base)");
             sendMessage("Example: " + commandsymbol + "damagecalc 100:100:1.3:100:100 will show you the result of a pokémon with 100 [s]atk, with Life Orb using a 100bp move against a pokémon with 100HP/[s]def");
