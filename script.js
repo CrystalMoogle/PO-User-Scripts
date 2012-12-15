@@ -482,7 +482,7 @@ function getMinMax(val, hp, level, gen) {
     if (level === undefined){
         level = 100;
     }
-    if(gen > 2) {
+    if (gen > 2) {
         var min, max;
         val = parseInt(val * 2, 10);
         if (hp !== true) {
