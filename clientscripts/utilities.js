@@ -215,6 +215,7 @@ exports = {
         arstart = sys.getVal('arstart');
         arend = sys.getVal('arend');
         artype = sys.getVal('artype');
+        userplugins = [];
         stalkwords = [];
         friends = [];
         ignore = [];
