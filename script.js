@@ -65,6 +65,7 @@ function checkFiles() {
             sys.writeToFile(scriptsFolder + "/" + neededFiles[x], sys.synchronousWebCall(script_url + "clientscripts/" + neededFiles[x]));
         }
     }
+    loadFiles();
     for (var x = 0; x < userplugins.length; x++) {
         if (pluginFiles.indexOf(userplugins[x]) === -1) {
             pluginFiles = pluginFiles.concat(userplugins[x]);
@@ -76,7 +77,6 @@ function checkFiles() {
             updateFile(pluginFiles[x]);
         }
     }
-    loadFiles();
     loadPlugins();
 }
 
