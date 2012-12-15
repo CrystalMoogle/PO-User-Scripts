@@ -671,12 +671,12 @@ exports = {
             return;
         }
         if (command === "pokedex") {
+            sys.stopEvent();
             var version = sys.version();
             if (version.replace(/\./g, "") < 2008) {
                 sendBotMessage("This command will only work on versions 2.0.08 and higher")
                 return;
             }
-            sys.stopEvent();
             if (commandData === undefined) {
                 sendBotMessage("Usage is " + commandsymbol + "pokedex pokemon:level:gen (gen/level are optional)");
                 return;
