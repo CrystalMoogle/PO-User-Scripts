@@ -672,7 +672,7 @@ exports = {
         }
         if (command === "pokedex") {
             var version = sys.version();
-            if (version.replace(/\./g) < 2008) {
+            if (version.replace(/\./g, "") < 2008) {
                 sendBotMessage("This command will only work on versions 2.0.08 and higher")
                 return;
             }
