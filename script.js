@@ -13,7 +13,7 @@
 var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/devel/"; //where the script is stored
 var scriptsFolder = "ClientScripts"; //replace with undefined if you don't want a folder
 var global = this;
-var poScript, Script_Version, initCheck, repoFolder, etext, tgreentext, flash, autoresponse, friendsflash, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style, src, Utilities, Commands, autoidle, nochallenge, Plugins;
+var poScript, Script_Version, initCheck, repoFolder, etext, tgreentext, flash, autoresponse, friendsflash, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style, src, Utilities, Commands, autoidle, nochallenge, Plugins, userplugins;
 var neededFiles = ["utilities.js", "commands.js"]; //files needed for the script in an array
 var pluginFiles = [];
 
@@ -65,10 +65,31 @@ function checkFiles() {
             sys.writeToFile(scriptsFolder + "/" + neededFiles[x], sys.synchronousWebCall(script_url + "clientscripts/" + neededFiles[x]));
         }
     }
+    for (var x = 0; x < userplugins.length; x++) {
+        if (pluginFiles.indexOf(userplugins[x]) === -1) {
+            pluginFiles = pluginFiles.concat(userplugins[x]);
+        }
+    }
+    for (var x = 0; x < pluginFiles.length; x++) {
+        cleanFile(scriptsFolder + '/' + pluginFiles[x]);
+        if (sys.getFileContent(scriptsFolder + '/' + pluginFiles[x]) === "") {
+            updateFile(pluginFiles[x]);
+        }
+    }
     loadFiles();
     loadPlugins();
 }
 
+function addPlugin(filename) {
+    sys.webCall(script_url + "clientscripts/" + filename, function(resp) {
+        sys.writeToFile(scriptsFolder + "/" + filename,resp);
+        loadFiles();
+        loadPlugins();
+        sendBotMessage("Plugin " + filename + " added!");
+    });
+    userplugins = userplugins.concat(filename);
+    Utilities.saveSettings();
+}
 function updateFile(filename) {
     sys.webCall(script_url + "clientscripts/" + filename, function(resp) {
         sys.writeToFile(scriptsFolder + "/" + filename,resp);

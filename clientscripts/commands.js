@@ -588,6 +588,17 @@ exports = {
             sendBotMessage("This is not a valid script plugin");
             return;
         }
+        if (command === "addplugin") {
+            sys.stopEvent();
+            if (neededFiles.indexOf(commandData) !== -1 || Plugins.indexOf(commandData) !== -1) {
+                updateFile(commandData);
+                return;
+            }
+            addPlugin(commandData);
+            pluginFiles = pluginFiles.concat(commandData);
+            checkFiles();
+            return;
+        }
         if (command === "loadsettings") { //TODO Allow user defined files to be loaded in the future from web or file system
             sys.stopEvent();
             Utilities.loadSettings(undefined, undefined, false);

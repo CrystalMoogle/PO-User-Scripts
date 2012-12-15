@@ -40,6 +40,7 @@ exports = {
             arstart = settings.arstart;
             arend = settings.arend;
             artype = settings.artype;
+            userplugins = settings.userplugins;
             stalkwords = settings.stalkwords;
             friends = settings.friends;
             ignore = settings.ignore;
@@ -85,6 +86,7 @@ exports = {
                 "arstart": "",
                 "arend": "",
                 "artype": "command",
+                "userplugins": [],
                 "stalkwords": [],
                 "friends": [],
                 "ignore": [],
@@ -302,6 +304,7 @@ exports = {
         settings.arstart = arstart;
         settings.arend = arend;
         settings.artype = artype;
+        settings.userplugins = userplugins;
         settings.stalkwords = stalkwords;
         settings.friends = friends;
         settings.ignore = ignore;
