@@ -70,8 +70,12 @@ function checkFiles() {
 }
 
 function updateFile(filename) {
-    sys.writeToFile(scriptsFolder + "/" + filename, sys.synchronousWebCall(script_url + "clientscripts/" + filename));
-    loadFiles();
+    sys.webCall(script_url + "clientscripts/" + filename, function(resp) {
+        sys.writeToFile(scriptsFolder + "/" + filename,resp);
+        loadFiles();
+        loadPlugins();
+        sendBotMessage("Plugin " + filename + " updated!");
+    });
 }
 
 function loadFiles() {

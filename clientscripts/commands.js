@@ -579,16 +579,16 @@ exports = {
             sys.webCall(updateURL, changeScript);
             return;
         }
-        if (command === "updatefile") {
+        if (command === "updateplugin") {
             sys.stopEvent();
-            if (neededFiles.indexOf(commandData) !== -1) {
+            if (neededFiles.indexOf(commandData) !== -1 || Plugins.indexOf(commandData) !== -1) {
                 updateFile(commandData);
                 return;
             }
-            sendBotMessage("This is not a valid script file");
+            sendBotMessage("This is not a valid script plugin");
             return;
         }
-        if (command === "loadsettings") { //Allow user defined files to be loaded in the future from web or file system
+        if (command === "loadsettings") { //TODO Allow user defined files to be loaded in the future from web or file system
             sys.stopEvent();
             Utilities.loadSettings(undefined, undefined, false);
             return;
