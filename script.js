@@ -5,7 +5,7 @@
     Currently needs PO Version 2.0.06 to run correctly (Though 2.0.07 is strongly recommended)
     Report bugs here: http://pokemon-online.eu/forums/showthread.php?15079 and read over the thread to check for anything
     Needed files: Utilities.js, Commands.js
-    If it doesn't automatically download them, get them from https://raw.github.com/CrystalMoogle/PO-User-Scripts/devel/ and save them as their appropriate names in a folder called "ClientScripts" in your main PO Folder
+    If it doesn't automatically download them, get them from https://github.com/CrystalMoogle/PO-User-Scripts/tree/devel and save them as their appropriate names in a folder called "ClientScripts" in your main PO Folder
 */
 //these things below shouldn't be touched unless you know what you're doing~
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
