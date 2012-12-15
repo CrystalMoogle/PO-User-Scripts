@@ -590,11 +590,11 @@ exports = {
         }
         if (command === "addplugin") {
             sys.stopEvent();
-            if (neededFiles.indexOf(commandData) !== -1 || Plugins.indexOf(commandData) !== -1) {
+            if (neededFiles.indexOf(commandData.split(/\//).pop()) !== -1 || Plugins.indexOf(commandData.split(/\//).pop()) !== -1) {
                 updateFile(commandData);
                 return;
             }
-            pluginFiles = pluginFiles.concat(commandData);
+            pluginFiles = pluginFiles.concat(commandData.split(/\//).pop());
             addPlugin(commandData);
             return;
         }
