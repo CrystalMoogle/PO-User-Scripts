@@ -370,15 +370,17 @@ function stalkWordCheck(string, playname, bot, channel) { //adds flashes to name
     var ownName = Utilities.html_escape(client.ownName());
     var newstring = "";
     if (string.toLowerCase().indexOf(ownName.toLowerCase()) !== -1 && playname !== ownName && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
-        var name = new RegExp("\\b(" + ownName + ")\\b(?![^\\s<]*>)", "i");
+        var name = new RegExp("\\b(" + ownName + ")\\b", "i");
         var names = string.match(name);
-        newstring = string.replace(name, "<span style='" + hilight + "'>" + names[0] + "</span>");
-        if (newstring !== string) {
-            string = newstring.replace(newstring, "<i> " + newstring + "</i><ping/>");
+        if (names) {
+            newstring = string.replace(name, "<span style='" + hilight + "'>" + names[0] + "</span>");
+            if (newstring !== string) {
+                string = newstring.replace(newstring, "<i> " + newstring + "</i><ping/>");
+            }
         }
     }
     for (var x = 0; x < stalkwords.length; x++) {
-        var stalk = new RegExp("\\b(" + stalkwords[x] + ")\\b(?![^\\s<]*>)", "i");
+        var stalk = new RegExp("\\b(" + stalkwords[x] + ")\\b", "i");
         var stalks = string.match(stalk);
         if (string.toLowerCase().search(stalk) !== -1 && playname !== client.ownName() && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
             newstring = string.replace(stalk, "<span style='" + hilight + "'>" + stalks[0] + "</span>");
