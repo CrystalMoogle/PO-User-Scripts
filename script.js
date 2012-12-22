@@ -1,4 +1,4 @@
-/*  
+/*
     Client Scripts
     Make sure you check ~commandslist for a list of commands
     Safe Scripts are pretty much required to be off
@@ -9,11 +9,11 @@
 */
 //these things below shouldn't be touched unless you know what you're doing~
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
-/*global sys,client, playerswarn:true */
+/*global sys,client */
 var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/devel/"; //where the script is stored
 var scriptsFolder = "ClientScripts"; //replace with undefined if you don't want a folder
 var global = this;
-var poScript, Script_Version, initCheck, repoFolder, etext, tgreentext, flash, autoresponse, friendsflash, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style, src, Utilities, Commands, autoidle, nochallenge, Plugins, userplugins;
+var poScript, Script_Version, initCheck, repoFolder, etext, tgreentext, flash, autoresponse, friendsflash, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style, src, Utilities, Commands, autoidle, nochallenge, Plugins, userplugins, weightData, playerswarn;
 var neededFiles = ["utilities.js", "commands.js"]; //files needed for the script in an array
 var pluginFiles = [];
 
@@ -166,6 +166,7 @@ function init() { //defines all the variables that are going to be used in the s
         Utilities.loadFromRegistry();
     }
     checkPlugins();
+    playerswarn = [];
     initCheck = true;
 }
 
@@ -532,7 +533,7 @@ function formatMessage(message, channel) {
 }
 
 function getAbility(pokemon, gen) {
-    if (sys.pokemon(pokemon) === "Keldeo-R") {
+    if (sys.pokemon(pokemon) === "Keldeo-R" || sys.pokemon(pokemon) === "Meloetta-S") {
         pokemon = pokemon % 65536;
     }
     var abilityone = sys.pokeAbility(pokemon, 0, gen);
@@ -592,6 +593,36 @@ function getMinMax(val, hp, level, gen) {
     return "&nbsp;&nbsp;&nbsp;&nbsp; Stat: " + Math.floor(stat);
 }
 
+function getWeight(pokemon) {
+    if (weightData === undefined) {
+        weightData = {};
+        var data = sys.getFileContent('db/pokes/weight.txt').split('\n');
+        for (var x = 0; x < data.length; x++) {
+            var line = data[x].split(" ");
+            var pokenum = line[0].split(":");
+            pokenum[0] = parseInt(65536 * pokenum[1]) + parseInt(pokenum[0]);
+            weightData[pokenum[0]] = line[1];
+        }
+    }
+    return weightData[pokemon];
+}
+
+function getWeightDamage(weight) {
+    print(weight);
+    if (weight <= 10) {
+        return 20;
+    } else if (10.1 <= weight && weight <= 25) {
+        return 40
+    } else if (25.1 <= weight && weight <= 50) {
+        return 60
+    } else if (50.1 <= weight && weight <= 100) {
+        return 80
+    } else if (100.1 <= weight && weight <= 200) {
+        return 100
+    }
+    return 120
+}
+
 function pokeDex(pokemon, gen, level) {
     if (sys.pokemon(pokemon) === "Missingno") {
         throw "Invalid pokemon";
@@ -638,6 +669,13 @@ function pokeDex(pokemon, gen, level) {
     }
     data.push("<b>Speed: " + sys.baseStats(pokemon, 5, gen) + "</b>");
     data.push(getMinMax(sys.baseStats(pokemon, 5, gen), false, level, gen));
+    var weight = getWeight(pokemon);
+    if (weight === undefined) {
+        weight = getWeight(npokemon);
+    }
+    var weightLbs = weight * 2.20462;
+    data.push("<b>Weight: " + weight + "kg / " + weightLbs.toFixed(1) + "lb.</b>");
+    data.push("<b>Damage from GK/LK: " + getWeightDamage(weight) + "</b>");
     data.push("");
     for (var x = 0; x < data.length; x++) {
         sendHtmlMessage(data[x]);
