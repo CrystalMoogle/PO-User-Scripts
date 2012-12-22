@@ -608,7 +608,6 @@ function getWeight(pokemon) {
 }
 
 function getWeightDamage(weight) {
-    print(weight);
     if (weight <= 10) {
         return 20;
     } else if (10.1 <= weight && weight <= 25) {
