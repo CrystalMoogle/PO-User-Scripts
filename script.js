@@ -408,10 +408,9 @@ function htmllinks(text) { //makes sure links get linked!
 function addExtras(text, playname, bot, channel) { //adds stalkwords/links/enriched text etc
     text = htmllinks(text);
     text = enrichedText(text);
-    if (channel === null) {
-        channel = client.channelId(client.myChannels()[0]);
+    if (client.currentChannel() !== null) {
+        text = client.channel(channel).addChannelLinks(text);
     }
-    text = client.channel(channel).addChannelLinks(text);
     text = greenText(text);
     text = stalkWordCheck(text, playname, bot, channel);
     var md5 = new RegExp(sys.md5('/'), "g");
