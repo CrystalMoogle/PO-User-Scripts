@@ -674,7 +674,7 @@ function pokeDex(pokemon, gen, level) {
         weight = getWeight(npokemon);
     }
     var weightLbs = weight * 2.20462;
-    data.push("<b>Weight: " + weight + "kg / " + weightLbs.toFixed(1) + "lb.</b>");
+    data.push("<b>Weight: " + weight + "kg / " + weightLbs.toFixed(1) + "lbs</b>");
     data.push("<b>Damage from GK/LK: " + getWeightDamage(weight) + "</b>");
     data.push("");
     for (var x = 0; x < data.length; x++) {
