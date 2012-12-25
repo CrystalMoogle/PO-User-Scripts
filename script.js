@@ -371,7 +371,7 @@ function stalkWordCheck(string, playname, bot, channel) { //adds flashes to name
     var ownName = Utilities.html_escape(client.ownName());
     var newstring = "";
     if (string.toLowerCase().indexOf(ownName.toLowerCase()) !== -1 && playname !== ownName && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
-        var name = new RegExp("\\b(" + ownName + ")\\b", "i");
+        var name = new RegExp("\\b(" + ownName + ")\\b(?![^\\s<]*>)", "i");
         var names = string.match(name);
         if (names) {
             newstring = string.replace(name, "<span style='" + hilight + "'>" + names[0] + "</span>");
@@ -381,7 +381,7 @@ function stalkWordCheck(string, playname, bot, channel) { //adds flashes to name
         }
     }
     for (var x = 0; x < stalkwords.length; x++) {
-        var stalk = new RegExp("\\b(" + stalkwords[x] + ")\\b", "i");
+        var stalk = new RegExp("\\b(" + stalkwords[x] + ")\\b(?![^\\s<]*>)", "i");
         var stalks = string.match(stalk);
         if (string.toLowerCase().search(stalk) !== -1 && playname !== client.ownName() && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
             newstring = string.replace(stalk, "<span style='" + hilight + "'>" + stalks[0] + "</span>");
@@ -411,8 +411,8 @@ function htmllinks(text) { //makes sure links get linked!
 function addExtras(text, playname, bot, channel) { //adds stalkwords/links/enriched text etc
     text = htmllinks(text);
     text = enrichedText(text);
-    if (client.currentChannel() !== null) {
-        text = client.channel(channel).addChannelLinks(text);
+    if (client.channel(client.currentChannel())) {
+        text = client.channel(client.currentChannel()).addChannelLinks(text);
     }
     text = greenText(text);
     text = stalkWordCheck(text, playname, bot, channel);
@@ -652,7 +652,11 @@ function pokeDex(pokemon, gen, level) {
         data.push("<b>" + getAbility(pokemon, gen) + "</b>");
     }
     data.push("<b>HP: " + sys.baseStats(pokemon, 0, gen) + "</b>");
-    data.push(getMinMax(sys.baseStats(pokemon, 0, gen), true, level, gen));
+    if (pokemon !== sys.pokeNum("Shedinja")) {
+        data.push(getMinMax(sys.baseStats(pokemon, 0, gen), true, level, gen));
+    } else {
+        data.push("&nbsp;&nbsp;&nbsp;&nbsp;Min: " + 1 + " | Max: " + 1);
+    }
     data.push("<b>Atk: " + sys.baseStats(pokemon, 1, gen) + "</b>");
     data.push(getMinMax(sys.baseStats(pokemon, 1, gen), false, level, gen));
     data.push("<b>Def: " + sys.baseStats(pokemon, 2, gen) + "</b>");
