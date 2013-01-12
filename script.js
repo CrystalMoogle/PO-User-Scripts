@@ -1057,8 +1057,8 @@ Commands = ({
         }
         if (command === "pokedex") {
             sys.stopEvent();
-            var version = sys.version();
-            if (version.replace(/\./g, "") < 2008) {
+            var version = sys.version().replace(/\./g, "").length == 4 ? sys.version().replace(/\./g, "") : sys.version().replace(/\./g, "")*10;
+            if (version < 2008) {
                 sendBotMessage("This command will only work on versions 2.0.08 and higher");
                 return;
             }
