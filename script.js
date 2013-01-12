@@ -1074,10 +1074,10 @@ Commands = ({
             var pokemon = sys.pokeNum(commandData[0]);
             var gen = parseInt(commandData[2], 10);
             var level = parseInt(commandData[1], 10);
-            if (isNaN(gen) || gen === undefined || gen > 5 || gen < 1) {
+            if (isNaN(gen) || gen > 5 || gen < 1) {
                 gen = 5;
             }
-            if (isNaN(level) || level === undefined || level > 100 || level < 1) {
+            if (isNaN(level) || level > 100 || level < 1) {
                 level = 100;
             }
             pokeDex(pokemon, gen, level);
