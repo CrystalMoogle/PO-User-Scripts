@@ -299,7 +299,9 @@ Utilities = ({
         settings.playerswarn = playerswarn;
         settings.auth_symbol = auth_symbol;
         settings.auth_style = auth_style;
-        sys.writeToFile('memory.json', JSON.stringify(settings));
+        if(!sys.isSafeScripts()) {
+            sys.writeToFile('memory.json', JSON.stringify(settings));
+        }
     },
 
     eliminateDuplicates: function eliminateDuplicates(arr) { //stolen from http://dreaminginjavascript.wordpress.com/2008/08/22/eliminating-duplicates/ eliminates any duplicates that are in an array
