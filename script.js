@@ -1625,7 +1625,7 @@ function enrichedText(text) { //applies the enriched text, adapted from the PO 1
 }
 
 function greenText(text) { //applies greentext
-    if (text.substr(0, 4) === "&gt;" && tgreentext === "true") {
+    if (text.substr(0, 4) === "&gt;" && tgreentext === true) {
         text = "<font color = '" + greentext + "'>" + text + "</font>";
     }
     else {
@@ -1798,16 +1798,16 @@ function getWeightDamage(weight) {
     if (weight <= 10) {
         return 20;
     }
-    else if (10.1 <= weight && weight <= 25) {
+    else if (10 <= weight && weight < 25) {
         return 40;
     }
-    else if (25.1 <= weight && weight <= 50) {
+    else if (25 <= weight && weight < 50) {
         return 60;
     }
-    else if (50.1 <= weight && weight <= 100) {
+    else if (50 <= weight && weight < 100) {
         return 80;
     }
-    else if (100.1 <= weight && weight <= 200) {
+    else if (100 <= weight && weight < 200) {
         return 100;
     }
     return 120;
