@@ -368,6 +368,11 @@ Utilities = ({
             return "";
         }
         return string.replace(/</g, "</");
+    },
+
+    checkVersion: function checkVersion(version) {
+        var currentVersion = sys.version().replace(/\./g, "").length == 4 ? sys.version().replace(/\./g, "") : sys.version().replace(/\./g, "")*10;
+        return currentVersion >= version;
     }
 });
 
@@ -1059,8 +1064,7 @@ Commands = ({
         }
         if (command === "pokedex") {
             sys.stopEvent();
-            var version = sys.version().replace(/\./g, "").length == 4 ? sys.version().replace(/\./g, "") : sys.version().replace(/\./g, "")*10;
-            if (version < 2008) {
+            if (!Utilities.checkVersion(2008)) {
                 sendBotMessage("This command will only work on versions 2.0.08 and higher");
                 return;
             }
@@ -1715,6 +1719,9 @@ function formatMessage(message, channel) {
         else {
             client.printChannelMessage("<font face ='" + fonttype + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/> " + symbol + auth_style[auth] + playname + ": </font>" + Utilities.tagend(auth_style[auth]) + fontstyle + playmessage + Utilities.tagend(fontstyle), channel, true);
         }
+        if (playmessage.indexOf('<ping/>') !== -1 && !client.windowActive() && Utilities.checkVersion(2011)) {
+            client.trayMessage('Ping' + (channel ? " in " + client.channelName(channel) : ""), Utilities.stripHTML(playmessage));
+        }
         sys.stopEvent();
     }
 }
@@ -1813,6 +1820,38 @@ function getWeightDamage(weight) {
     return 120;
 }
 
+function getTierInfo(pokemon) {
+    cleanFile('tiers.json');
+    if (sys.getFileContent('tiers.json') === "") {
+        sys.writeToFile('tiers.json', sys.synchronousWebCall('https://gist.github.com/raw/76a72f564d7eb8c509dd/tiers.json'));
+    }
+    var data = JSON.parse(sys.getFileContent('tiers.json'));
+    var tiers = Object.keys(data);
+    var legalTiers = [];
+    var poke = sys.pokemon(pokemon);
+    var banparents = [];
+    for(var x = 0; x < tiers.length; x++) {
+        var banparent = data[tiers[x]].banParent;
+        var end = false;
+        if (banparent) {
+            while (end === false) {
+                if (data[banparent].pokemons.indexOf(poke) !==-1 || banparents.indexOf(banparent) !== -1) {
+                    banparents.push(tiers[x]);
+                }
+                if (data[banparent].banparent) {
+                    var banparent = data[banparent].banParent;
+                } else {
+                    end = true;
+                }
+            }
+        }
+        if (data[tiers[x]].pokemons.indexOf(poke) === -1 && banparents.indexOf(tiers[x]) === -1) {
+            legalTiers.push("<a href='http://wiki.pokemon-online.eu/view/"+tiers[x].replace(/ /g,"_")+"'>"+tiers[x]+"</a>");
+        }
+    }
+    return legalTiers.join(", ");
+}
+
 function pokeDex(pokemon, gen, level) {
     if (sys.pokemon(pokemon) === "Missingno") {
         throw "Invalid pokemon";
@@ -1872,6 +1911,9 @@ function pokeDex(pokemon, gen, level) {
     var weightLbs = weight * 2.20462;
     data.push("<b>Weight: " + weight + "kg / " + weightLbs.toFixed(1) + "lbs</b>");
     data.push("<b>Damage from GK/LK: " + getWeightDamage(weight) + "</b>");
+    if (gen === 5) {
+        data.push("<b>Legal in tiers: " + getTierInfo(pokemon) + "</b>")
+    }
     data.push("");
     for (var x = 0; x < data.length; x++) {
         sendHtmlMessage(data[x]);
@@ -1884,8 +1926,9 @@ function changeScript(resp) {
         return;
     }
     try {
-        sys.changeScript(resp, true);
+        sys.changeScript(resp);
         sys.writeToFile(sys.scriptsFolder + "scripts.js", resp);
+        sendMessage("Scripts were updated!");
     }
     catch (err) {
         sys.changeScript(sys.getFileContent(sys.scriptsFolder + 'scripts.js'));
@@ -1903,7 +1946,7 @@ Script_Version = "2.0.00"; //version the script is currently on
 //noinspection JSUnusedAssignment
 poScript = ({
     clientStartUp: function () {
-        sendMessage('Script Check: OK'); //use this to send a message on update scripts
+        //sendMessage('Script Check: OK'); //use this to send a message on update scripts
     },
     onPlayerReceived: function (id) { //detects when a player is visible to the client (mostly logins, but may also happen upon joining a new channel)
         var flashvar = "";
