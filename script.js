@@ -4,7 +4,7 @@
  Safe Scripts are pretty much required to be off
  Currently needs PO Version 2.0.10 to run correctly
  Report bugs here: http://pokemon-online.eu/forums/showthread.php?15079 and read over the thread to check for anything
-  */
+ */
 //these things below shouldn't be touched unless you know what you're doing~
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global sys,client */
@@ -1934,13 +1934,15 @@ function changeScript(resp) {
         sendBotMessage('Updating failed, loaded old scripts!');
     }
 }
-if (client.ownId() !== -1) {
-    init();
+if (client) {
+    if (client.ownId() !== -1) {
+        init();
+    }
+    client.network().playerLogin.connect(function () { //only call when the user has logged in to prevent any crashes
+        awayFunction();
+        init();
+    });
 }
-client.network().playerLogin.connect(function () { //only call when the user has logged in to prevent any crashes
-    awayFunction();
-    init();
-});
 Script_Version = "2.0.00"; //version the script is currently on
 //noinspection JSUnusedAssignment
 poScript = ({
