@@ -2,19 +2,16 @@
  Client Scripts
  Make sure you check ~commandslist for a list of commands
  Safe Scripts are pretty much required to be off
- Currently needs PO Version 2.0.06 to run correctly (Though 2.0.07 is strongly recommended)
+ Currently needs PO Version 2.0.10 to run correctly
  Report bugs here: http://pokemon-online.eu/forums/showthread.php?15079 and read over the thread to check for anything
- Needed files: Utilities.js, Commands.js
- If it doesn't automatically download them, get them from https://github.com/CrystalMoogle/PO-User-Scripts/tree/devel and save them as their appropriate names in a folder called "ClientScripts" in your main PO Folder
- */
+  */
 //these things below shouldn't be touched unless you know what you're doing~
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global sys,client */
-var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/devel/"; //where the script is stored
+var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/"; //where the script is stored
 var scriptsFolder = "ClientScripts"; //replace with undefined if you don't want a folder
 var global = this;
 var poScript, Script_Version, initCheck, repoFolder, etext, tgreentext, flash, autoresponse, friendsflash, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style, src, Utilities, Commands, autoidle, nochallenge, Plugins, userplugins, weightData, playerswarn;
-var neededFiles = ["utilities.js", "commands.js"]; //files needed for the script in an array
 var pluginFiles = [];
 String.prototype.format = function () {
     var formatted = this;
@@ -966,7 +963,7 @@ Commands = ({
         }
         if (command === "addplugin") {
             sys.stopEvent();
-            if (neededFiles.indexOf(commandData.split(/\//).pop()) !== -1 || pluginFiles.indexOf(commandData.split(/\//).pop()) !== -1) {
+            if (pluginFiles.indexOf(commandData.split(/\//).pop()) !== -1) {
                 updateFile(commandData);
                 return;
             }
