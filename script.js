@@ -1697,9 +1697,9 @@ function formatMessage(message, channel) {
         }
         var id = client.id(playname);
         var playmessage = Utilities.html_escape(message.substr(pos + 2));
-        var colour = client.color(id);
-        if (bot === true) {
-            colour = clientbotcolour;
+        var colour = clientbotcolour;
+        if (id !== -1) {
+            colour = client.color(id);
         }
         var auth = client.auth(id);
         if (auth > 4 || auth < 0) {
