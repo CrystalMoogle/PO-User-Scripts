@@ -1946,9 +1946,6 @@ if (client) {
 Script_Version = "2.0.00"; //version the script is currently on
 //noinspection JSUnusedAssignment
 poScript = ({
-    clientStartUp: function () {
-        //sendMessage('Script Check: OK'); //use this to send a message on update scripts
-    },
     onPlayerReceived: function (id) { //detects when a player is visible to the client (mostly logins, but may also happen upon joining a new channel)
         if (!client) {
             return;
