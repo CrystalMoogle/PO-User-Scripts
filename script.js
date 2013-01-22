@@ -1719,8 +1719,10 @@ function formatMessage(message, channel) {
         else {
             client.printChannelMessage("<font face ='" + fonttype + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/> " + symbol + auth_style[auth] + playname + ": </font>" + Utilities.tagend(auth_style[auth]) + fontstyle + playmessage + Utilities.tagend(fontstyle), channel, true);
         }
-        if (playmessage.indexOf('<ping/>') !== -1 && !client.windowActive() && Utilities.checkVersion(2011)) {
-            client.trayMessage('Ping' + (channel ? " in " + client.channelName(channel) : ""), Utilities.stripHTML(playmessage));
+        if(Utilities.checkVersion(2011)) {
+            if (playmessage.indexOf('<ping/>') !== -1 && !client.windowActive()) {
+                client.trayMessage('Ping' + (channel ? " in " + client.channelName(channel) : ""), Utilities.stripHTML(playmessage));
+            }
         }
         sys.stopEvent();
     }
