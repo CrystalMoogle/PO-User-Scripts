@@ -1911,7 +1911,7 @@ function pokeDex(pokemon, gen, level) {
     data.push("<b>Weight: " + weight + "kg / " + weightLbs.toFixed(1) + "lbs</b>");
     data.push("<b>Damage from GK/LK: " + getWeightDamage(weight) + "</b>");
     if (gen === 5) {
-        data.push("<b>Legal in tiers: " + getTierInfo(pokemon) + "</b>")
+        data.push("<b>Legal in tiers: " + getTierInfo(pokemon) + "</b>");
     }
     data.push("");
     for (var x = 0; x < data.length; x++) {
