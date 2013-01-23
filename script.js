@@ -430,6 +430,7 @@ Commands = ({
             sys.stopEvent();
             sendMessage("*** Script Commands ***");
             sendMessage(commandsymbol + "updatescripts: Allows you to updatescripts");
+            sendMessage(commandsymbol + "updatetierinfo: Allows you to update the tier info used in pokedex. Use this after tier changes on the main server");
             sendMessage(commandsymbol + "versions: Allows you to view the current versions");
             sendMessage(commandsymbol + "changelog version: Allows you to view the changelog");
             sendMessage(commandsymbol + "checkversion: Allows you to check for updates");
@@ -951,6 +952,14 @@ Commands = ({
             sendBotMessage("Fetching scripts from (link)", channel_local, updateURL);
             sys.webCall(updateURL, changeScript);
             return;
+        }
+        if (command === "updatetierinfo") {
+            sys.stopEvent();
+            if (isSafeScripts()) {
+                return;
+            }
+            sendBotMessage("Fetching tier info...");
+            sys.webCall("https://gist.github.com/raw/76a72f564d7eb8c509dd/tiers.json", function(resp) {sys.writeToFile('tiers.json', resp); sendBotMessage("Tier info was updated!")});
         }
         if (command === "updateplugin") {
             sys.stopEvent();
@@ -1927,6 +1936,7 @@ function changeScript(resp) {
     try {
         sys.changeScript(resp);
         sys.writeToFile(sys.scriptsFolder + "scripts.js", resp);
+        sys.webCall('https://gist.github.com/raw/76a72f564d7eb8c509dd/tiers.json', function(resp) {sys.writeToFile('tiers.json', resp)});
         sendMessage("Scripts were updated!");
     }
     catch (err) {
@@ -1943,7 +1953,7 @@ client.network().playerLogin.connect(function () { //only call when the user has
     init();
 });
 
-Script_Version = "2.0.00"; //version the script is currently on
+Script_Version = "2.0.01"; //version the script is currently on
 //noinspection JSUnusedAssignment
 poScript = ({
     onPlayerReceived: function (id) { //detects when a player is visible to the client (mostly logins, but may also happen upon joining a new channel)
