@@ -563,15 +563,17 @@ Commands = ({
             sys.stopEvent();
             var channela = commandData.toLowerCase();
             var channels = client.channelNames();
-            for (var x = 0; x < channels.length; x++) {
-                if (channela === channels[x].toLowerCase()) {
-                    channela = channels[x];
-                    if (!client.hasChannel(client.channelId(channela))) {
-                        client.join(channela);
+            for (var x in channels) {
+                if (channels.hasOwnProperty(x)) {
+                    if (channela === channels[x].toLowerCase()) {
+                        channela = channels[x];
+                        if (!client.hasChannel(client.channelId(channela))) {
+                            client.join(channela);
+                            return;
+                        }
+                        client.activateChannel(channela);
                         return;
                     }
-                    client.activateChannel(channela);
-                    return;
                 }
             }
             sendBotMessage("That is not a channel!");
