@@ -1934,22 +1934,19 @@ function changeScript(resp) {
         sendBotMessage('Updating failed, loaded old scripts!');
     }
 }
-if (client) {
-    if (client.ownId() !== -1) {
-        init();
-    }
-    client.network().playerLogin.connect(function () { //only call when the user has logged in to prevent any crashes
-        awayFunction();
-        init();
-    });
+
+if (client.ownId() !== -1) {
+    init();
 }
+client.network().playerLogin.connect(function () { //only call when the user has logged in to prevent any crashes
+    awayFunction();
+    init();
+});
+
 Script_Version = "2.0.00"; //version the script is currently on
 //noinspection JSUnusedAssignment
 poScript = ({
     onPlayerReceived: function (id) { //detects when a player is visible to the client (mostly logins, but may also happen upon joining a new channel)
-        if (!client) {
-            return;
-        }
         var flashvar = "";
         if (friendsflash === true) {
             flashvar = "<ping/>";
@@ -1966,21 +1963,12 @@ poScript = ({
         }
     },
     onPlayerJoinChan: function (id, channel) {
-        if (!client) {
-            return;
-        }
         saveToLog(client.name(id) + " joined the channel", channel);
     },
     onPlayerLeaveChan: function (id, channel) {
-        if (!client) {
-            return;
-        }
         saveToLog(client.name(id) + " left the channel", channel);
     },
     beforeNewMessage: function (message, html) {
-        if (!client) {
-            return;
-        }
         if (initCheck !== true) {
             init();
         }
@@ -1990,9 +1978,6 @@ poScript = ({
         formatMessage(message);
     },
     beforeChannelMessage: function (message, channel, html) { //detects a channel specific message
-        if (!client) {
-            return;
-        }
         if (initCheck !== true) {
             init();
         }
@@ -2020,17 +2005,11 @@ poScript = ({
         formatMessage(message, channel);
     },
     beforePMReceived: function (id) { // called before a PM is received
-        if (!client) {
-            return;
-        }
         if (ignoreCheck(client.name(id))) {
             sys.stopEvent();
         }
     },
     afterPMReceived: function (id) { //called after a PM is received
-        if (!client) {
-            return;
-        }
         if (playerswarn[id] === true) {
             return;
         }
@@ -2067,9 +2046,6 @@ poScript = ({
          }
          return;
          }*/
-        if (!client) {
-            return;
-        }
         callPlugins("beforeSendMessage", message, channel);
         if (message.toLowerCase() === "reset symbol") {
             sys.stopEvent();
@@ -2100,9 +2076,6 @@ poScript = ({
         }
     },
     beforeChallengeReceived: function () {
-        if (!client) {
-            return;
-        }
         if (nochallenge === true) {
             sys.stopEvent();
         }
