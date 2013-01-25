@@ -390,7 +390,7 @@ Commands = ({
             sendMessage(commandsymbol + "[add/remove]stalkword word: Allows you to add/remove stalkwords");
             sendMessage(commandsymbol + "logchannels: Allows you to view your log channels");
             sendMessage(commandsymbol + "[add/remove]logchannel channel: Allows you to add/remove channels from the channels you log");
-            sendMessage(commandsymbol + "pokedex: pokemon:level:gen: Shows you details about a pokemon. Gen/level are optional parameters to view the pokemon in different gens/at different levels");
+            sendMessage(commandsymbol + "pokedex pokemon:level:gen: Shows you details about a pokemon. Gen/level are optional parameters to view the pokemon in different gens/at different levels");
             sendMessage(commandsymbol + "formatcommands: Shows the formatting comands (e.g. enriched text, auth symbols)");
             sendMessage(commandsymbol + "scriptcommands: Shows commands related to the scripts (e.g. versions, updatescripts)");
             sendMessage(commandsymbol + "socialcommands: Shows commands related to social aspects (e.g. friendslist, ignorelist)");
