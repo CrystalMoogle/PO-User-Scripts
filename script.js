@@ -1838,7 +1838,11 @@ function getTierInfo(pokemon) {
     var data = JSON.parse(sys.getFileContent('tiers.json'));
     var tiers = Object.keys(data);
     var legalTiers = [];
+    var sameStatFormes = ["Unown", "Gastrodon", "Arceus", "Genesect", "Deerling", "Sawsbuck", "Keldeo"];
     var poke = sys.pokemon(pokemon);
+    if (sameStatFormes.indexOf(poke.substr(0, poke.indexOf("-"))) !== -1) {
+        poke = sameStatFormes[sameStatFormes.indexOf(poke.substr(0, poke.indexOf("-")))];
+    }
     var banparents = [];
     for(var x = 0; x < tiers.length; x++) {
         var banparent = data[tiers[x]].banParent;
@@ -1955,7 +1959,7 @@ client.network().playerLogin.connect(function () { //only call when the user has
     init();
 });
 
-Script_Version = "2.0.01"; //version the script is currently on
+Script_Version = "2.0.02"; //version the script is currently on
 //noinspection JSUnusedAssignment
 poScript = ({
     onPlayerReceived: function (id) { //detects when a player is visible to the client (mostly logins, but may also happen upon joining a new channel)
