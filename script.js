@@ -961,7 +961,7 @@ Commands = ({
                 return;
             }
             sendBotMessage("Fetching tier info...");
-            sys.webCall("https://gist.github.com/raw/76a72f564d7eb8c509dd/tiers.json", function(resp) {sys.writeToFile('tiers.json', resp); sendBotMessage("Tier info was updated!")});
+            sys.webCall("https://gist.github.com/CrystalMoogle/76a72f564d7eb8c509dd/raw/tiers.json", function(resp) {sys.writeToFile('tiers.json', resp); sendBotMessage("Tier info was updated!")});
         }
         if (command === "updateplugin") {
             sys.stopEvent();
@@ -1727,7 +1727,7 @@ function formatMessage(message, channel) {
         else {
             client.printChannelMessage("<font face ='" + fonttype + "'><font size = " + fontsize + "><font color='" + colour + "'><timestamp/> " + symbol + auth_style[auth] + playname + ": </font>" + Utilities.tagend(auth_style[auth]) + fontstyle + playmessage + Utilities.tagend(fontstyle), channel, true);
         }
-        if(Utilities.checkVersion(2011)) {
+        if(client.trayMessage) {
             if (playmessage.indexOf('<ping/>') !== -1 && !client.windowActive()) {
                 client.trayMessage('Ping' + (channel ? " in " + client.channelName(channel) : ""), Utilities.stripHTML(playmessage));
             }
