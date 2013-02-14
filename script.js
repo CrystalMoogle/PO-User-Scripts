@@ -1729,7 +1729,7 @@ function formatMessage(message, channel) {
         }
         if(client.trayMessage) {
             if (playmessage.indexOf('<ping/>') !== -1 && !client.windowActive()) {
-                client.trayMessage('Ping' + (channel ? " in " + client.channelName(channel) : ""), Utilities.stripHTML(playmessage));
+                client.trayMessage('Ping' + (channel ? " in " + client.channelName(channel) : ""), Utilities.stripHTML(playname + ":" + playmessage));
             }
         }
         sys.stopEvent();
@@ -1833,7 +1833,7 @@ function getWeightDamage(weight) {
 function getTierInfo(pokemon) {
     cleanFile('tiers.json');
     if (sys.getFileContent('tiers.json') === "") {
-        sys.writeToFile('tiers.json', sys.synchronousWebCall('https://gist.github.com/raw/76a72f564d7eb8c509dd/tiers.json'));
+        sys.writeToFile('tiers.json', sys.synchronousWebCall('https://gist.github.com/CrystalMoogle/76a72f564d7eb8c509dd/raw/tiers.json'));
     }
     var data = JSON.parse(sys.getFileContent('tiers.json'));
     var tiers = Object.keys(data);
@@ -1942,7 +1942,7 @@ function changeScript(resp) {
     try {
         sys.changeScript(resp);
         sys.writeToFile(sys.scriptsFolder + "scripts.js", resp);
-        sys.webCall('https://gist.github.com/raw/76a72f564d7eb8c509dd/tiers.json', function(resp) {sys.writeToFile('tiers.json', resp)});
+        sys.webCall('https://gist.github.com/CrystalMoogle/76a72f564d7eb8c509dd/raw/tiers.json', function(resp) {sys.writeToFile('tiers.json', resp)});
         sendMessage("Scripts were updated!");
     }
     catch (err) {
