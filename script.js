@@ -11,7 +11,7 @@
 var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/"; //where the script is stored
 var scriptsFolder = "ClientScripts"; //replace with undefined if you don't want a folder
 var global = this;
-var poScript, Script_Version, initCheck, repoFolder, etext, tgreentext, flash, autoresponse, friendsflash, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style, src, Utilities, Commands, autoidle, nochallenge, Plugins, userplugins, weightData, playerswarn;
+var poScript, Script_Version, initCheck, repoFolder, etext, tgreentext, flash, autoresponse, friendsflash, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style, src, Utilities, Commands, autoidle, nochallenge, Plugins, userplugins, weightData, playerswarn, youtube;
 var pluginFiles = [];
 String.prototype.format = function () {
     var formatted = this;
@@ -41,6 +41,7 @@ Utilities = ({
             autoidle = settings.autoidle;
             tgreentext = settings.tgreentext;
             flash = settings.flash;
+            youtube = settings.youtube;
             autoresponse = settings.autoresponse;
             friendsflash = settings.friendsflash;
             checkversion = settings.checkversion;
@@ -90,6 +91,7 @@ Utilities = ({
             "autoresponse": false,
             "friendsflash": false,
             "checkversion": false,
+            "youtube": false,
             "clientbotname": "+ClientBot",
             "clientbotcolour": "#3DAA68",
             "clientbotstyle": "<b>",
@@ -133,6 +135,7 @@ Utilities = ({
         etext = Boolean(sys.getVal('etext'));
         autoidle = Boolean(sys.getVal('idle'));
         nochallenge = false;
+        youtube = false;
         tgreentext = Boolean(sys.getVal('tgreentext'));
         autoresponse = Boolean(sys.getVal('autoresponse'));
         friendsflash = Boolean(sys.getVal('friendsflash'));
@@ -270,6 +273,7 @@ Utilities = ({
         settings.nochallenge = nochallenge;
         settings.tgreentext = tgreentext;
         settings.flash = flash;
+        settings.youtube = youtube;
         settings.autoresponse = autoresponse;
         settings.friendsflash = friendsflash;
         settings.checkversion = checkversion;
@@ -382,6 +386,7 @@ Commands = ({
             sendMessage(commandsymbol + "idle on/off: Allows you to turn auto-idle on/off");
             sendMessage(commandsymbol + "flash on/off:channel: Allows you to turn flashes on/off. Channel is an optional parameter to turn flashes off for one channel");
             sendMessage(commandsymbol + "ignorechallenges on/off: Allows you to ignore all challenges without idling");
+            sendMessage(commandsymbol + "ytlinks on/off: Converts Youtube links into their titles (Warning: May cause lag)");
             sendMessage(commandsymbol + "goto channel: Allows you to switch to that channel (joins if you're not in that channel)");
             sendMessage(commandsymbol + "reconnect: Allows you to reconnect to the server");
             sendMessage(commandsymbol + "pm name: Allows you to start a PM with a user");
@@ -526,6 +531,22 @@ Commands = ({
                 nochallenge = false;
                 Utilities.saveSettings();
                 sendBotMessage("You are no longer ignoring challenges");
+                return;
+            }
+            sendBotMessage("Please use on/off");
+        }
+        if (command  === "ytlinks") {
+            sys.stopEvent();
+            if (commandData === "on") {
+                youtube = true;
+                Utilities.saveSettings();
+                sendBotMessage("Youtube links will automatically convert to titles");
+                return;
+            }
+            if (commandData === "off") {
+                youtube = false;
+                Utilities.saveSettings();
+                sendBotMessage("Youtube links will display as links instead of titles");
                 return;
             }
             sendBotMessage("Please use on/off");
@@ -1599,8 +1620,17 @@ function htmllinks(text) { //makes sure links get linked!
     var newfound;
     for (var x in found) {
         if (found.hasOwnProperty(x)) {
+            var link = found[x];
             newfound = found[x].replace(/\//g, sys.md5('/')).replace(/_/g, sys.md5('_'));
-            newtext = ("<a href ='" + newfound + "'>" + newfound + "</a>").replace(/&amp;/gi, "&");
+            var regex  = /.*(?:youtu.be\/|youtube.*v=|youtube.*\/embed\/|youtube.*\/v\/|youtube.*videos\/)([^#\&\?]*).*/;
+            if (link.match(regex) && youtube === true) {
+                var name = link.match(regex)[link.match(regex).length-1];
+                var resp = JSON.parse(sys.synchronousWebCall('https://gdata.youtube.com/feeds/api/videos/'+name+'?alt=json'));
+                link = '<img src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAMCAYAAABr5z2BAAABIklEQVQoz53LvUrDUBjG8bOoOammSf1IoBSvoCB4JeIqOHgBLt6AIMRBBQelWurQ2kERnMRBsBUcIp5FJSBI5oQsJVkkUHh8W0o5nhaFHvjBgef/Mq+Q46RJBMkI/vE+aOus956tnEswIZe1LV0QyJ5sE2GzgZfVMtRNIdiDpccEssdlB1mW4bvTwdvWJtRdErM7U+8S/FJykCRJX5qm+KpVce8UMNLRLbulz4iSjTAMh6Iowsd5BeNadp3nUF0VlxAEwZBotXC0Usa4ll3meZdA1iguwvf9vpvDA2wvmKgYGtSud8suDB4TyGr2PF49D/vra9jRZ1BVdknMzgwuCGSnZEObwu6sBnVTCHZiaC7BhFx2PKdxUidiAH/4lLo9Mv0DELVs9qsOHXwAAAAASUVORK5CYII=">' + " " + resp.entry.title.$t;
+            } else {
+                link = newfound;
+            }
+            newtext = ("<a href ='" + newfound + "'>" + link + "</a>").replace(/&amp;/gi, "&");
             text = text.replace(found[x], newtext);
         }
     }
@@ -1926,7 +1956,11 @@ function pokeDex(pokemon, gen, level) {
     data.push("<b>Weight: " + weight + "kg / " + weightLbs.toFixed(1) + "lbs</b>");
     data.push("<b>Damage from GK/LK: " + getWeightDamage(weight) + "</b>");
     if (gen === 5) {
-        data.push("<b>Legal in tiers: " + getTierInfo(pokemon) + "</b>");
+        try {
+            data.push("<b>Legal in tiers: " + getTierInfo(pokemon) + "</b>");
+        } catch (e) {
+            data.push("<b>Tier info unavailable</b>");
+        }
     }
     data.push("");
     for (var x = 0; x < data.length; x++) {
