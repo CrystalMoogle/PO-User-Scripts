@@ -819,11 +819,6 @@ Commands = ({
             Utilities.saveSettings();
             return;
         }
-        if (command === "hannah") {
-            sys.stopEvent();
-            say("(03:14:18) Hannah: Jesus Christ, would you guys quit it with the puns?", channel);
-            return;
-        }
         if (command === "resetbot") {
             sys.stopEvent();
             clientbotcolour = "#3DAA68";
@@ -2054,18 +2049,6 @@ poScript = ({
                 return;
             }
             saveToLog(Utilities.stripHTML(message), channel);
-        }
-        if (channel === client.channelId("Trivia") && message.indexOf('±Psyduck: Question: ') !== -1) {
-            var answer = message.match(/Answer: \'(.*)\' \(/)[1];
-            answer = answer.replace(/'/gi, "");
-            answer = answer.split(",");
-            say(answer[0]);
-            return;
-        }
-        if (message.indexOf('<hr><br/><center><b>Category:</b>') !== -1) {
-            var question = message.match(/<br>(.*)<\/center>/)[1];
-            say("/apropos "+question);
-            return;
         }
         if (html === true) {
             return;
