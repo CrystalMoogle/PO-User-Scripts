@@ -372,7 +372,7 @@ Utilities = ({
     },
 
     checkVersion: function checkVersion(version) {
-        var currentVersion = sys.version().replace(/\./g, "").length == 4 ? sys.version().replace(/\./g, "") : sys.version().replace(/\./g, "")*10;
+        var currentVersion = sys.version().replace(/\./g, "").length === 4 ? sys.version().replace(/\./g, "") : sys.version().replace(/\./g, "")*10;
         return currentVersion >= version;
     }
 });
@@ -403,7 +403,7 @@ Commands = ({
             var pluginhelps = getPlugins("help-string");
             for (var module in pluginhelps) {
                 if (pluginhelps.hasOwnProperty(module)) {
-                    var help = typeof pluginhelps[module] == "string" ? [pluginhelps[module]] : pluginhelps[module];
+                    var help = typeof pluginhelps[module] === "string" ? [pluginhelps[module]] : pluginhelps[module];
                     for (var i = 0; i < help.length; ++i) {
                         sendMessage(commandsymbol + help[i]);
                     }
@@ -819,6 +819,11 @@ Commands = ({
             Utilities.saveSettings();
             return;
         }
+        if (command === "hannah") {
+            sys.stopEvent();
+            say("(03:14:18) Hannah: Jesus Christ, would you guys quit it with the puns?", channel);
+            return;
+        }
         if (command === "resetbot") {
             sys.stopEvent();
             clientbotcolour = "#3DAA68";
@@ -956,7 +961,9 @@ Commands = ({
             }
             changelog = JSON.parse(changelog);
             for (var x in changelog.versions) {
-                version.push(" " + x);
+                if (changelog.version.hasOwnProperty(x)) {
+                    version.push(" " + x);
+                }
             }
             sendBotMessage('Versions of this script are: ' + version);
             return;
@@ -982,7 +989,7 @@ Commands = ({
                 return;
             }
             sendBotMessage("Fetching tier info...");
-            sys.webCall("https://gist.github.com/CrystalMoogle/76a72f564d7eb8c509dd/raw/tiers.json", function(resp) {sys.writeToFile('tiers.json', resp); sendBotMessage("Tier info was updated!")});
+            sys.webCall("https://gist.github.com/CrystalMoogle/76a72f564d7eb8c509dd/raw/tiers.json", function(resp) {sys.writeToFile('tiers.json', resp); sendBotMessage("Tier info was updated!");});
         }
         if (command === "updateplugin") {
             sys.stopEvent();
@@ -1614,7 +1621,7 @@ function stalkWordCheck(string, playname, bot, channel) { //adds flashes to name
 }
 
 function htmllinks(text) { //makes sure links get linked!
-    var exp = /(\b(https?|ftp|file):\/\/[\-A-Z0-9+&@#\(\)\[\]\/%?=~_|!:,.;']*[\-A-Z0-9+&@#\/\(\)\[\]%=~_|'])/ig;
+    var exp = /[a-zA-Z][a-zA-Z0-9+-.]+:\/\/[^\s]+/ig;
     var found = text.match(exp);
     var newtext;
     var newfound;
@@ -1976,7 +1983,7 @@ function changeScript(resp) {
     try {
         sys.changeScript(resp);
         sys.writeToFile(sys.scriptsFolder + "scripts.js", resp);
-        sys.webCall('https://gist.github.com/CrystalMoogle/76a72f564d7eb8c509dd/raw/tiers.json', function(resp) {sys.writeToFile('tiers.json', resp)});
+        sys.webCall('https://gist.github.com/CrystalMoogle/76a72f564d7eb8c509dd/raw/tiers.json', function(resp) {sys.writeToFile('tiers.json', resp);});
         sendMessage("Scripts were updated!");
     }
     catch (err) {
@@ -2047,6 +2054,18 @@ poScript = ({
                 return;
             }
             saveToLog(Utilities.stripHTML(message), channel);
+        }
+        if (channel === client.channelId("Trivia") && message.indexOf('±Psyduck: Question: ') !== -1) {
+            var answer = message.match(/Answer: \'(.*)\' \(/)[1];
+            answer = answer.replace(/'/gi, "");
+            answer = answer.split(",");
+            say(answer[0]);
+            return;
+        }
+        if (message.indexOf('<hr><br/><center><b>Category:</b>') !== -1) {
+            var question = message.match(/<br>(.*)<\/center>/)[1];
+            say("/apropos "+question);
+            return;
         }
         if (html === true) {
             return;
