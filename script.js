@@ -1616,7 +1616,7 @@ function stalkWordCheck(string, playname, bot, channel) { //adds flashes to name
 }
 
 function htmllinks(text) { //makes sure links get linked!
-    var exp = /[a-zA-Z][a-zA-Z0-9+-.]+:\/\/[^\s]+/ig;
+    var exp = /([a-zA-Z][a-zA-Z0-9+-.]+:\/\/|www\.)[^\s]+/ig;
     var found = text.match(exp);
     var newtext;
     var newfound;
