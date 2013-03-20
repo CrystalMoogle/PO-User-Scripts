@@ -956,7 +956,7 @@ Commands = ({
             }
             changelog = JSON.parse(changelog);
             for (var x in changelog.versions) {
-                if (changelog.version.hasOwnProperty(x)) {
+                if (changelog.versions.hasOwnProperty(x)) {
                     version.push(" " + x);
                 }
             }
