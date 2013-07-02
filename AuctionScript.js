@@ -1,38 +1,38 @@
 /* Original Script by Shadowfist
 
-Instructions
-- Paste into client scripts window
-- Type ~init to start the system
-- Type ~start to get signups happening
-- Type ~add [name] for each player you want to add
-- Type addmoney/takemoney to calibrate
-- Type ~loaditems [file] to load the auction items (the file should be a list separated by ':')
-- Type ~start again to start the first round!
-*/
+ Instructions
+ - Paste into client scripts window
+ - Type ~init to start the system
+ - Type ~start to get signups happening
+ - Type ~add [name] for each player you want to add
+ - Type addmoney/takemoney to calibrate
+ - Type ~loaditems [file] to load the auction items (the file should be a list separated by ':')
+ - Type ~start again to start the first round!
+ */
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global sys,client, print */
-
 /* Globals */
 var messagessent = 0; // maximum it can send per minute.
 var nooveractive = false; //set to true if you cannot go overactive on the server
 var userPMs, auctionbot;
 var help = ["*** COMMANDS LIST ***",
-            "~help: shows the command list",
-            "~test: Send a test message",
-            "~data: Gets data",
-            "~addmoney [name]:[money]: add money to a player",
-            "~takemoney [name]:[money]: take money from a player",
-            "~add [name]: add a player to an auction",
-            "~remove [name]: remove a player from an auction",
-            "~start: start a round of auction",
-            "~end: end a round of auction",
-            "~loaditems: load items",
-            "~err: send an error message",
-            "~init: reset vars"];
+    "~help: shows the command list",
+    "~test: Send a test message",
+    "~data: Gets data",
+    "~addmoney [name]:[money]: add money to a player",
+    "~takemoney [name]:[money]: take money from a player",
+    "~add [name]: add a player to an auction",
+    "~remove [name]: remove a player from an auction",
+    "~start: start a round of auction",
+    "~end: end a round of auction",
+    "~loaditems: load items",
+    "~err: send an error message",
+    "~init: reset vars"];
 
 /* Safe scripts need to be disabled to use some cool functions like loading items from files */
 
 // Case insensitive comparison.
+
 function cmp(x1, x2) {
     if (typeof x1 !== typeof x2) {
         return false;
@@ -46,7 +46,7 @@ function cmp(x1, x2) {
 }
 
 // Returns a name in correct case.
-String.prototype.toCorrectCase = function() {
+String.prototype.toCorrectCase = function () {
     if (isNaN(this) && client.id(this) !== undefined) {
         return client.name(client.id(this));
     }
@@ -55,19 +55,19 @@ String.prototype.toCorrectCase = function() {
     }
 };
 
-String.prototype.removeWhiteSpace = function() {
+String.prototype.removeWhiteSpace = function () {
     var result = this;
     while (/\w/.test(result.charAt(0))) {
         result = result.substring(1);
     }
-    while (/\w/.test(result.charAt(result.length-1))) {
-        result = result.substring(0, result.length-1);
+    while (/\w/.test(result.charAt(result.length - 1))) {
+        result = result.substring(0, result.length - 1);
     }
     return result;
 };
 
 // Rearranges the elements of an array in a random order. Doesn't change the original array.
-Array.prototype.shuffle = function() {
+Array.prototype.shuffle = function () {
     var oldarray = this;
     var newarray = [];
     while (oldarray.length > 0) {
@@ -78,8 +78,8 @@ Array.prototype.shuffle = function() {
 };
 
 function init() {
-        auctionbot = new Auction();
-        print("Auction Initiated");
+    auctionbot = new Auction();
+    print("Auction Initiated");
     if (typeof userPMs !== "object") {
         userPMs = [];
     }
@@ -88,7 +88,7 @@ function init() {
 function printMessage(msg) {
     var channel = client.channelId("Auction House");
     if (channel !== undefined)
-        client.printChannelMessage(msg,channel,false);
+        client.printChannelMessage(msg, channel, false);
     else {
         print(msg);
     }
@@ -107,12 +107,12 @@ function sendAll(msg, chan) {
 }
 
 function getRealBid(init) {
-    return Math.floor(init/auctionbot.interval)*auctionbot.interval;
+    return Math.floor(init / auctionbot.interval) * auctionbot.interval;
 }
 
 function Auction() {
     var auctionchan = client.channelId("Auction House");
-    this.resetVars = function() {
+    this.resetVars = function () {
         auctionbot.players = {};
         auctionbot.ticks = -1;
         auctionbot.items = [];
@@ -128,7 +128,7 @@ function Auction() {
         auctionbot.issuedMsgs = [];
         printMessage("Reset auction vars!");
     };
-    this.startAuction = function() {
+    this.startAuction = function () {
         if (auctionbot.hasOwnProperty("state")) {
             if (auctionbot.state !== "off") {
                 printMessage("An auction is already in progress!");
@@ -139,7 +139,7 @@ function Auction() {
         auctionbot.state = "standby";
         printMessage("An auction is now ready to start!");
     };
-    this.addMoney = function(name, money) {
+    this.addMoney = function (name, money) {
         if (auctionbot.state === "off") {
             printMessage("No auction is in progress!");
             return;
@@ -154,9 +154,9 @@ function Auction() {
             return;
         }
         auctionbot.players[lname].money += money;
-        sendAll(name.toCorrectCase()+" now has "+auctionbot.players[lname].money+" gold coins.", auctionchan);
+        sendAll(name.toCorrectCase() + " now has " + auctionbot.players[lname].money + " gold coins.", auctionchan);
     };
-    this.startRound = function() {
+    this.startRound = function () {
         if (auctionbot.state !== "standby") {
             printMessage("A round is already in progress!");
             return;
@@ -168,9 +168,9 @@ function Auction() {
         }
         if (auctionbot.style === "default") {
             var sales = auctionbot.items;
-            var item = sales.splice(sys.rand(0,sales.length), 1);
+            var item = sales.splice(sys.rand(0, sales.length), 1);
             auctionbot.saleitem = item;
-            sendAll("Now selling "+item+"!", auctionchan);
+            sendAll("Now selling " + item + "!", auctionchan);
             auctionbot.ticks = 30;
             auctionbot.state = "round";
             auctionbot.round += 1;
@@ -185,15 +185,15 @@ function Auction() {
                 auctionbot.turns = auctionbot.turns.shuffle();
             }
             auctionbot.state = "nominate";
-            sendAll("It is "+(auctionbot.turns[auctionbot.round%auctionbot.turns.length]).toString().toCorrectCase()+"'s turn to nominate an item from the following: "+auctionbot.items.join(", "), auctionchan);
+            sendAll("It is " + (auctionbot.turns[auctionbot.round % auctionbot.turns.length]).toString().toCorrectCase() + "'s turn to nominate an item from the following: " + auctionbot.items.join(", "), auctionchan);
         }
     };
-    this.nominateRound = function(name, nomination) {
+    this.nominateRound = function (name, nomination) {
         if (auctionbot.state !== "nominate") {
             printMessage("Not in nomination stage!");
             return;
         }
-        if (!cmp(auctionbot.turns[auctionbot.round%auctionbot.turns.length].toString(), name)) {
+        if (!cmp(auctionbot.turns[auctionbot.round % auctionbot.turns.length].toString(), name)) {
             printMessage("Nomination not accepted!");
             return;
         }
@@ -210,7 +210,7 @@ function Auction() {
                 printMessage("Nomination not found!");
             }
             auctionbot.saleitem = item;
-            sendAll("Now selling "+item+"!", auctionchan);
+            sendAll("Now selling " + item + "!", auctionchan);
             auctionbot.ticks = 30;
             auctionbot.state = "round";
             auctionbot.round += 1;
@@ -219,25 +219,25 @@ function Auction() {
             }
         }
     };
-    this.endRound = function() {
+    this.endRound = function () {
         var bidders = auctionbot.bids;
         var winner = [false, 0];
         for (var x in bidders) {
             if (bidders.hasOwnProperty(x)) {
-            var bidinfo = [x, bidders[x]];
-            if (bidinfo[1] >= auctionbot.minbid && bidinfo[1] > winner[1]) {
-                winner = bidinfo;
-            }
+                var bidinfo = [x, bidders[x]];
+                if (bidinfo[1] >= auctionbot.minbid && bidinfo[1] > winner[1]) {
+                    winner = bidinfo;
+                }
             }
         }
         if (winner[0] === false) {
             sendAll("No bids were made this round! Too bad!", auctionchan);
         }
         else {
-            sendAll("I sold the "+auctionbot.saleitem+" to "+winner[0].toCorrectCase()+" for "+winner[1]+" gold coins!", auctionchan);
+            sendAll("I sold the " + auctionbot.saleitem + " to " + winner[0].toCorrectCase() + " for " + winner[1] + " gold coins!", auctionchan);
             auctionbot.players[winner[0]].money -= winner[1];
             auctionbot.players[winner[0]].possessions.push(auctionbot.saleitem);
-            sendAll(winner[0].toCorrectCase()+" ("+auctionbot.players[winner[0]].money+") now has: "+auctionbot.players[winner[0]].possessions.join(", "), auctionchan);
+            sendAll(winner[0].toCorrectCase() + " (" + auctionbot.players[winner[0]].money + ") now has: " + auctionbot.players[winner[0]].possessions.join(", "), auctionchan);
         }
         auctionbot.saleitem = "";
         auctionbot.state = "standby";
@@ -247,7 +247,7 @@ function Auction() {
             this.startRound();
         }
     };
-    this.endAuction = function() {
+    this.endAuction = function () {
         if (auctionbot.state === "off") {
             printMessage("No auction is in progress!");
             return;
@@ -255,7 +255,7 @@ function Auction() {
         auctionbot.state = "off";
         printMessage("The auction ended!");
     };
-    this.getItemList = function(file) {
+    this.getItemList = function (file) {
         if (auctionbot.state !== "standby") {
             printMessage("An auction is already in progress!");
             return;
@@ -277,17 +277,17 @@ function Auction() {
                 itemsadded += 1;
             }
         }
-        printMessage("Added "+itemsadded+" items to the auction block!");
+        printMessage("Added " + itemsadded + " items to the auction block!");
     };
-    this.getData = function() {
+    this.getData = function () {
         var aplayers = auctionbot.players;
         for (var x in aplayers) {
             if (aplayers.hasOwnProperty(x)) {
-                printMessage(x+": "+"("+aplayers[x].money+") - "+aplayers[x].possessions.join(", "));
+                printMessage(x + ": " + "(" + aplayers[x].money + ") - " + aplayers[x].possessions.join(", "));
             }
         }
     };
-    this.addPlayer = function(name) {
+    this.addPlayer = function (name) {
         var aplayers = auctionbot.players;
         if (auctionbot.state !== "standby") {
             printMessage("An auction is already in progress!");
@@ -303,7 +303,7 @@ function Auction() {
         };
         sendAll(name + " is now in the auction!", auctionchan);
     };
-    this.removePlayer = function(name) {
+    this.removePlayer = function (name) {
         var aplayers = auctionbot.players;
         if (auctionbot.state !== "standby") {
             printMessage("An auction is already in progress!");
@@ -316,7 +316,7 @@ function Auction() {
         delete aplayers[name.toLowerCase()];
         sendAll(name + " is no longer in the auction!", auctionchan);
     };
-    this.makebid = function(name, bid) {
+    this.makebid = function (name, bid) {
         if (auctionbot.state !== "round") {
             return;
         }
@@ -338,14 +338,14 @@ function Auction() {
             return;
         }
         for (var x in bids) {
-            if (bids.hasOwnProperty(x)){
-            if (bids[x] >= bid) {
-                return;
-            }
+            if (bids.hasOwnProperty(x)) {
+                if (bids[x] >= bid) {
+                    return;
+                }
             }
         }
         bids[lname] = bid;
-        sendAll(name + " made a bid of "+bid+" gold coins!", auctionchan);
+        sendAll(name + " made a bid of " + bid + " gold coins!", auctionchan);
         auctionbot.ticks = 30;
     };
 }
@@ -385,7 +385,7 @@ function handleCommand(command, data, channel) {
     }
     if (command === "takemoney") {
         var tmp = data.split(":", 2);
-        auctionbot.addMoney(tmp[0], 0-parseInt(tmp[1], 10));
+        auctionbot.addMoney(tmp[0], 0 - parseInt(tmp[1], 10));
         return;
     }
     if (command === "end") {
@@ -403,32 +403,32 @@ function handleCommand(command, data, channel) {
     if (command === "eval") {
         try {
             var result = eval(data);
-            client.printChannelMessage("\u00B1ModBot: Result is: "+result, channel, false);
+            client.printChannelMessage("±ModBot: Result is: " + result, channel, false);
         }
         catch (err) {
-            client.printChannelMessage("\u00B1ModBot: Error in eval: "+err, channel, false);
+            client.printChannelMessage("±ModBot: Error in eval: " + err, channel, false);
         }
         return;
     }
     if (command === "err") {
-        client.network().sendChanMessage(channel, "Custom Error: "+data);
+        client.network().sendChanMessage(channel, "Custom Error: " + data);
         return;
     }
     if (command === "init") {
         init();
         auctionbot.resetVars();
-        client.printChannelMessage("\u00B1ModBot: reset system vars", channel, false);
+        client.printChannelMessage("±ModBot: reset system vars", channel, false);
         return;
     }
     throw ("no valid command");
 }
 
 events = ({
-    clientStartUp : function() {
+    clientStartUp: function () {
         init();
     },
-    stepEvent : function() {
-        if (sys.time()%60 === 0)   {
+    stepEvent: function () {
+        if (sys.time() % 60 === 0) {
             messagessent = 0;
         }
         if (typeof auctionbot === "object") {
@@ -439,7 +439,7 @@ events = ({
             }
         }
     },
-    beforePMReceived : function(src, message) {
+    beforePMReceived: function (src, message) {
         if (userPMs.indexOf(src) === -1 && messagessent <= 50) {
             client.network().sendPM(src, "This user is unable to respond to regular PMs!");
             userPMs.push(src);
@@ -448,7 +448,7 @@ events = ({
             sys.stopEvent();
         }
     },
-    beforeSendMessage : function(msg, channel) {
+    beforeSendMessage: function (msg, channel) {
         var isCommand = msg.charAt(0) === "~" && msg.length > 1;
         if (isCommand) {
             var pos = msg.indexOf(" ");
@@ -458,51 +458,51 @@ events = ({
                 commandData = "";
             }
             else {
-                command = msg.substring(1,pos);
-                commandData = msg.substring(pos+1);
+                command = msg.substring(1, pos);
+                commandData = msg.substring(pos + 1);
             }
             try {
                 handleCommand(command, commandData, channel);
             }
             catch (err) {
                 if (err === "no valid command") {
-                    client.printChannelMessage("\u00B1Fat Policeman: The command "+command+" doesn't exist! Use ~help to get a list that you can use!", channel, false);
+                    client.printChannelMessage("±Fat Policeman: The command " + command + " doesn't exist! Use ~help to get a list that you can use!", channel, false);
                 }
                 else {
-                    client.printChannelMessage("\u00B1Fat Policeman: Error on command '"+command+"': "+err, channel, false);
+                    client.printChannelMessage("±Fat Policeman: Error on command '" + command + "': " + err, channel, false);
                 }
             }
             sys.stopEvent();
         }
     },
-    afterChannelMessage : function(message, channel, html) {
+    afterChannelMessage: function (message, channel, html) {
         var user, msg;
-        if(!html) {
+        if (!html) {
             var pos = message.indexOf(': ');
             if (pos !== -1) {
                 user = message.substr(0, pos);
-                msg = message.substring(pos+2);
+                msg = message.substring(pos + 2);
             }
             else {
                 return;
             }
 
-        var userid = client.id(user);
-        if (!client.playerExist(userid)) {
-            return;
-        }
-        var channelname = client.channelName(channel);
-        if (channelname !== "Auction House") {
-            return;
-        }
-        if (msg.indexOf("bid ") === 0) {
-            client.printChannelMessage(user + " --- " + parseInt(msg.substring(4), 10), channel, false);
-            auctionbot.makebid(user, getRealBid(parseInt(msg.substring(4), 10)));
-        }
-        if (msg.indexOf("nominate ") === 0) {
-            client.printChannelMessage(user + " --- " + msg.substring(9), channel, false);
-            auctionbot.nominateRound(user, msg.substring(9));
-        }
+            var userid = client.id(user);
+            if (!client.playerExist(userid)) {
+                return;
+            }
+            var channelname = client.channelName(channel);
+            if (channelname !== "Auction House") {
+                return;
+            }
+            if (msg.indexOf("bid ") === 0) {
+                client.printChannelMessage(user + " --- " + parseInt(msg.substring(4), 10), channel, false);
+                auctionbot.makebid(user, getRealBid(parseInt(msg.substring(4), 10)));
+            }
+            if (msg.indexOf("nominate ") === 0) {
+                client.printChannelMessage(user + " --- " + msg.substring(9), channel, false);
+                auctionbot.nominateRound(user, msg.substring(9));
+            }
         }
     }
 });
