@@ -55,17 +55,6 @@ String.prototype.toCorrectCase = function () {
     }
 };
 
-String.prototype.removeWhiteSpace = function () {
-    var result = this;
-    while (/\w/.test(result.charAt(0))) {
-        result = result.substring(1);
-    }
-    while (/\w/.test(result.charAt(result.length - 1))) {
-        result = result.substring(0, result.length - 1);
-    }
-    return result;
-};
-
 // Rearranges the elements of an array in a random order. Doesn't change the original array.
 Array.prototype.shuffle = function () {
     var oldarray = this;
