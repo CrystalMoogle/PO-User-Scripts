@@ -273,7 +273,7 @@ function Auction() {
         var aplayers = auctionbot.players;
         for (var x in aplayers) {
             if (aplayers.hasOwnProperty(x)) {
-                printMessage(x + ": " + "(" + aplayers[x].money + ") - " + aplayers[x].possessions.join(", "));
+                printMessage(x + " : " + "(" + aplayers[x].money + ") - " + aplayers[x].possessions.join(", "));
             }
         }
     };
@@ -291,7 +291,7 @@ function Auction() {
             money: auctionbot.startmoney,
             possessions: []
         };
-        sendAll(name + " is now in the auction!", auctionchan);
+        sendAll(name.toCorrectCase() + " is now in the auction!", auctionchan);
     };
     this.removePlayer = function (name) {
         var aplayers = auctionbot.players;
@@ -335,7 +335,7 @@ function Auction() {
             }
         }
         bids[lname] = bid;
-        sendAll(name + " made a bid of " + bid + " gold coins!", auctionchan);
+        sendAll(name.toCorrectCase() + " made a bid of " + bid + " gold coins!", auctionchan);
         auctionbot.ticks = 30;
     };
 }
@@ -437,6 +437,7 @@ events = ({
     beforeSendMessage: function (msg, channel) {
         var isCommand = msg.charAt(0) === "~" && msg.length > 1;
         if (isCommand) {
+            msg = msg.toLowerCase();
             var pos = msg.indexOf(" ");
             var command, commandData;
             if (pos === -1) {
@@ -462,16 +463,13 @@ events = ({
         }
     },
     afterChannelMessage: function (message, channel, html) {
+        message = message.toLowerCase();
         var user, msg;
         if (!html) {
             var pos = message.indexOf(': ');
             if (pos !== -1) {
                 user = message.substr(0, pos);
                 msg = message.substring(pos + 2);
-            }
-            else {
-                return;
-            }
 
             var userid = client.id(user);
             if (!client.playerExist(userid)) {
@@ -488,6 +486,7 @@ events = ({
             if (msg.indexOf("nominate ") === 0) {
                 client.printChannelMessage(user + " --- " + msg.substring(9), channel, false);
                 auctionbot.nominateRound(user, msg.substring(9));
+            }
             }
         }
     }
