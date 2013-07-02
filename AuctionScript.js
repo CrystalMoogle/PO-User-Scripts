@@ -196,7 +196,7 @@ function Auction() {
                 }
             }
             if (item === false) {
-                printMessage("Nomination not found!");
+                sendAll("Nomination not found!");
                 return;
             }
             auctionbot.saleitem = item;
@@ -400,14 +400,10 @@ function handleCommand(command, data, channel) {
         }
         return;
     }
-    if (command === "err") {
-        client.network().sendChanMessage(channel, "Custom Error: " + data);
-        return;
-    }
     if (command === "init") {
         init();
         auctionbot.resetVars();
-        client.printChannelMessage("±ModBot: reset system vars", channel, false);
+        client.printChannelMessage("±ModBot: Reset system vars", channel, false);
         return;
     }
     throw ("no valid command");
