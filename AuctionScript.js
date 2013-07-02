@@ -471,22 +471,22 @@ events = ({
                 user = message.substr(0, pos);
                 msg = message.substring(pos + 2);
 
-            var userid = client.id(user);
-            if (!client.playerExist(userid)) {
-                return;
-            }
-            var channelname = client.channelName(channel);
-            if (channelname !== "Auction House") {
-                return;
-            }
-            if (msg.indexOf("bid ") === 0) {
-                client.printChannelMessage(user + " --- " + parseInt(msg.substring(4), 10), channel, false);
-                auctionbot.makebid(user, getRealBid(parseInt(msg.substring(4), 10)));
-            }
-            if (msg.indexOf("nominate ") === 0) {
-                client.printChannelMessage(user + " --- " + msg.substring(9), channel, false);
-                auctionbot.nominateRound(user, msg.substring(9));
-            }
+                var userid = client.id(user);
+                if (!client.playerExist(userid)) {
+                    return;
+                }
+                var channelname = client.channelName(channel);
+                if (channelname !== "Auction House") {
+                    return;
+                }
+                if (msg.indexOf("bid ") === 0) {
+                    client.printChannelMessage(user + " --- " + parseInt(msg.substring(4), 10), channel, false);
+                    auctionbot.makebid(user, getRealBid(parseInt(msg.substring(4), 10)));
+                }
+                if (msg.indexOf("nominate ") === 0) {
+                    client.printChannelMessage(user + " --- " + msg.substring(9), channel, false);
+                    auctionbot.nominateRound(user, msg.substring(9));
+                }
             }
         }
     }
