@@ -14,7 +14,7 @@
 /* Globals */
 var messagessent = 0; // maximum it can send per minute.
 var nooveractive = false; //set to true if you cannot go overactive on the server
-var userPMs, auctionbot;
+var userPMs, auctionbot, auctionchan;
 var help = ["*** COMMANDS LIST ***",
     "~help: shows the command list",
     "~test: Send a test message",
@@ -100,7 +100,7 @@ function getRealBid(init) {
 }
 
 function Auction() {
-    var auctionchan = client.channelId("Auction House");
+    auctionchan = client.channelId("Auction House");
     this.resetVars = function () {
         auctionbot.players = {};
         auctionbot.ticks = -1;
@@ -197,6 +197,7 @@ function Auction() {
             }
             if (item === false) {
                 printMessage("Nomination not found!");
+                return;
             }
             auctionbot.saleitem = item;
             sendAll("Now selling " + item + "!", auctionchan);
