@@ -6,7 +6,7 @@
  - Type ~start to get signups happening
  - Type ~add [name] for each player you want to add
  - Type addmoney/takemoney to calibrate
- - Type ~loaditems [file] to load the auction items (the file should be a list separated by ':')
+ - Type ~loaditems [file] to load the auction items (the file should be seperated on to different lines)
  - Type ~start again to start the first round!
  */
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
@@ -14,7 +14,7 @@
 /* Globals */
 var messagessent = 0; // maximum it can send per minute.
 var nooveractive = false; //set to true if you cannot go overactive on the server
-var userPMs, auctionbot, auctionchan;
+var userPMs, auctionbot, auctionchan, poScript;
 var help = ["*** COMMANDS LIST ***",
     "~help: shows the command list",
     "~test: Send a test message",
@@ -23,6 +23,7 @@ var help = ["*** COMMANDS LIST ***",
     "~takemoney [name]:[money]: take money from a player",
     "~add [name]: add a player to an auction",
     "~remove [name]: remove a player from an auction",
+    "~alias [player]:[alias] adds an alias to a player",
     "~start: start a round of auction",
     "~end: end a round of auction",
     "~loaditems: load items",
@@ -43,6 +44,10 @@ function cmp(x1, x2) {
         }
     }
     return x1 === x2;
+}
+
+function nonFlashing(name) {
+    return name[0] + '​' + name.substr(1);
 }
 
 // Returns a name in correct case.
@@ -109,7 +114,7 @@ function Auction() {
         auctionbot.saleitem = "";
         auctionbot.style = "turn";
         auctionbot.state = "off";
-        auctionbot.startmoney = 140000;
+        auctionbot.startmoney = 175000;
         auctionbot.minbid = 3000;
         auctionbot.interval = 100;
         auctionbot.turns = [];
@@ -174,7 +179,10 @@ function Auction() {
                 auctionbot.turns = auctionbot.turns.shuffle();
             }
             auctionbot.state = "nominate";
-            sendAll("It is " + (auctionbot.turns[auctionbot.round % auctionbot.turns.length]).toString().toCorrectCase() + "'s turn to nominate an item from the following: " + auctionbot.items.join(", "), auctionchan);
+            var toSend = auctionbot.items.map(nonFlashing);
+            var turn = auctionbot.turns[auctionbot.round % auctionbot.turns.length].toString().toLowerCase();
+            var name = turn.toCorrectCase() + (auctionbot.players[turn].aliases ? "/" + auctionbot.players[turn].aliases : "");
+            sendAll("It is " + name + "'s turn to nominate an item from the following: " + toSend, auctionchan);
         }
     };
     this.nominateRound = function (name, nomination) {
@@ -182,6 +190,14 @@ function Auction() {
             printMessage("Not in nomination stage!");
             return;
         }
+        for (var x in auctionbot.players) {
+            if (auctionbot.players.hasOwnProperty(x)) {
+                if (auctionbot.players[x].aliases === name) {
+                    name = x;
+                }
+            }
+        }
+
         if (!cmp(auctionbot.turns[auctionbot.round % auctionbot.turns.length].toString(), name)) {
             printMessage("Nomination not accepted!");
             return;
@@ -243,7 +259,7 @@ function Auction() {
             return;
         }
         auctionbot.state = "off";
-        printMessage("The auction ended!");
+        sendAll("The auction ended!", auctionchan);
     };
     this.getItemList = function (file) {
         if (auctionbot.state !== "standby") {
@@ -259,11 +275,11 @@ function Auction() {
             printMessage("Couldn't find anything here!");
             return;
         }
-        var items = content.split(":");
+        var items = content.split("\n");
         var itemsadded = 0;
         for (var x = 0; x < items.length; x++) {
             if (items[x].length >= 1) {
-                auctionbot.items.push(items[x]);
+                auctionbot.items.push(items[x].trim());
                 itemsadded += 1;
             }
         }
@@ -273,10 +289,33 @@ function Auction() {
         var aplayers = auctionbot.players;
         for (var x in aplayers) {
             if (aplayers.hasOwnProperty(x)) {
-                printMessage(x + " : " + "(" + aplayers[x].money + ") - " + aplayers[x].possessions.join(", "));
+                printMessage(x.toCorrectCase() + " : " + "(" + aplayers[x].money + ") - " + aplayers[x].possessions.join(", "));
             }
         }
     };
+
+    this.addAlias = function (name, alias) {
+        var aplayers = auctionbot.players;
+        if (auctionbot.state !== "standby") {
+            printMessage("An auction is already in progress!");
+            return;
+        }
+        if (name === undefined || alias === undefined) {
+            printMessage("Names are incorrect");
+            return;
+        }
+        if (aplayers.hasOwnProperty(alias.toLowerCase())) {
+            printMessage("They are already in the auction!");
+            return;
+        }
+        if (aplayers[name].aliases === alias) {
+            printMessage("This player is already an alias");
+            return;
+        }
+        aplayers[name].aliases = alias.toLowerCase();
+        sendAll(alias.toCorrectCase() + " added as an alias to " + name.toCorrectCase(), auctionchan);
+    };
+
     this.addPlayer = function (name) {
         var aplayers = auctionbot.players;
         if (auctionbot.state !== "standby") {
@@ -289,7 +328,8 @@ function Auction() {
         }
         aplayers[name.toLowerCase()] = {
             money: auctionbot.startmoney,
-            possessions: []
+            possessions: [],
+            aliases: ""
         };
         sendAll(name.toCorrectCase() + " is now in the auction!", auctionchan);
     };
@@ -310,6 +350,14 @@ function Auction() {
         if (auctionbot.state !== "round") {
             return;
         }
+        for (var x in auctionbot.players) {
+            if (auctionbot.players.hasOwnProperty(x)) {
+                if (auctionbot.players[x].aliases === name) {
+                    name = x;
+                }
+            }
+        }
+
         var aplayers = auctionbot.players;
         var bids = auctionbot.bids;
         var lname = name.toLowerCase();
@@ -390,6 +438,11 @@ function handleCommand(command, data, channel) {
         client.network().sendChanMessage(channel, "This is a script test");
         return;
     }
+    if (command === "alias") {
+        var tmp = data.split(":", 2);
+        auctionbot.addAlias(tmp[0], tmp[1]);
+        return;
+    }
     if (command === "eval") {
         try {
             var result = eval(data);
@@ -409,7 +462,7 @@ function handleCommand(command, data, channel) {
     throw ("no valid command");
 }
 
-events = ({
+poScript = ({
     clientStartUp: function () {
         init();
     },
