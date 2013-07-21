@@ -52,7 +52,7 @@ function nonFlashing(name) {
 
 // Returns a name in correct case.
 String.prototype.toCorrectCase = function () {
-    if (isNaN(this) && client.id(this) !== undefined) {
+    if (isNaN(this) && client.id(this) !== -1) {
         return client.name(client.id(this));
     }
     else {
@@ -179,7 +179,7 @@ function Auction() {
                 auctionbot.turns = auctionbot.turns.shuffle();
             }
             auctionbot.state = "nominate";
-            var toSend = auctionbot.items.map(nonFlashing);
+            var toSend = auctionbot.items.map(nonFlashing).sort();
             var turn = auctionbot.turns[auctionbot.round % auctionbot.turns.length].toString().toLowerCase();
             var name = turn.toCorrectCase() + (auctionbot.players[turn].aliases ? "/" + auctionbot.players[turn].aliases : "");
             sendAll("It is " + name + "'s turn to nominate an item from the following: " + toSend, auctionchan);
