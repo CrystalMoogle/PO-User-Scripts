@@ -47,7 +47,7 @@
         "2.0.00": "-Added a pokedex command to display details about a pokemon \n-Added the ability to ignore challenges without going idle \n-Allow for plugins to be added later down the line \n-Restrucutre the commands layout \n-Hopefully fix many crashes people were experiencing \n-Many other minor changes",
         "2.0.01": "-Added the ability to manually update tier info for ~pokedex via ~updatetierinfo",
         "2.0.02": "-Fix tier info for formes \n-Minor message fix",
-        "2.0.03": "-Add ability to turn youtube links into the Video title using ~ytlinks on \n-Turn www. addresses into clickable links (e.g. www.google.com)"
+        "2.0.03": "-Add ability to turn youtube links into the Video title using ~ytlinks on \n-Turn www. addresses into clickable links (e.g. www.google.com)",
         "2.0.10": "-Allow ~pokedex to use Gen 6 pokemon \n-Allow bots to flash (e.g. for Mafia) \n-Change the woefully ineffienct script version checker"
     },
     "latest": "2.0.10"
