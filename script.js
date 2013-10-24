@@ -1982,7 +1982,7 @@ client.network().playerLogin.connect(function () { //only call when the user has
     init();
 });
 
-Script_Version = "2.0.03"; //version the script is currently on
+Script_Version = "2.0.10"; //version the script is currently on
 //noinspection JSUnusedAssignment
 poScript = ({
     onPlayerReceived: function (id) { //detects when a player is visible to the client (mostly logins, but may also happen upon joining a new channel)
