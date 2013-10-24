@@ -1111,8 +1111,8 @@ Commands = ({
             var pokemon = sys.pokeNum(commandData[0]);
             var gen = parseInt(commandData[2], 10);
             var level = parseInt(commandData[1], 10);
-            if (isNaN(gen) || gen > 5 || gen < 1) {
-                gen = 5;
+            if (isNaN(gen) || gen > 6 || gen < 1) {
+                gen = 6;
             }
             if (isNaN(level) || level > 100 || level < 1) {
                 level = 100;
@@ -1592,23 +1592,29 @@ function awayFunction() { //makes the user go away if needed
 function stalkWordCheck(string, playname, bot, channel) { //adds flashes to names/stalkwords
     var ownName = Utilities.html_escape(client.ownName());
     var newstring = "";
-    if (string.toLowerCase().indexOf(ownName.toLowerCase()) !== -1 && playname !== ownName && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
+    if (string.toLowerCase().indexOf(ownName.toLowerCase()) !== -1 && playname !== ownName && flash !== false && fchannel.indexOf(client.channelName(channel)) === -1 && channel !== undefined) {
         var name = new RegExp("\\b(" + ownName + ")\\b(?![^\\s<]*>)", "i");
         var names = string.match(name);
         if (names) {
-            newstring = string.replace(name, "<span style='" + hilight + "'>" + names[0] + "</span>");
+            newstring = (bot ? string : string.replace(name, "<span style='" + hilight + "'>" + names[0] + "</span>"));
             if (newstring !== string) {
                 string = newstring.replace(newstring, "<i> " + newstring + "</i><ping/>");
+            }
+            if (bot) {
+                string = string + "<ping/>";
             }
         }
     }
     for (var x = 0; x < stalkwords.length; x++) {
         var stalk = new RegExp("\\b(" + stalkwords[x] + ")\\b(?![^\\s<]*>)", "i");
         var stalks = string.match(stalk);
-        if (string.toLowerCase().search(stalk) !== -1 && playname !== client.ownName() && flash !== false && bot === false && fchannel.indexOf(client.channelName(channel)) === -1) {
-            newstring = string.replace(stalk, "<span style='" + hilight + "'>" + stalks[0] + "</span>");
+        if (string.toLowerCase().search(stalk) !== -1 && playname !== client.ownName() && flash !== false && fchannel.indexOf(client.channelName(channel)) === -1 && channel !== undefined) {
+            newstring = (bot ? string : string.replace(stalk, "<span style='" + hilight + "'>" + stalks[0] + "</span>"));
             if (newstring !== string) {
                 string = newstring.replace(newstring, "<i> " + newstring + "</i><ping/>");
+            }
+            if (bot) {
+                string = string + "<ping/>";
             }
         }
     }
@@ -1713,20 +1719,6 @@ function sendHtmlMessage(message, channel) { //sends a html message to the user
     }
     client.printChannelMessage(message, channel, true);
 }
-
-/*function handleSystemCommand(string) {
- //TODO make the repoFolder change upon use of "cd"
- if (repoFolder === undefined) {
- return;
- }
- sys.system('cd ' + repoFolder + ' & ' + string + ' > ' + repoFolder + '/output.txt');
- var output = sys.getFileContent(repoFolder + '/output.txt').split('\n');
- for (var x in output) {
- if (output[x].length > 0) {
- sendMessage(output[x]);
- }
- }
- }*/
 
 function formatMessage(message, channel) {
     if (callPlugins("formatMessage", message, channel)) {
@@ -1962,13 +1954,13 @@ function pokeDex(pokemon, gen, level) {
     var weightLbs = weight * 2.20462;
     data.push("<b>Weight: " + weight + "kg / " + weightLbs.toFixed(1) + "lbs</b>");
     data.push("<b>Damage from GK/LK: " + getWeightDamage(weight) + "</b>");
-    if (gen === 5) {
+    /*if (gen === 5) {
         try {
             data.push("<b>Legal in tiers: " + getTierInfo(pokemon) + "</b>");
         } catch (e) {
             data.push("<b>Tier info unavailable</b>");
         }
-    }
+    }*/
     data.push("");
     for (var x = 0; x < data.length; x++) {
         sendHtmlMessage(data[x]);
@@ -1977,13 +1969,13 @@ function pokeDex(pokemon, gen, level) {
 
 function changeScript(resp) {
     if (resp === "") {
-        sendBotMessage("There was an error accessing the script, paste the contents of (link) into your PO folder and restart, or wait for a client update", undefined, "https://github.com/downloads/coyotte508/pokemon-online/ssl.zip");
+        sendBotMessage("There was an error accessing the script. This could possibly be because github is down or your client won't connect");
         return;
     }
     try {
         sys.changeScript(resp);
         sys.writeToFile(sys.scriptsFolder + "scripts.js", resp);
-        sys.webCall('https://gist.github.com/CrystalMoogle/76a72f564d7eb8c509dd/raw/tiers.json', function(resp) {sys.writeToFile('tiers.json', resp);});
+        //sys.webCall('https://gist.github.com/CrystalMoogle/76a72f564d7eb8c509dd/raw/tiers.json', function(resp) {sys.writeToFile('tiers.json', resp);});
         sendMessage("Scripts were updated!");
     }
     catch (err) {
@@ -2092,17 +2084,6 @@ poScript = ({
         }
     },
     beforeSendMessage: function (message, channel) { //detects messages sent by the client
-        /*var mess = message.toLowerCase();
-         if ((mess.substring(0, 3) === "git" || mess.substring(0, 2) === "cd" || mess.substring(0, 3) === "dir") && typeof sys.system !== "undefined") {
-         sys.stopEvent();
-         try {
-         handleSystemCommand(message);
-         }
-         catch (e) {
-         sendBotMessage('Error with sys.system() ' + e);
-         }
-         return;
-         }*/
         callPlugins("beforeSendMessage", message, channel);
         if (message.toLowerCase() === "reset symbol") {
             sys.stopEvent();
