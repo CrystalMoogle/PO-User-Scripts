@@ -435,7 +435,7 @@ Commands = ({
             sys.stopEvent();
             sendMessage("*** Script Commands ***");
             sendMessage(commandsymbol + "updatescripts: Allows you to updatescripts");
-            sendMessage(commandsymbol + "updatetierinfo: Allows you to update the tier info used in pokedex. Use this after tier changes on the main server");
+            //sendMessage(commandsymbol + "updatetierinfo: Allows you to update the tier info used in pokedex. Use this after tier changes on the main server");
             sendMessage(commandsymbol + "versions: Allows you to view the current versions");
             sendMessage(commandsymbol + "changelog version: Allows you to view the changelog");
             sendMessage(commandsymbol + "checkversion: Allows you to check for updates");
@@ -926,7 +926,7 @@ Commands = ({
             if (isSafeScripts()) {
                 return;
             }
-            var changelog = sys.synchronousWebCall("https://raw.github.com/gist/3189629/ChangeLog.json");
+            var changelog = sys.synchronousWebCall(script_url + "changelog.json");
             if (changelog.length < 1) {
                 sendBotMessage("Error retrieving file");
                 return;
@@ -949,7 +949,7 @@ Commands = ({
             if (isSafeScripts()) {
                 return;
             }
-            var changelog = sys.synchronousWebCall("https://raw.github.com/gist/3189629/ChangeLog.json");
+            var changelog = sys.synchronousWebCall(script_url + "changelog.json");
             if (changelog.length < 1) {
                 sendBotMessage("Error retrieving file");
                 return;
@@ -978,14 +978,14 @@ Commands = ({
             sys.webCall(updateURL, changeScript);
             return;
         }
-        if (command === "updatetierinfo") {
+        /*if (command === "updatetierinfo") {
             sys.stopEvent();
             if (isSafeScripts()) {
                 return;
             }
             sendBotMessage("Fetching tier info...");
             sys.webCall("https://gist.github.com/CrystalMoogle/76a72f564d7eb8c509dd/raw/tiers.json", function(resp) {sys.writeToFile('tiers.json', resp); sendBotMessage("Tier info was updated!");});
-        }
+        }*/
         if (command === "updateplugin") {
             sys.stopEvent();
             if (pluginFiles.indexOf(commandData) !== -1) {
@@ -1395,28 +1395,22 @@ function init() { //defines all the variables that are going to be used in the s
 function checkScriptVersion(bool) { //checks the current script version with the one saved on Github, if the versions do not match, then it gives a warning
     var checkscript, version;
     var regex = /"([^"]*)"/g;
-    if (bool === undefined) {
-        bool = false;
-    }
-    if (checkversion === false && bool === false) {
+    if (checkversion === false && !bool) {
         return;
     }
-    sys.webCall(script_url + 'script.js', function (resp) {
+    sys.webCall(script_url + 'changelog.json', function (resp) {
         if (resp.length === 0) {
             sendBotMessage("There was an error accessing the script, paste the contents of (link) into your PO folder and restart, or wait for a client update", undefined, "https://github.com/downloads/coyotte508/pokemon-online/ssl.zip");
             return;
         }
-        checkscript = resp.split('\n');
-        for (var x = 0; x < checkscript.length; x++) {
-            if (checkscript[x].substr(0, 14) === "Script_Version") {
-                version = String(checkscript[x].match(regex));
-            }
-        }
-        if (version === undefined) {
-            sendBotMessage('There was an error with the version, please report to Crystal Moogle');
+        var changelog;
+        try {
+            changelog = JSON.parse(resp);
+        } catch (e) {
+            sendBotMessage("Changelog couldn't be read");
             return;
         }
-        version = version.replace(/"/g, "");
+        version = changelog.latest;
         var type = {
             "0": "Major Release (huge changes)",
             "1": "Minor Release (new features)",
@@ -1435,10 +1429,10 @@ function checkScriptVersion(bool) { //checks the current script version with the
             if (typeno === undefined) { //this shouldn't ever happen though
                 return;
             }
-            sendBotMessage("A client script update is available, type: " + type[typeno] + ". Use " + commandsymbol + "updatescripts. Use " + commandsymbol + "changelog " + version + " to see the changes", undefined, script_url); //TODO make sure the script actually is a new version, rather than a previous version
+            sendBotMessage("A client script update is available, type: " + type[typeno] + ". Use " + commandsymbol + "updatescripts to update. Use " + commandsymbol + "changelog " + version + " to see the changes");
             return;
         }
-        if (bool === true) {
+        if (bool) {
             sendBotMessage("No update detected");
         }
     });
@@ -1955,12 +1949,12 @@ function pokeDex(pokemon, gen, level) {
     data.push("<b>Weight: " + weight + "kg / " + weightLbs.toFixed(1) + "lbs</b>");
     data.push("<b>Damage from GK/LK: " + getWeightDamage(weight) + "</b>");
     /*if (gen === 5) {
-        try {
-            data.push("<b>Legal in tiers: " + getTierInfo(pokemon) + "</b>");
-        } catch (e) {
-            data.push("<b>Tier info unavailable</b>");
-        }
-    }*/
+     try {
+     data.push("<b>Legal in tiers: " + getTierInfo(pokemon) + "</b>");
+     } catch (e) {
+     data.push("<b>Tier info unavailable</b>");
+     }
+     }*/
     data.push("");
     for (var x = 0; x < data.length; x++) {
         sendHtmlMessage(data[x]);
