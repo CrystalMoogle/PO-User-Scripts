@@ -65,7 +65,6 @@ Utilities = ({
             ignore = settings.ignore;
             logchannel = settings.logchannel;
             fchannel = settings.fchannel;
-            playerswarn = settings.playerswarn;
             auth_symbol = settings.auth_symbol;
             auth_style = settings.auth_style;
             if (silent === false) {
@@ -112,7 +111,6 @@ Utilities = ({
             "ignore": [],
             "logchannel": [],
             "fchannel": [],
-            "playerswarn": [],
             "auth_symbol": {
                 "0": "",
                 "1": "+",
@@ -262,7 +260,6 @@ Utilities = ({
             }
             auth_style[x] = "<i><b>";
         }
-        playerswarn = [];
         this.saveSettings();
     },
 
@@ -297,7 +294,6 @@ Utilities = ({
         settings.ignore = ignore;
         settings.logchannel = logchannel;
         settings.fchannel = fchannel;
-        settings.playerswarn = playerswarn;
         settings.auth_symbol = auth_symbol;
         settings.auth_style = auth_style;
         if(!sys.isSafeScripts()) {
