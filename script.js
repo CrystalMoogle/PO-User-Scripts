@@ -1403,7 +1403,7 @@ function checkScriptVersion(bool) { //checks the current script version with the
         try {
             changelog = JSON.parse(resp);
         } catch (e) {
-            sendBotMessage("Changelog couldn't be read");
+            sendBotMessage("Changelog couldn't be read. Error: " + e);
             return;
         }
         version = changelog.latest;
