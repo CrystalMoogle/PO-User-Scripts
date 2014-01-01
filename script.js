@@ -28,8 +28,10 @@ Utilities = ({
             var settings;
             if (json === undefined) {
                 if (sys.getFileContent('memory.json') === "") {
-                    sendBotMessage('File not found, loaded from old settings');
-                    this.loadFromRegistry();
+                    this.loadDefaultSettings();
+                    this.saveSettings();
+                    client.printHtml('<timestamp/> <b>Type ~commandslist to get started!</b>'); //first time use, or near abouts
+                    return;
                 }
                 settings = JSON.parse(sys.getFileContent('memory.json'));
             }
@@ -127,140 +129,6 @@ Utilities = ({
             }
         };
         this.loadSettings(JSON.stringify(json), true);
-    },
-
-    loadFromRegistry: function loadFromRegistry() { //kinda needed because compatability sucks
-        etext = Boolean(sys.getVal('etext'));
-        autoidle = Boolean(sys.getVal('idle'));
-        nochallenge = false;
-        youtube = false;
-        tgreentext = Boolean(sys.getVal('tgreentext'));
-        autoresponse = Boolean(sys.getVal('autoresponse'));
-        friendsflash = Boolean(sys.getVal('friendsflash'));
-        checkversion = Boolean(sys.getVal('checkversion'));
-        clientbotname = "+ClientBot";
-        if (sys.getVal('flash') === "false") { //making sure flash is on always unless specified to not be
-            flash = false;
-        }
-        else {
-            flash = true;
-        }
-        if (sys.getVal('clientbotname')
-            .length > 0) {
-            clientbotname = sys.getVal('clientbotname');
-        }
-        clientbotcolour = "#3DAA68";
-        if (sys.getVal('clientbotcolour')
-            .length > 0) {
-            clientbotcolour = sys.getVal('clientbotcolour');
-        }
-        clientbotstyle = "<b>";
-        if (sys.getVal('clientbotstyle')
-            .length > 0) {
-            clientbotstyle = sys.getVal('clientbotstyle');
-        }
-        greentext = '#789922';
-        if (sys.getVal('greentext')
-            .length > 0) {
-            greentext = sys.getVal('greentext');
-        }
-        fontcolour = "#000000";
-        if (sys.getVal('fontcolour')
-            .length > 0) {
-            fontcolour = sys.getVal('fontcolour');
-        }
-        fonttype = "";
-        if (sys.getVal('fonttype')
-            .length > 0) {
-            fonttype = sys.getVal('fonttype');
-        }
-        fontsize = 3;
-        if (sys.getVal('fontsize')
-            .length > 0) {
-            fontsize = sys.getVal('fontsize');
-        }
-        fontstyle = "";
-        if (sys.getVal('fontstyle')
-            .length > 0) {
-            fontstyle = sys.getVal('fontstyle');
-        }
-        commandsymbol = "~";
-        if (sys.getVal('commandsymbol')
-            .length > 0) {
-            commandsymbol = sys.getVal('commandsymbol');
-        }
-        hilight = "BACKGROUND-COLOR: #ffcc00";
-        if (sys.getVal('hilight')
-            .length > 0) {
-            hilight = sys.getVal('hilight');
-        }
-        armessage = sys.getVal('armessage');
-        arstart = sys.getVal('arstart');
-        arend = sys.getVal('arend');
-        artype = sys.getVal('artype');
-        userplugins = [];
-        stalkwords = [];
-        friends = [];
-        ignore = [];
-        logchannel = [];
-        fchannel = [];
-        if (sys.getVal('stalkwords') !== "") {
-            var nstalkwords = sys.getVal('stalkwords')
-                .split(",");
-            stalkwords = nstalkwords.concat(stalkwords);
-            stalkwords = this.eliminateDuplicates(stalkwords);
-        }
-        if (sys.getVal('friends') !== "") {
-            var nfriends = sys.getVal('friends')
-                .split(",");
-            friends = nfriends.concat(friends);
-            friends = this.eliminateDuplicates(friends);
-        }
-        if (sys.getVal('ignore') !== "") {
-            var nignore = sys.getVal('ignore')
-                .split(",");
-            ignore = nignore.concat(ignore);
-            ignore = this.eliminateDuplicates(ignore);
-        }
-        if (sys.getVal('logchannel') !== "") {
-            var nlogchannel = sys.getVal('logchannel')
-                .split(",");
-            logchannel = nlogchannel.concat(logchannel);
-            logchannel = this.eliminateDuplicates(logchannel);
-        }
-        if (sys.getVal('fchannel') !== "") {
-            var nfchannel = sys.getVal('fchannel')
-                .split(",");
-            fchannel = nfchannel.concat(fchannel);
-            fchannel = this.eliminateDuplicates(fchannel);
-        }
-        auth_symbol = [];
-        for (var x = 0; x < 5; x++) {
-            if (sys.getVal('auth: ' + x)
-                .length > 0) {
-                auth_symbol[x] = sys.getVal('auth: ' + x);
-                continue;
-            }
-            if (x === 0 || x === 4) {
-                auth_symbol[x] = "";
-                continue;
-            }
-            auth_symbol[x] = "+";
-        }
-        auth_style = [];
-        for (var x = 0; x < 5; x++) {
-            if (sys.getVal('auths: ' + x)
-                .length > 0) {
-                auth_style[x] = sys.getVal('auths: ' + x);
-                continue;
-            }
-            if (x === 0 || x === 4) {
-                auth_style[x] = "<b>";
-                continue;
-            }
-            auth_style[x] = "<i><b>";
-        }
-        this.saveSettings();
     },
 
     saveSettings: function saveSettings() {
@@ -1376,13 +1244,8 @@ function getPlugins(data) {
 }
 
 function init() { //defines all the variables that are going to be used in the script, uses default if no saved settings are found
-    if (sys.isSafeScripts() !== true) {
-        Utilities.loadSettings();
-        checkScriptVersion();
-    }
-    else {
-        Utilities.loadFromRegistry();
-    }
+    Utilities.loadSettings();
+    checkScriptVersion();
     checkPlugins();
     playerswarn = [];
     initCheck = true;
@@ -2008,11 +1871,11 @@ poScript = ({
         saveToLog(client.name(id) + " left the channel", channel);
     },
     beforeNewMessage: function (message, html) {
-        if (initCheck !== true) {
-            init();
-        }
         if (html === true) {
             return;
+        }
+        if (initCheck !== true) {
+            init();
         }
         formatMessage(message);
     },
