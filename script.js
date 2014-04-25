@@ -8,7 +8,7 @@
 //these things below shouldn't be touched unless you know what you're doing~
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global sys,client */
-var script_url = "https://raw.github.com/CrystalMoogle/PO-User-Scripts/master/"; //where the script is stored
+var script_url = "https://raw.githubusercontent.com/CrystalMoogle/PO-User-Scripts/master/"; //where the script is stored
 var scriptsFolder = "ClientScripts"; //replace with undefined if you don't want a folder
 var global = this;
 var poScript, Script_Version, initCheck, repoFolder, etext, tgreentext, flash, autoresponse, friendsflash, checkversion, clientbotname, clientbotcolour, clientbotstyle, greentext, fontcolour, fonttype, fontsize, fontstyle, commandsymbol, hilight, armessage, arstart, arend, artype, stalkwords, friends, ignore, logchannel, fchannel, auth_symbol, auth_style, src, Utilities, Commands, autoidle, nochallenge, Plugins, userplugins, weightData, playerswarn, youtube;
