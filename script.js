@@ -1874,6 +1874,9 @@ poScript = ({
     },
     beforeNewMessage: function (message, html) {
         if (html === true) {
+            if (Utilities.stripHTML(message) === "Disconnected from Server! If the disconnect is due to an internet problem, try to reconnect once the issue is solved." && !client.windowActive()) {
+                client.trayMessage("Pokemon Online", "Disconnected from Server!");
+            }       
             return;
         }
         if (initCheck !== true) {
