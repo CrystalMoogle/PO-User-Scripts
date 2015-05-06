@@ -48,7 +48,8 @@
         "2.0.01": "-Added the ability to manually update tier info for ~pokedex via ~updatetierinfo",
         "2.0.02": "-Fix tier info for formes \n-Minor message fix",
         "2.0.03": "-Add ability to turn youtube links into the Video title using ~ytlinks on \n-Turn www. addresses into clickable links (e.g. www.google.com)",
-        "2.0.10": "-Allow ~pokedex to use Gen 6 pokemon \n-Allow bots to flash (e.g. for Mafia) \n-Change the woefully ineffienct script version checker"
+        "2.0.10": "-Allow ~pokedex to use Gen 6 pokemon \n-Allow bots to flash (e.g. for Mafia) \n-Change the woefully ineffienct script version checker",
+        "2.0.11": "-Fix Youtube script due to API changes \n-Stop failed commands from showing to other users"
     },
-    "latest": "2.0.10"
+    "latest": "2.0.11"
 }
