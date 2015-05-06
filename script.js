@@ -347,7 +347,9 @@ Commands = ({
                 sendBotMessage("You turned Enriched text off!");
                 return;
             }
-            sendBotMessage("Please use on/off");
+            etext = !etext;
+            sendBotMessage(etext ? "You turned Enriched text on!" : "You turned Enriched text off!");
+            return;
         }
         if (command === "greentext") {
             sys.stopEvent();
@@ -363,7 +365,9 @@ Commands = ({
                 sendBotMessage("You turned greentext off!");
                 return;
             }
-            sendBotMessage("Please use on/off");
+            tgreentext = !tgreentext;
+            sendBotMessage(tgreentext ? "You turned greentext on!" : "You turned greentext off!");
+            return;
         }
         if (command === "idle") {
             sys.stopEvent();
@@ -381,7 +385,10 @@ Commands = ({
                 sendBotMessage("You turned auto-idling off!");
                 return;
             }
-            sendBotMessage("Please use on/off");
+            autoidle = !autoidle;
+            client.goAway(autoidle);
+            sendBotMessage(autoidle ? "You turned auto-idling on!" : "You turned auto-idling off!");
+            return;
         }
         if (command === "ignorechallenges") {
             sys.stopEvent();
@@ -397,7 +404,9 @@ Commands = ({
                 sendBotMessage("You are no longer ignoring challenges");
                 return;
             }
-            sendBotMessage("Please use on/off");
+            nochallenge = !nochallenge;
+            sendBotMessage(nochallenge ? "You are ignoring all challenges" : "You are no longer ignoring challenges");
+            return;
         }
         if (command  === "ytlinks") {
             sys.stopEvent();
@@ -443,6 +452,7 @@ Commands = ({
                 return;
             }
             sendBotMessage("Please use on/off");
+            return;
         }
         if (command === "goto") {
             sys.stopEvent();
@@ -462,6 +472,7 @@ Commands = ({
                 }
             }
             sendBotMessage("That is not a channel!");
+            return;
         }
         if (command === "reconnect") {
             sys.stopEvent();
@@ -480,6 +491,7 @@ Commands = ({
         if (command === "stalkwords") {
             sys.stopEvent();
             sendBotMessage("Your stalkwords are: " + stalkwords);
+            return;
         }
         if (command === "addstalkword") {
             sys.stopEvent();
@@ -492,6 +504,7 @@ Commands = ({
             stalkwords = Utilities.eliminateDuplicates(nstalkwords.concat(stalkwords));
             Utilities.saveSettings();
             sendBotMessage("You added " + commandData + " to your stalkwords!");
+            return;
         }
         if (command === "removestalkword") {
             sys.stopEvent();
@@ -505,6 +518,7 @@ Commands = ({
                 }
             }
             sendBotMessage("" + commandData + " is not a stalkword!");
+            return;
         }
         if (command === "flash" || command === "flashes") {
             sys.stopEvent();
@@ -545,6 +559,7 @@ Commands = ({
                     }
                 }
             }
+            return;
         }
         if (command === "friends") {
             sys.stopEvent();
@@ -570,6 +585,7 @@ Commands = ({
             friends = Utilities.eliminateDuplicates(nfriends.concat(friends));
             Utilities.saveSettings();
             sendBotMessage("You added " + commandData + " to your friends!");
+            return;
         }
         if (command === "removefriend") {
             sys.stopEvent();
@@ -583,6 +599,7 @@ Commands = ({
                 }
             }
             sendBotMessage(commandData + " is not a friend!");
+            return;
         }
         if (command === "friendflash" || command === "friendsflash") {
             sys.stopEvent();
@@ -602,6 +619,7 @@ Commands = ({
         if (command === "ignorelist") {
             sys.stopEvent();
             sendBotMessage("Your ignorelist is: " + ignore);
+            return;
         }
         if (command === "addignore") {
             sys.stopEvent();
@@ -620,6 +638,7 @@ Commands = ({
                 client.ignore(client.id(commandData), true);
             }
             sendBotMessage("You added " + commandData + " to your ignorelist!");
+            return;
         }
         if (command === "removeignore") {
             sys.stopEvent();
@@ -636,6 +655,7 @@ Commands = ({
                 }
             }
             sendBotMessage(commandData + " is not on the ignorelist!");
+            return;
         }
         if (command === "changebotname") {
             sys.stopEvent();
@@ -1037,6 +1057,7 @@ Commands = ({
             logchannel = Utilities.eliminateDuplicates(nlogchannel.concat(logchannel));
             Utilities.saveSettings();
             sendBotMessage("You added " + commandData + " to your log channels!");
+            return;
         }
         if (command === "removelogchannel") {
             sys.stopEvent();
@@ -1050,6 +1071,7 @@ Commands = ({
                 }
             }
             sendBotMessage(commandData + " is not a log channel!");
+            return;
         }
         if (command === "armessage") {
             sys.stopEvent();
@@ -1131,6 +1153,11 @@ Commands = ({
             catch (err) {
                 sendMessage("Error in eval: " + err, bindChannel);
             }
+            return;
+        }
+        if (commandsymbol !== "!" && commandsymbol !== "/") {
+            sys.stopEvent();
+            sendBotMessage("Not a valid command");
         }
     }
 });
@@ -1488,8 +1515,8 @@ function htmllinks(text) { //makes sure links get linked!
                 var name = link.match(regex)[link.match(regex).length - 1];
                 var resp;
                 try {
-                    resp = JSON.parse(sys.synchronousWebCall('https://gdata.youtube.com/feeds/api/videos/' + name + '?alt=json'));
-                    link = '<span title="Youtube"><img src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAMCAYAAABr5z2BAAABIklEQVQoz53LvUrDUBjG8bOoOammSf1IoBSvoCB4JeIqOHgBLt6AIMRBBQelWurQ2kERnMRBsBUcIp5FJSBI5oQsJVkkUHh8W0o5nhaFHvjBgef/Mq+Q46RJBMkI/vE+aOus956tnEswIZe1LV0QyJ5sE2GzgZfVMtRNIdiDpccEssdlB1mW4bvTwdvWJtRdErM7U+8S/FJykCRJX5qm+KpVce8UMNLRLbulz4iSjTAMh6Iowsd5BeNadp3nUF0VlxAEwZBotXC0Usa4ll3meZdA1iguwvf9vpvDA2wvmKgYGtSud8suDB4TyGr2PF49D/vra9jRZ1BVdknMzgwuCGSnZEObwu6sBnVTCHZiaC7BhFx2PKdxUidiAH/4lLo9Mv0DELVs9qsOHXwAAAAASUVORK5CYII="></span>' + ' ' + '<span title = "' + Utilities.html_escape(link) + '">' + resp.entry.title.$t + '</span>';
+                    resp = JSON.parse(sys.synchronousWebCall('http://crystal.moe/youtube?id=' + name));
+                    link = '<span title="Youtube"><img src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAMCAYAAABr5z2BAAABIklEQVQoz53LvUrDUBjG8bOoOammSf1IoBSvoCB4JeIqOHgBLt6AIMRBBQelWurQ2kERnMRBsBUcIp5FJSBI5oQsJVkkUHh8W0o5nhaFHvjBgef/Mq+Q46RJBMkI/vE+aOus956tnEswIZe1LV0QyJ5sE2GzgZfVMtRNIdiDpccEssdlB1mW4bvTwdvWJtRdErM7U+8S/FJykCRJX5qm+KpVce8UMNLRLbulz4iSjTAMh6Iowsd5BeNadp3nUF0VlxAEwZBotXC0Usa4ll3meZdA1iguwvf9vpvDA2wvmKgYGtSud8suDB4TyGr2PF49D/vra9jRZ1BVdknMzgwuCGSnZEObwu6sBnVTCHZiaC7BhFx2PKdxUidiAH/4lLo9Mv0DELVs9qsOHXwAAAAASUVORK5CYII="></span>' + ' ' + '<span title = "' + Utilities.html_escape(link) + '">' + resp.items[0].snippet.title + '</span>';
                 }
                 catch (e) {
                     link = newfound;
@@ -1847,7 +1874,7 @@ client.network().playerLogin.connect(function () { //only call when the user has
     init();
 });
 
-Script_Version = "2.0.10"; //version the script is currently on
+Script_Version = "2.0.11"; //version the script is currently on
 //noinspection JSUnusedAssignment
 poScript = ({
     onPlayerReceived: function (id) { //detects when a player is visible to the client (mostly logins, but may also happen upon joining a new channel)
@@ -1876,7 +1903,7 @@ poScript = ({
         if (html === true) {
             if (Utilities.stripHTML(message) === "Disconnected from Server! If the disconnect is due to an internet problem, try to reconnect once the issue is solved." && !client.windowActive()) {
                 client.trayMessage("Pokemon Online", "Disconnected from Server!");
-            }       
+            }
             return;
         }
         if (initCheck !== true) {
@@ -1950,7 +1977,7 @@ poScript = ({
             Utilities.saveSettings();
             return;
         }
-        if (message[0] === commandsymbol) {
+        if (message[0] === commandsymbol && message.length > 1 && Utilities.isAlpha(message[1])) {
             var command, commandData;
             var pos = message.indexOf(' ');
             if (pos !== -1) {
